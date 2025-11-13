@@ -1,8 +1,9 @@
 import requests
 import os
+from version.update.download_new_version import download_new_version
 
 def compare_version():
-    print('compare')
+    print('compare version...')
     
     GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
@@ -18,9 +19,14 @@ def compare_version():
     print(response.status_code)
     latest_version = response.json()["tag_name"]
     print('remote_version:', remote_version)
-    current_version = "v.1.0"
+    current_version = "v1.0.0"
 
-    #if latest_version > current_version:
-        #download_url = response.json()["assets"][0]["browser_download_url"]
-        #return True, download_url
-    #return False, None
+    if latest_version > current_version:
+        
+        assets = response.json()["assets"]
+        print(f"Available assets: {assets}")
+        download_url = response.json()["assets"][0]["url"]
+        print(f'Download URL: {download_url }')
+        download_new_version(download_url, GITHUB_TOKEN)
+        return True, download_url
+    return False, None

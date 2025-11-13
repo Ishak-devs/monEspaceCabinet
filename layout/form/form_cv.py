@@ -40,9 +40,20 @@ class CVUploadForm(QWidget):
         self.valider_btn.clicked.connect(lambda: fill_template(self))
         layout.addWidget(self.valider_btn, alignment=Qt.AlignmentFlag.AlignCenter)
 
-        self.english_cv = QCheckBox("CV en anglais", self)
+        self.cv_simple = QCheckBox("CV simple", self)
+        self.cv_simple.setEnabled(False)
+        layout.addWidget(self.cv_simple, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.cv_simple.setChecked(False)
+
+        self.cv_complex = QCheckBox("CV complex", self)
+        self.cv_complex.setEnabled(False)
+        layout.addWidget(self.cv_complex, alignment=Qt.AlignmentFlag.AlignCenter)
+        self.cv_complex.setChecked(False)
+
+        self.english_cv = QCheckBox("CV anglais", self)
         self.english_cv.setEnabled(False)
         layout.addWidget(self.english_cv, alignment=Qt.AlignmentFlag.AlignCenter)
         self.english_cv.setChecked(False)
+
 
         layout.addStretch()
