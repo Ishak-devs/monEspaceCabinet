@@ -1,6 +1,6 @@
 import requests
 import os
-from version.update.download_new_version import download_new_version
+from version.download.downloader import download_new_version
 
 def compare_version():
     print('compare version...')

@@ -1,6 +1,7 @@
 import requests
 import os
 import sys
+from version.update.update_app import update_app
 
 def download_new_version(download_url, GITHUB_TOKEN):
     try:
@@ -24,6 +25,7 @@ def download_new_version(download_url, GITHUB_TOKEN):
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
 
+        update_app(download_url)
         return new_exe_app
 
     except Exception as e:
