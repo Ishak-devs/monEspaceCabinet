@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QSt
 from layout.form.form_cv import CVUploadForm
 from layout.components.header.logo import LogoWidget
 from PyQt6.QtCore import Qt
-from version.update.compare_version import compare_version_and_update
+from version.update.compare_version import compare_version
 from treatment.path_ressources import ressources_path
 from dotenv import load_dotenv
 
@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
         cv_form = CVUploadForm(navigate_home=lambda: self.stacked_widget.setCurrentIndex(0))
         self.stacked_widget.addWidget(cv_form)
 
-        compare_version_and_update()
+        compare_version()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)  
