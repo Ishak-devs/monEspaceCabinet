@@ -2,9 +2,8 @@ import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QStackedWidget, QPushButton
 from layout.form.form_cv import CVUploadForm
 from layout.components.header.logo import LogoWidget
-from PyQt6.QtCore import Qt, QTimer
-from version.update.compare_version import compare_version
-from layout.components.dialog.user_dialog import user_dialog
+from PyQt6.QtCore import Qt
+from version.update.compare_version import compare_version_and_update
 from treatment.path_ressources import ressources_path
 from dotenv import load_dotenv
 
@@ -39,11 +38,7 @@ class MainWindow(QMainWindow):
         cv_form = CVUploadForm(navigate_home=lambda: self.stacked_widget.setCurrentIndex(0))
         self.stacked_widget.addWidget(cv_form)
 
-        QTimer.singleShot(500, self.check_update)
-
-    def check_update(self):
-        if compare_version():
-            user_dialog(self)
+        compare_version_and_update()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)  

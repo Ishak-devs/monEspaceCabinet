@@ -1,23 +1,15 @@
-from version.local.local_version import get_local_version
-from version.remote.remote_version import get_remote_version
+import requests
 
-def compare_version():
+def compare_version_and_update():
     print('compare')
-    local_version = get_local_version()
-    remote_version = get_remote_version()
 
-    print('local_version:', local_version)
+    remote_version = "https://github.com/Ishak-devs/ERP/releases/latest"
+    response = requests.get(remote_version)
+    latest_version = response.json()["tag_name"]
     print('remote_version:', remote_version)
+    current_version = "https://api.github.com/repos/Ishak-devs/ERP/contents/version/version.txt?ref=develop"
 
-    if not remote_version or not local_version:
-        print("Verification de mise à jour impossible.")
-        return False
-    
-    try:
-
-        local_parts = tuple(map(int, local_version.split('.')))
-        remote_parts = tuple(map(int, remote_version.split('.')))
-        return remote_parts > local_parts
-    except Exception as e:
-        print('Error comparing version:', e)
-        return False
+    if latest_version > current_version:
+        download_url = response.json()["assets"][0]["browser_download_url"]
+        return True, download_url
+    return False, None
