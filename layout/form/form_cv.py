@@ -17,6 +17,11 @@ class CVUploadForm(QWidget):
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.setSpacing(15)
 
+        logo_widget = LogoWidget()
+        layout.addWidget(logo_widget, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+
+        backbutton(layout, self.navigate_home)
+
         self.file_label = QLabel("")
         layout.addWidget(self.file_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
