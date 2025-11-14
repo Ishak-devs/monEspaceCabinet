@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 import sys
-from dc import handle_valid_cv  
+from treatment.fill_template import fill_template
 
 class Treatment_cv_form(QWidget):
 
@@ -15,17 +15,17 @@ class Treatment_cv_form(QWidget):
 
         if file_dialog.exec():
             self.selected_file = file_dialog.selectedFiles()[0]
-            self.file_label.setText("Fichier sélectionné")
+            self.file_label.setText("Fichier sélectionné ✅")
             print(f"File selected: {self.selected_file}")
         else:
             self.selected_file = None
             self.file_label.setText("Aucun fichier sélectionné.")
 
     def valider(self):
-        if hasattr(self, "selected_file") and self.selected_file:
-            print("Fichier validé :", self.selected_file)
-            handle_valid_cv(self.selected_file)  
-        else:
-            print("⚠️ Aucun fichier sélectionné.")
-            self.file_label.setText("⚠️ Veuillez sélectionner un fichier avant de valider.")
+        if not hasattr(self, "selected_file") and self.selected_file:
+            self.file_label.setText("Veuillez sélectionner un fichier avant de valider.")
+            return
 
+        if not (self.cv_simple.isChecked() or self.cv_complex.isChecked()):
+            self.file_label.setText("Choisissez le ype de cv")
+            return
