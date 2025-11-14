@@ -26,7 +26,13 @@ def compare_version():
         assets = response.json()["assets"]
         print(f"Available assets: {assets}")
         download_url = response.json()["assets"][0]["url"]
-        print(f'Download URL: {download_url }')
+
+        download_headers = {
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept": "application/octet-stream"
+        }
+
+        print(f'Download URL: {download_url, download_headers }')
         download_new_version(download_url, GITHUB_TOKEN)
         return True, download_url
     return False, None
