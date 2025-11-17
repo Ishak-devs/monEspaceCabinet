@@ -4,12 +4,13 @@ Extrais toutes les expériences professionnelles du CV suivant et retourne un JS
 
 Règles à respecter :
 
-- Extrait les tâches entièrement tel qu'ils ont été mentionnés sans émoji.
+- Extrait les tâches entièrement tel qu'ils ont été mentionnés en corrigant les potentiels fautes de grammaires ou d'ortographes.
 - Ne mélange pas les informations entre différentes expériences.
+- Pour poste retourne l'intitulé tel qu'il apparait.
 - Retourne le résultat de la plus récente à la plus ancienne expérience.
 - Attention à n'oublier aucune expérience.
-- Si tu ne trouve pas un éléments laisse le vide.
 - Retourne sans fautes d'ortographe ou de grammaire.
+- Si tu ne trouve pas un éléments laisse le vide.
 
 CV :
 {cv_text}
