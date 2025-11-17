@@ -22,7 +22,6 @@ class CVUploadForm(QWidget):
 
         layout.addStretch()
 
-
         self.file_label = QLabel("")
         layout.addWidget(self.file_label, alignment=Qt.AlignmentFlag.AlignCenter)
 
