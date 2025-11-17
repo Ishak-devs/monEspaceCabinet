@@ -1,14 +1,17 @@
-def prompt_infos(cv_text):
+def simple_prompt_infos(cv_text):
     return f"""
 Extrais les informations suivantes du CV et retourne un JSON valide.
 
-Concernant "Experience_totale" Calcule la durée totale d'expérience professionnelle, si les périodes se chevauchent, ne double pas la durée, 
-Additionne les années de toutes les périodes d'emploi mentionnées, format de rendu : ".. ans d'expériences".
-Concernant les secteurs d'activité, il s'agit de ciblé là où il est spécialisé ou les secteurs des entreprises pour lesquelles il a travaillé.
+Règles à respecter :
+
+- Concernant Iinitial", ceci n'est pas indiqué dans le cv, retourne 3 lettres ciblant le candidat selon son nom.
+- Concernant "Experience_totale", il s'agit du nombre d'année global d'expériences du candidat, si ce n'est pas mentionné additionne donc les périodes d'emploi. Format de rendu : ".. ans d'expériences".
+- Concernant les secteurs d'activité il s'agit du/des secteur des entreprises dans lequel il a évolué. 
+- Concernant le niveau des langues si le niveau est mentionné avec l'échelle d'évaluation du CERCL traduit le de la sorte : bon niveau, avancé, intermédiaire ou autre.
 
 CV :
 {cv_text}
 
-Format de sortie (JSON uniquement sans commentaires) :
-{{"Nom_Prénom": "", "POSTE": "", "Secteurs_activites": [], "Langues": [], "Experience_totale": ""}}
+Format de sortie (JSON uniquement sans commentaires en français) :
+{{"Nom_prénom", "Initial": "", "POSTE": "", "Secteurs_activites": [], "Langues": [], "Experience_totale": ""}}
 """
