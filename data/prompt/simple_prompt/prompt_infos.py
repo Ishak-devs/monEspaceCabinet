@@ -12,6 +12,6 @@ Règles à respecter :
 CV :
 {cv_text}
 
-Format de sortie (JSON uniquement sans commentaires en français) :
+Format de sortie (JSON uniquement MEME SYNTAXE, sans commentaires) :
 {{"Nom_prénom", "Initial": "", "POSTE": "", "Secteurs_activites": [], "Langues": [], "Experience_totale": ""}}
 """
