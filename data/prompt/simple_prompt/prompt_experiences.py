@@ -10,17 +10,19 @@ Règles à respecter :
 - Retourne le résultat de la plus récente à la plus ancienne expérience.
 - Attention à n'oublier aucune expérience.
 - Retourne sans fautes d'ortographe ou de grammaire.
-- Si tu ne trouve pas un éléments laisse le vide.
-- Concernant clients, attention on parle de client et non pas de n'importe quels acteurs vérifie bien ce que tu extrait.
+- Concernant Nom_Entreprise, une seule entreprise est attendue à chaque fois, retourne celle pour qui il a travaillé pour chaque expériences.
+- Concernant "Titre" : 
+                    Poste regroupant des expériences. 
+                    -Information identifiable car aucune taches en lien avec le poste n'est indiqué, elle est suivie par un intitulé de poste indiquant plus d'informations.
 
 CV :
 {cv_text}
 
-Format de sortie (JSON uniquement MEME SYNTAXE, sans commentaires) :
+Format de sortie (JSON uniquement MEME SYNTAXE, sans commentaires, en français) :
 {{
   "Experiences": [
     {{
-      "Nom_Entreprise": "",
+      "Titre": "",
       "Poste": "",
       "Dates": "",
       "Durée_expérience": "",

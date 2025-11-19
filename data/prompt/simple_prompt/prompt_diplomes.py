@@ -9,7 +9,7 @@ Règle a respecter :
 CV :  
 {cv_text}
 
-Format de sortie (JSON uniquement MEME SYNTAXE, sans commentaires) :
+Format de sortie (JSON uniquement MEME SYNTAXE, sans commentaires, en français) :
 {{
   "Diplomes": [
     {{

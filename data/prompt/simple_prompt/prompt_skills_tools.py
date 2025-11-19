@@ -11,7 +11,7 @@ Règles à respecter :
 CV :
 {cv_text}
 
-Format de sortie (JSON UNIQUEMENT sans commentaires ou caractère spécial) :
+Format de sortie (JSON uniquement MEME SYNTAXE, sans commentaires, en français) :
 {{
   "compétences": []
   ],
