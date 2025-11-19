@@ -31,8 +31,14 @@ class MainWindow(QMainWindow):
         btn_generate_dc = QPushButton("Générateur dossier de compétences")
         btn_generate_dc.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))   
         btn_generate_dc.setFixedSize(250, 20)
+
+        btn_analyse_profil_offre_= QPushButton("Analyser un profil avec une offre")
+        btn_analyse_profil_offre_.setFixedSize(250, 20)
+        btn_analyse_profil_offre_.setEnabled(False)
+
         
         main_layout.addWidget(btn_generate_dc, alignment=Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(btn_analyse_profil_offre_, alignment=Qt.AlignmentFlag.AlignCenter)
         main_layout.addStretch()
 
         cv_form = CVUploadForm(navigate_home=lambda: self.stacked_widget.setCurrentIndex(0))
