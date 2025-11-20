@@ -20,15 +20,16 @@ CV :
 
 Format de sortie (JSON uniquement MEME SYNTAXE, sans commentaires, en français) :
 {{
-  "Experiences": [
+  "Expériences": [
     {{
       "Titre": "",
       "Poste": "",
+      "Nom_Entreprise": "",
       "Dates": "",
       "Durée_expérience": "",
       "Mission",
       "Clients",
-      "Taches": [],
+      "Tâches": [],
       "Logiciels_outils": []
     }}
   ]

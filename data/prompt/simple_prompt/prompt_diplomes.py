@@ -14,8 +14,8 @@ Format de sortie (JSON uniquement MEME SYNTAXE, sans commentaires, en français)
   "Diplomes": [
     {{
       "Titre": "",
-      "Ecole": "",
-      "Annee": "",
+      "École": "",
+      "Année": "",
       "Lieu": ""
     }}
   ]

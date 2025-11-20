@@ -1,5 +1,5 @@
 from docxtpl import DocxTemplate
-import threading
+import threading, traceback
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 from treatment.json.replace_json_element.replace_empersand import replace_ampersand
 from treatment.path_ressources import ressources_path
@@ -7,7 +7,6 @@ from treatment.jinra.create_jinra_env import create_jinra_env
 from treatment.buttons.enabled_false_all_buttons import enabled_false_all_buttons
 from data.extract.extract_and_call_prompt import extract_and_call_prompt
 from treatment.translate.translate import translate
-import traceback
 from treatment.json.replace_json_element.replace_level_language import replace_level_language
 
 def fill_template(self):

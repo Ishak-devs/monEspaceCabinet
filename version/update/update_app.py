@@ -6,11 +6,11 @@ def update_app(new_exe):
         shutil.move(new_exe, temp_exe)
 
         updater_script = f"""
-import shutil, time, sys, os, subprocess
-time.sleep(1)  
-shutil.move(r'{temp_exe}', r'{current_exe}')
-subprocess.Popen([r'{current_exe}'])
-"""
+                import shutil, time, sys, os, subprocess
+                time.sleep(1)  
+                shutil.move(r'{temp_exe}', r'{current_exe}')
+                subprocess.Popen([r'{current_exe}'])
+                """
      
         print('update...')
         temp_updater = os.path.join(os.path.dirname(current_exe), "updater_temp.py")
