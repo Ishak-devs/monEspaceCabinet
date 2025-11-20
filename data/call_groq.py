@@ -1,27 +1,23 @@
 import os
-from openai import OpenAI
+from groq import Groq
 from dotenv import load_dotenv
-import requests
 
 load_dotenv()
     
 def call_groq(prompt):
-    url = "https://openrouter.ai/api/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
-        "Content-Type": "application/json"
-    }
+    client = Groq(
+        api_key=os.environ.get("GROQ_API_KEY"),
+    )
 
-    data = {
-        "model": "qwen/qwen3-coder:free",
-        "messages": [
-            {"role": "user", "content": prompt}
-        ]
-    }
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+
+            }
+        ],                
+        model="openai/gpt-oss-120b", 
+    )
     
-
-    response = requests.post(url, headers=headers, json=data)
-    print("Status code:", response.status_code)
-    print("Response text:", response.text)
-    response_json = response.json()
-    return response_json["choices"][0]["message"]["content"]
+    return chat_completion.choices[0].message.content
