@@ -13,6 +13,7 @@ from fastapi import BackgroundTasks, FastAPI, File, Form, HTTPException, UploadF
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from postgrest.base_request_builder import APIResponse
+from prospection.start_prospection import run_chrome
 from pydantic import BaseModel
 from workflow.start_prospect_auto import start_prospect_auto
 
@@ -200,8 +201,6 @@ async def start_prospection(
     if not prospection_lock.acquire(blocking=False):
         return {"status": "error", "message": "Prospection déjà en cours"}
     try:
-        from prospection.start_prospection import run_chrome
-
         SELECT_QUERY = f"*,profiles!inner(linkedin_email,linkedin_password:pgp_sym_decrypt(linkedin_password::bytea,'{KEY_SECRET}'))"
 
         if SELECT_QUERY:
@@ -263,18 +262,42 @@ async def start_prospection(
         print(f"❌ ERREUR SUPABASE DERNIER EXCEPT : {e}")
 
 
-@app.post("/start-async")
-async def trigger_prospection(background_tasks: BackgroundTasks):
-    from fastapi import BackgroundTasks
+@app.post("/api/prospection/async-stream")
+async def start_prospection_stream(request: ProspectionRequest):
+    try:
+        res = supabase_client.rpc(
+            "get_decrypted_settings",
+            {"job_title_input": request.intitule, "key_input": KEY_SECRET},
+        ).execute()
 
-    background_tasks.add_task(start_prospect_auto)
-    return {"status": "success", "message": "Prospection démarrée"}
+        if not res.data:
+            return {"status": "error", "message": "Config introuvable"}
+        response = cast(APIResponse, res)
 
+        data_list = cast(List[Dict[str, Any]], response.data) if response.data else []
+        data = data_list[0] if data_list else {}
 
-@app.post("/start-async")
-async def start_prospection_alone(background_tasks: BackgroundTasks):
-    background_tasks.add_task(start_prospect_auto)
-    return {"status": "success", "message": "Prospection démarrée"}
+        profile = data.get("profiles", {})
+        config_db = {
+            "id": data.get("id"),
+            "linkedin_email": profile.get("linkedin_email"),
+            "linkedin_password": profile.get("linkedin_password"),
+            "job_title": request.intitule,
+        }
+    except Exception as e:
+        return {"status": "error", "message": f"Erreur DB : {str(e)}"}
+
+    def wrapped_generator():
+        if not prospection_lock.acquire(blocking=False):
+            yield "⚠️ Déjà en cours"
+            return
+        try:
+            yield from run_chrome(request.intitule, config_db)
+        finally:
+            prospection_lock.release()
+
+    # 3. On renvoie le stream direct au front
+    return StreamingResponse(wrapped_generator(), media_type="text/plain")
 
 
 if __name__ == "__main__":

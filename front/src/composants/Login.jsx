@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { supabase } from "../supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 function Login({ onLoginSuccess }) {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,10 +17,12 @@ function Login({ onLoginSuccess }) {
         email: email,
         password: motDePasse,
       });
+      console.log(data);
 
       if (error) throw error;
 
       if (onLoginSuccess) onLoginSuccess(data.user);
+      navigate("/Dashboard");
     } catch (error) {
       console.error("Erreur:", error);
     } finally {
