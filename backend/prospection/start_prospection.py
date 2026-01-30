@@ -52,7 +52,7 @@ def run_chrome(job_title: str, config_db):
         instruction = prompt_message_prospection(job_title)
         message = call_groq(instruction)
         print(f"{message}")
-        yield "On appel groq..."
+        yield "On prépare un message..."
 
     except Exception as e:
         yield f"⚠️ Erreur IA : {str(e)[:50]}. Utilisation du message par défaut."
@@ -76,7 +76,7 @@ def run_chrome(job_title: str, config_db):
 
     try:
         driver.get("https://www.linkedin.com/feed/")
-        time.sleep(120)
+        # time.sleep(120)
         yield "Accès à LinkedIn..."
         time.sleep(random.uniform(3, 6))
         wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
