@@ -228,7 +228,7 @@ async def start_prospection(
                         "job_title": request.intitule,
                         "query": request.intitule,
                         "is_active": True,
-                        "user_id": "75578010-bb83-46b3-8b98-7851899d3b18",
+                        "user_id": "b48d5631-7f20-4837-904c-ae55f1e60fd3",
                         "hour_start": datetime.now().astimezone().isoformat(),
                     }
                 ).execute()
@@ -250,13 +250,21 @@ async def start_prospection(
                 "job_title": request.intitule,
             }
 
-            def wrapped_generator():
-                try:
-                    yield from run_chrome(request.intitule, config_db)
-                finally:
-                    prospection_lock.release()
+            try:
+                run_chrome(request.intitule, config_db)
+                return {"status": "success", "message": "Prospection terminée avec succès"}
+            except Exception as e:
+                            return {"status": "error", "message": f"Erreur pendant l'exécution : {str(e)}"}
+            finally:
+                                if prospection_lock.locked():
+                                    prospection_lock.release()
+            # def wrapped_generator():
+            #     try:
+            #         yield from run_chrome(request.intitule, config_db)
+            #     finally:
+            #         prospection_lock.release()
 
-            return StreamingResponse(wrapped_generator(), media_type="text/plain")
+            # return StreamingResponse(wrapped_generator(), media_type="text/plain")
 
     except Exception as e:
         return {"status": "error", "message": str(e)}

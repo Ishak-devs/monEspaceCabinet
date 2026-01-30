@@ -38,7 +38,7 @@ def run_chrome(job_title: str, config_db):
     profil_path = os.path.join(os.getcwd(), "linkedin_profile")
 
     options.add_argument(f"--user-data-dir={profil_path}")
-    options.add_argument("--headless=new")
+    #options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-setuid-sandbox")
@@ -58,7 +58,9 @@ def run_chrome(job_title: str, config_db):
         yield f"⚠️ Erreur IA : {str(e)[:50]}. Utilisation du message par défaut."
         message = "Bonjour"
 
-    os.system("pkill -9 chrome")
+    # os.system("pkill -9 chrome")
+    os.system("taskkill /f /im chrome.exe /t >nul 2>&1")
+    os.system("taskkill /f /im chromedriver.exe /t >nul 2>&1")
     if os.path.exists("linkedin_profile/SingletonLock"):
         os.remove("linkedin_profile/SingletonLock")
     driver = uc.Chrome(options=options, use_subprocess=True, version_main=143)
