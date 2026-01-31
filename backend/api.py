@@ -268,6 +268,10 @@ async def start_prospection(
         return {"status": "error", "message": str(e)}
         print(f"❌ ERREUR SUPABASE DERNIER EXCEPT : {e}")
 
+    finally:
+        if prospection_lock.locked():
+                            prospection_lock.release()
+
 
 @app.post("/api/prospection/async-stream")
 async def start_prospection_stream(request: ProspectionRequest):

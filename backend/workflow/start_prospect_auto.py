@@ -11,7 +11,7 @@ from typing import Any, cast
 from database import supabase_client
 from prospection.start_prospection import run_chrome
 import time
-# from api import prospection_lock
+from threading import Lock
 
 # from typing_extensions import Sequence
 
@@ -32,6 +32,7 @@ def start_prospect_auto():
             )
             data = cast(list[dict[str, Any]], res.data or [])
             print(f"DEBUG - Nombre de jobs trouvés : {len(data)}")
+            prospection_lock = Lock()
 
             if prospection_lock.acquire(blocking=False): # Pour recuperer le verrou si il est pas pris
                 try:
