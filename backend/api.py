@@ -247,15 +247,20 @@ async def start_prospection(
                 "linkedin_password": data.get("linkedin_password"),
                 "job_title": request.intitule,
             }
+            def run_in_background():
+                try:
+                    run_chrome(request.intitule, config_db)
+                    return {"status": "success", "message": "Prospection terminée avec succès"}
+                except Exception as e:
+                                return {"status": "error", "message": f"Erreur pendant l'exécution : {str(e)}"}
+                finally:
+                                    if prospection_lock.locked():
+                                        prospection_lock.release()
 
-            try:
-                run_chrome(request.intitule, config_db)
-                return {"status": "success", "message": "Prospection terminée avec succès"}
-            except Exception as e:
-                            return {"status": "error", "message": f"Erreur pendant l'exécution : {str(e)}"}
-            finally:
-                                if prospection_lock.locked():
-                                    prospection_lock.release()
+                background_tasks.add_task(run_in_background)
+                return {"status": "success", "message": "Prospection lancée avec succès"}
+
+
             # def wrapped_generator():
             #     try:
             #         yield from run_chrome(request.intitule, config_db)
@@ -268,9 +273,9 @@ async def start_prospection(
         return {"status": "error", "message": str(e)}
         print(f"❌ ERREUR SUPABASE DERNIER EXCEPT : {e}")
 
-    finally:
-        if prospection_lock.locked():
-                            prospection_lock.release()
+    # finally:
+    #     if prospection_lock.locked():
+    #                         prospection_lock.release()
 
 
 @app.post("/api/prospection/async-stream")
