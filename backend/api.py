@@ -15,18 +15,18 @@ from fastapi.responses import FileResponse, StreamingResponse
 from postgrest.base_request_builder import APIResponse
 from prospection.start_prospection import run_chrome
 from pydantic import BaseModel
-# from workflow.start_prospect_auto import start_prospect_auto
+from workflow.start_prospect_auto import start_prospect_auto
 
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     thread = threading.Thread(target=start_prospect_auto, daemon=True)
-#     thread.start()
-#     print("🔥 Serveur prêt, check Supabase au démarrage...")
-#     yield
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    thread = threading.Thread(target=start_prospect_auto, daemon=True)
+    thread.start()
+    print("🔥 Serveur prêt, check Supabase au démarrage...")
+    yield
 
 
-app = FastAPI(title="Fillcloud API", version="1.0.0")#lifespan=lifespan )
+app = FastAPI(title="Fillcloud API", version="1.0.0", lifespan=lifespan )
 KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
 prospection_lock = Lock()
 
@@ -269,42 +269,42 @@ async def start_prospection(
         print(f"❌ ERREUR SUPABASE DERNIER EXCEPT : {e}")
 
 
-# @app.post("/api/prospection/async-stream")
-# async def start_prospection_stream(request: ProspectionRequest):
-#     try:
-#         res = supabase_client.rpc(
-#             "get_decrypted_settings",
-#             {"job_title_input": request.intitule, "key_input": KEY_SECRET},
-#         ).execute()
+@app.post("/api/prospection/async-stream")
+async def start_prospection_stream(request: ProspectionRequest):
+    try:
+        res = supabase_client.rpc(
+            "get_decrypted_settings",
+            {"job_title_input": request.intitule, "key_input": KEY_SECRET},
+        ).execute()
 
-#         if not res.data:
-#             return {"status": "error", "message": "Config introuvable"}
-#         response = cast(APIResponse, res)
+        if not res.data:
+            return {"status": "error", "message": "Config introuvable"}
+        response = cast(APIResponse, res)
 
-#         data_list = cast(List[Dict[str, Any]], response.data) if response.data else []
-#         data = data_list[0] if data_list else {}
+        data_list = cast(List[Dict[str, Any]], response.data) if response.data else []
+        data = data_list[0] if data_list else {}
 
-#         profile = data.get("profiles", {})
-#         config_db = {
-#             "id": data.get("id"),
-#             "linkedin_email": profile.get("linkedin_email"),
-#             "linkedin_password": profile.get("linkedin_password"),
-#             "job_title": request.intitule,
-#         }
-#     except Exception as e:
-#         return {"status": "error", "message": f"Erreur DB : {str(e)}"}
+        profile = data.get("profiles", {})
+        config_db = {
+            "id": data.get("id"),
+            "linkedin_email": profile.get("linkedin_email"),
+            "linkedin_password": profile.get("linkedin_password"),
+            "job_title": request.intitule,
+        }
+    except Exception as e:
+        return {"status": "error", "message": f"Erreur DB : {str(e)}"}
 
-#     # def wrapped_generator():
-#     #     if not prospection_lock.acquire(blocking=False):
-#     #         yield "⚠️ Déjà en cours"
-#     #         return
-#     #     try:
-#     #         yield from run_chrome(request.intitule, config_db)
-#     #     finally:
-#     #         prospection_lock.release()
+    # def wrapped_generator():
+    #     if not prospection_lock.acquire(blocking=False):
+    #         yield "⚠️ Déjà en cours"
+    #         return
+    #     try:
+    #         yield from run_chrome(request.intitule, config_db)
+    #     finally:
+    #         prospection_lock.release()
 
-#     # # 3. On renvoie le stream direct au front
-#     # return StreamingResponse(wrapped_generator(), media_type="text/plain")
+    # # 3. On renvoie le stream direct au front
+    # return StreamingResponse(wrapped_generator(), media_type="text/plain")
 
 
 if __name__ == "__main__":
