@@ -17,6 +17,7 @@ from threading import Lock
 
 prospection_lock = Lock()
 def start_prospect_auto():
+    supabase_client.table("prospection_settings").update({"is_active": False}).eq("is_active", True).execute()
 
     while True:
 
@@ -43,7 +44,8 @@ def start_prospect_auto():
                         if job_id and title:
                             print(f"Lancement : {title}")
                             supabase_client.table("prospection_settings").update(
-                                {"is_active": True}
+                                {"is_active": True,
+                                    "has_run_today": True}
                             ).eq("id", job_id).execute()
                             try:
                                 list(run_chrome(title, job))
@@ -57,7 +59,7 @@ def start_prospect_auto():
                             supabase_client.table("prospection_settings").update(
                                 {
                                     "is_active": False,
-                                    "has_run_today": True,
+                                    # "has_run_today": True,
                                     "hour_start": prochaine_heure.isoformat(),
                                 }
                             ).eq("id", job_id).execute()
