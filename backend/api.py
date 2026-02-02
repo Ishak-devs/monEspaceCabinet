@@ -194,40 +194,6 @@ async def get_prospection():
         print(f"Erreur Supabase List: {e}")
         return []
 
-    # @app.post("/backend/prospection/start_prospection")
-    # async def start_prospection(
-    #     request: ProspectionRequest, background_tasks: BackgroundTasks
-    # ):
-    #     print(f"DEBUG: Requête reçue pour {request.intitule}")
-
-    #     if not prospection_lock.acquire(blocking=False):
-    #         print("❌ LOCK BLOQUÉ")
-    #         return {"status": "error", "message": "Déjà en cours"}
-
-    #     config_db = {
-    #         "id": "test",
-    #         "linkedin_email": "ton_mail@gmail.com",
-    #         "linkedin_password": "ton_password",
-    #         "job_title": request.intitule,
-    #     }
-
-    #     def run_in_background(job_title, config):
-    #         try:
-    #             print(f"Lancement Chrome pour {job_title}...")
-
-    #             for step in run_chrome(job_title, config):
-    #                 print(f"[CHROME] {step}")
-    #         except Exception as e:
-    #             print(f"💥 CRASH WORKER : {e}")
-    #         finally:
-    #             if prospection_lock.locked():
-    #                 prospection_lock.release()
-    #                 print("🔓 LOCK LIBÉRÉ")
-
-    #     background_tasks.add_task(run_in_background, request.intitule, config_db)
-
-    # return {"status": "success", "message": "Chrome va se lancer"}
-
 
 @app.post("/backend/prospection/start_prospection")
 async def start_prospection(
@@ -309,58 +275,6 @@ async def start_prospection(
             "status": "error",
             "message": f"Erreur base de données : {str(e)}",
         }
-    # try:
-    #     print("🔒 insert db")
-    #     supabase_client.table("prospection_settings").insert(
-    #         {
-    #             "job_title": request.intitule,
-    #             "query": request.intitule,
-    #             "is_active": True,
-    #             "user_id": "b48d5631-7f20-4837-904c-ae55f1e60fd3",
-    #             "hour_start": datetime.now().astimezone().isoformat(),
-    #         }
-    #     ).execute()
-    # except Exception as e:
-    #     print(f"❌ ERREUR SUPABASE INSERT : {e}")
-
-    # def run_in_background(job_title, config):
-    #     try:
-    #         for step in run_chrome(request.intitule, config_db):
-    #             print(f"🤖 [DEBUG] Étape {step}")
-    #     except Exception as e:
-    #         print(f"💥 CRASH DANS LE BACKGROUND : {e}")
-    #         return {
-    #             "status": "error",
-    #             "message": f"Erreur pendant l'exécution : {str(e)}",
-    #         }
-    #     finally:
-    #         if prospection_lock.locked():
-    #             prospection_lock.release()
-    #             print("🔓 LOCK LIBÉRÉ")
-
-    # background_tasks.add_task(run_in_background, request.intitule, config_db)
-
-    # return {"status": "success", "message": "Chrome va se lancer"}
-
-
-# def wrapped_generator():
-#     try:
-#         yield from run_chrome(request.intitule, config_db)
-#     finally:
-#         prospection_lock.release()
-
-# return StreamingResponse(wrapped_generator(), media_type="text/plain")
-
-# except Exception as e:
-#     return {"status": "error", "message": str(e)}
-#     print(f"❌ ERREUR SUPABASE DERNIER EXCEPT : {e}")
-
-# finally:
-#     if prospection_lock.locked():
-#                         prospection_lock.release()
-
-# data_list = cast(List[Dict[str, Any]], response.data) if response.data else []
-# data = data_list[0] if data_list else {}
 
 
 # @app.post("/api/prospection/async-stream")

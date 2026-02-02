@@ -4,6 +4,8 @@ import traceback
 
 from database import supabase_client
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 # from selenium.webdriver.support import expected_conditions as EC
 # from selenium.webdriver.support.ui import WebDriverWait
@@ -14,7 +16,9 @@ def send_message(driver, job_title, message, config_db):
     try:
         try:
             time.sleep(random.uniform(5, 8))
-            search_url = f"https://www.linkedin.com/search/results/people/?keywords={job_title}&origin=GLOBAL_SEARCH_CARD"
+
+            search_url = "https://www.linkedin.com/in/thomas-laroudie/"
+            # search_url = f"https://www.linkedin.com/search/results/people/?keywords={job_title}&origin=GLOBAL_SEARCH_CARD"
             driver.get(search_url)
             yield "On accède aux profils pour envoyer des messages..."
             time.sleep(random.uniform(6, 8))
@@ -25,18 +29,39 @@ def send_message(driver, job_title, message, config_db):
             yield "Erreur au premier try"
 
         # buton message
-        button = driver.find_element(
-            By.XPATH,
-            "//a[contains(@href, '/messaging/compose/') and .//span[text()='Message']]",
+        # button = driver.find_element(
+        #     By.XPATH,
+        #     "//a[contains(@href, '/messaging/compose')]//span[contains(text(), 'Message')]",
+        # )
+        # driver.execute_script("window.scrollTo(0, 500);")
+        # button = WebDriverWait(driver, 10).until(
+        #     EC.presence_of_element_located(
+        #         (
+        #             By.XPATH,
+        #             "//a[contains(@href, '/messaging/compose') and contains(., 'Message')]",
+        #         )
+        #     )
+        # )
+        # time.sleep(10)
+        # yield "bouton de message trouvé..."
+        # driver.execute_script("arguments[0].click();", button)
+        button = WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//*[contains(@href, 'messaging/compose')]//*[contains(text(), 'Message')] | //button[contains(., 'Message')]",
+                )
+            )
         )
-        yield "bouton de message trouvé..."
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", button)
+        # button.click()
         driver.execute_script("arguments[0].click();", button)
         time.sleep(random.uniform(6, 8))
 
         # on cherche le champs de saisie et on tente le click
         try:
             xpath_input = "//div[@role='textbox' and contains(@class, 'msg-form__contenteditable')]"
-            time.sleep(random.uniform(4, 7))
+            time.sleep(10)
             yield "On cherche l'input..."
             message_box = driver.find_element(By.XPATH, xpath_input)
             message_box.click()
