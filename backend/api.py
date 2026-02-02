@@ -238,82 +238,109 @@ async def start_prospection(
         print("❌ LOCK BLOQUÉ : Une autre instance tourne déjà")
         return {"status": "error", "message": "Prospection déjà en cours"}
 
-    config_db = {
-        "id": "test",
-        "linkedin_email": "ton_mail@gmail.com",
-        "linkedin_password": "ton_password",
-        "job_title": request.intitule,
-    }
+    try:
+        print("🔒 LOCK ACQUIS")
+        SELECT_QUERY = f"*,profiles!inner(linkedin_email,linkedin_password:pgp_sym_decrypt(linkedin_password::bytea,'{KEY_SECRET}'))"
+        if SELECT_QUERY:
+            print("🔒 select db")
+            res = supabase_client.rpc(
+                "get_decrypted_settings",
+                {"job_title_input": request.intitule, "key_input": KEY_SECRET},
+            ).execute()
 
-    #     try:
-    #         print("🔒 LOCK ACQUIS")
-    #         SELECT_QUERY = f"*,profiles!inner(linkedin_email,linkedin_password:pgp_sym_decrypt(linkedin_password::bytea,'{KEY_SECRET}'))"
-    #         if SELECT_QUERY:
+            response = cast(APIResponse, res)
+            if res and hasattr(res, "data") and res.data:
+                data_list = (
+                    cast(List[Dict[str, Any]], response.data) if response.data else []
+                )
+                data = data_list[0] if data_list else {}
+
+                config_db = {
+                    "id": data.get("id"),
+                    "linkedin_email": data.get("linkedin_email"),
+                    "linkedin_password": data.get("linkedin_password"),
+                    "job_title": request.intitule,
+                }
+
+                try:
+                    print("🔒 insert db")
+                    supabase_client.table("prospection_settings").insert(
+                        {
+                            "job_title": request.intitule,
+                            "query": request.intitule,
+                            "is_active": True,
+                            "user_id": "b48d5631-7f20-4837-904c-ae55f1e60fd3",
+                            "hour_start": datetime.now().astimezone().isoformat(),
+                        }
+                    ).execute()
+                except Exception as e:
+                    print(f"❌ ERREUR SUPABASE INSERT : {e}")
+
+                def run_in_background(job_title, config):
+                    try:
+                        for step in run_chrome(request.intitule, config):
+                            print(f"🤖 [DEBUG] Étape {step}")
+                    except Exception as e:
+                        print(f"💥 CRASH DANS LE BACKGROUND : {e}")
+                        return {
+                            "status": "error",
+                            "message": f"Erreur pendant l'exécution : {str(e)}",
+                        }
+                    finally:
+                        if prospection_lock.locked():
+                            prospection_lock.release()
+                            print("🔓 LOCK LIBÉRÉ")
+
+                background_tasks.add_task(
+                    run_in_background, request.intitule, config_db
+                )
+
+                # return {"status": "success", "message": "Chrome va se lancer"}
+
+            if not res or res.data is None:
+                return {
+                    "status": "error",
+                    "message": "Impossible de charger les données",
+                }
+    except Exception as e:
+        print(f"❌ ERREUR SUPABASE SELECT : {e}")
+        prospection_lock.release()
+        return {
+            "status": "error",
+            "message": f"Erreur base de données : {str(e)}",
+        }
     # try:
-    #     print("🔒 select db")
-    #     res = supabase_client.rpc(
-    #         "get_decrypted_settings",
-    #         {"job_title_input": request.intitule, "key_input": KEY_SECRET},
+    #     print("🔒 insert db")
+    #     supabase_client.table("prospection_settings").insert(
+    #         {
+    #             "job_title": request.intitule,
+    #             "query": request.intitule,
+    #             "is_active": True,
+    #             "user_id": "b48d5631-7f20-4837-904c-ae55f1e60fd3",
+    #             "hour_start": datetime.now().astimezone().isoformat(),
+    #         }
     #     ).execute()
-    #     if not res or res.data is None:
+    # except Exception as e:
+    #     print(f"❌ ERREUR SUPABASE INSERT : {e}")
+
+    # def run_in_background(job_title, config):
+    #     try:
+    #         for step in run_chrome(request.intitule, config_db):
+    #             print(f"🤖 [DEBUG] Étape {step}")
+    #     except Exception as e:
+    #         print(f"💥 CRASH DANS LE BACKGROUND : {e}")
     #         return {
     #             "status": "error",
-    #             "message": "Impossible de charger les données",
+    #             "message": f"Erreur pendant l'exécution : {str(e)}",
     #         }
-    # except Exception as e:
-    #     print(f"❌ ERREUR SUPABASE SELECT : {e}")
-    #     prospection_lock.release()
-    #     return {
-    #         "status": "error",
-    #         "message": f"Erreur base de données : {str(e)}",
-    #     }
-    #     try:
-    #         print("🔒 insert db")
-    #         supabase_client.table("prospection_settings").insert(
-    #             {
-    #                 "job_title": request.intitule,
-    #                 "query": request.intitule,
-    #                 "is_active": True,
-    #                 "user_id": "b48d5631-7f20-4837-904c-ae55f1e60fd3",
-    #                 "hour_start": datetime.now().astimezone().isoformat(),
-    #             }
-    #         ).execute()
-    #     except Exception as e:
-    #         print(f"❌ ERREUR SUPABASE INSERT : {e}")
+    #     finally:
+    #         if prospection_lock.locked():
+    #             prospection_lock.release()
+    #             print("🔓 LOCK LIBÉRÉ")
 
-    # response = cast(APIResponse, res)
-    # if res and hasattr(res, "data") and res.data:
-    #     data_list = (
-    #         cast(List[Dict[str, Any]], response.data) if response.data else []
-    #     )
-    #     data = data_list[0] if data_list else {}
+    # background_tasks.add_task(run_in_background, request.intitule, config_db)
 
-    #     # profile = data.get("profiles", {})
-    # config_db = {
-    #         "id": data.get("id"),
-    #         "linkedin_email": data.get("linkedin_email"),
-    #         "linkedin_password": data.get("linkedin_password"),
-    #         "job_title": request.intitule,
-    #     }
-
-    def run_in_background(job_title, config):
-        try:
-            for step in run_chrome(request.intitule, config_db):
-                print(f"🤖 [DEBUG] Étape {step}")
-        except Exception as e:
-            print(f"💥 CRASH DANS LE BACKGROUND : {e}")
-            return {
-                "status": "error",
-                "message": f"Erreur pendant l'exécution : {str(e)}",
-            }
-        finally:
-            if prospection_lock.locked():
-                prospection_lock.release()
-                print("🔓 LOCK LIBÉRÉ")
-
-    background_tasks.add_task(run_in_background, request.intitule, config_db)
-
-    return {"status": "success", "message": "Chrome va se lancer"}
+    # return {"status": "success", "message": "Chrome va se lancer"}
 
 
 # def wrapped_generator():
