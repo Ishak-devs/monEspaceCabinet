@@ -36,22 +36,18 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Fillcloud API", version="1.0.0", lifespan=lifespan)
-KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
-
-
-# Configuration CORS pour autoriser le front React
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  #
-        "https://nava-eng.vercel.app",
-        "https://fillcloud.vercel.app",
-        "https://fillcloud-m938kynst-ishaks-projects-1e2e49cc.vercel.app",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
+
+
+# Configuration CORS pour autoriser le front React
+
 
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)

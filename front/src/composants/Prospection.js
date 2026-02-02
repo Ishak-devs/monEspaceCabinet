@@ -13,7 +13,16 @@ function Prospection() {
 
   const FetchProspection = async () => {
     try {
-      const res = await fetch("http://localhost:8000/backend/prospection/list");
+      const res = await fetch(
+        "http://localhost:8000/backend/prospection/list",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+        },
+      );
       const data = await res.json();
       setProspection(Array.isArray(data) ? data : []);
     } catch (error) {

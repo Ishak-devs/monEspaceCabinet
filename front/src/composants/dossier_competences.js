@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_URL = "http://localhost:8000";
+const API_URL = "https://squirmier-nondeaf-heather.ngrok-free.dev";
 
 function CVUploadForm() {
   const [selectedFile, setSelectedFile] = useState(null);

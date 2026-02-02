@@ -70,7 +70,7 @@ def start_prospect_auto():
                     prospection_lock.release()
         except Exception as e:
             print({e})
-        time.sleep(600)
+        time.sleep(60)
         print("Reload automatique pour verifier les prospect")
 
 
