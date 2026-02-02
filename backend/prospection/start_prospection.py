@@ -67,8 +67,8 @@ def run_chrome(job_title: str, config_db):
     os.system("taskkill /f /im chrome.exe /t >nul 2>&1")
     os.system("taskkill /f /im chromedriver.exe /t >nul 2>&1")
     chrome_service = Service(log_path="chromedriver.log")
-    if os.path.exists("linkedin_profile/SingletonLock"):
-        os.remove("linkedin_profile/SingletonLock")
+    if os.path.exists("linkedin_profile_access/SingletonLock"):
+        os.remove("linkedin_profile_access/SingletonLock")
     v_chrome = int(
         next(
             re.finditer(
