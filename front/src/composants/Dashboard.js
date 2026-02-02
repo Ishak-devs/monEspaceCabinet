@@ -11,7 +11,7 @@ function Dashboard() {
           <h1 className="text-lg font-normal text-gray-900 mb-1">
             Tableau de bord
           </h1>
-          <p className="text-xs text-gray-500">Espace cabinet de recrutement</p>
+          <p className="text-xs text-gray-500">Espace cabinet</p>
         </div>
 
         {/* Actions principales */}
@@ -34,6 +34,25 @@ function Dashboard() {
             </div>
           </div>
 
+          {/* Email automatisé */}
+          <div
+            onClick={() => navigate("/")}
+            className="border border-gray-200 rounded p-4 cursor-pointer hover:bg-gray-50 transition-colors group"
+          >
+            <div className="flex items-start">
+              <div className="text-xl mr-3 group-hover:scale-110 transition-transform">
+                ✉️
+              </div>
+              <div>
+                <h3 className="text-sm font-normal text-gray-900 mb-1">
+                  Email automatisé
+                </h3>
+                <p className="text-xs text-gray-500">
+                  Configurez et lancez vos campagnes d'emails
+                </p>
+              </div>
+            </div>
+          </div>
           {/* Prospection */}
           <div
             onClick={() => navigate("/prospection")}

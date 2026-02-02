@@ -10,48 +10,65 @@ from typing import Any, cast
 # import supabase
 from database import supabase_client
 from prospection.start_prospection import run_chrome
+import time
+from threading import Lock
 
 # from typing_extensions import Sequence
 
-
+prospection_lock = Lock()
 def start_prospect_auto():
-    maintenant = datetime.now().astimezone()
-    # delai = random.randint(1, 55)
-    res = (
-        supabase_client.table("prospection_settings")
-        .select("*")
-        .eq("has_run_today", False)
-        .lte("hour_start", maintenant.isoformat())
-        .execute()
-    )
-    data = cast(list[dict[str, Any]], res.data or [])
-    print(f"DEBUG - Nombre de jobs trouvés : {len(data)}")
+    supabase_client.table("prospection_settings").update({"is_active": False}).eq("is_active", True).execute()
 
-    for job in data:
-        job_id = job.get("id")
-        title = str(job.get("job_title") or "")
+    while True:
 
-        if job_id and title:
-            print(f"Lancement : {title}")
-            supabase_client.table("prospection_settings").update(
-                {"is_active": True}
-            ).eq("id", job_id).execute()
-            try:
-                list(run_chrome(title, job))
-            except Exception as e:
-                print(f"Erreur lors du lancement de {title}: {e}")
-
-            demain = maintenant + timedelta(days=1)
-            prochaine_heure = demain.replace(
-                hour=random.randint(8, 19), minute=random.randint(0, 59)
+        try:
+            maintenant = datetime.now().astimezone()
+            # delai = random.randint(1, 55)
+            res = (
+                supabase_client.table("prospection_settings")
+                .select("*")
+                .eq("has_run_today", False)
+                .lte("hour_start", maintenant.isoformat())
+                .execute()
             )
-            supabase_client.table("prospection_settings").update(
-                {
-                    "is_active": False,
-                    "has_run_today": True,
-                    "hour_start": prochaine_heure.isoformat(),
-                }
-            ).eq("id", job_id).execute()
+            data = cast(list[dict[str, Any]], res.data or [])
+            print(f"DEBUG - Nombre de jobs trouvés : {len(data)}")
+            # prospection_lock = Lock()
+
+            if prospection_lock.acquire(blocking=False): # Pour recuperer le verrou si il est pas pris
+                try:
+                    for job in data:
+                        job_id = job.get("id")
+                        title = str(job.get("job_title") or "")
+
+                        if job_id and title:
+                            print(f"Lancement : {title}")
+                            supabase_client.table("prospection_settings").update(
+                                {"is_active": True,
+                                    "has_run_today": True}
+                            ).eq("id", job_id).execute()
+                            try:
+                                list(run_chrome(title, job))
+                            except Exception as e:
+                                print(f"Erreur lors du lancement de {title}: {e}")
+
+                            demain = maintenant + timedelta(days=1)
+                            prochaine_heure = demain.replace(
+                                hour=random.randint(8, 19), minute=random.randint(0, 59)
+                            )
+                            supabase_client.table("prospection_settings").update(
+                                {
+                                    "is_active": False,
+                                    # "has_run_today": True,
+                                    "hour_start": prochaine_heure.isoformat(),
+                                }
+                            ).eq("id", job_id).execute()
+                finally:
+                    prospection_lock.release()
+        except Exception as e:
+            print({e})
+        time.sleep(600)
+        print('Reload automatique pour verifier les prospect')
 
 
 """

@@ -1,8 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
-function Header() {
+function Header({ user, setUser }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    navigate("/Connexion");
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 font-sans">
@@ -15,60 +24,49 @@ function Header() {
           Acceuil
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link
-            to="/dashboard"
-            className="text-xs text-gray-600 hover:text-gray-900"
-          >
-            Tableau de bord
-          </Link>
-        </div>
-
-        {/* Desktop Actions */}
-        <div className="hidden md:block">
-          <Link
-            to="/Connexion"
-            className="text-xs px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50"
-          >
-            Connexion
-          </Link>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden p-1"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? (
-            <span className="text-xs text-gray-600">✕</span>
-          ) : (
-            <span className="text-xs text-gray-600">☰</span>
+          {user && (
+            <>
+              <Link
+                to="/Dashboard"
+                className="text-xs text-gray-600 hover:text-gray-900"
+              >
+                Tableau de bord
+              </Link>
+              <Link
+                to="/Prospection"
+                className="text-xs text-gray-600 hover:text-gray-900"
+              >
+                Prospection
+              </Link>
+              <Link
+                to="/Dossier_competences"
+                className="text-xs text-gray-600 hover:text-gray-900"
+              >
+                Dossier de compétences
+              </Link>
+            </>
           )}
-        </button>
-      </div>
+        </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <div className="px-4 py-3 space-y-3">
-            <Link
-              to="/Dashboard"
-              className="block text-xs text-gray-600 hover:text-gray-900 py-1"
-              onClick={() => setMobileMenuOpen(false)}
+        <div className="hidden md:block">
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="text-xs px-3 py-1.5 text-red-600 border border-red-200 rounded hover:bg-red-50"
             >
-              Tableau de bord
-            </Link>
+              Déconnexion
+            </button>
+          ) : (
             <Link
               to="/Connexion"
-              className="block text-xs px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50 text-center"
-              onClick={() => setMobileMenuOpen(false)}
+              className="text-xs px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50"
             >
               Connexion
             </Link>
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </header>
   );
 }

@@ -35,7 +35,7 @@ function Prospection() {
     if (!intitule.trim()) return;
 
     setIsLoading(true);
-    setStatusMessage("Lancement...");
+    setStatusMessage("En cours...");
 
     try {
       const response = await fetch(
@@ -54,10 +54,11 @@ function Prospection() {
         const { value, done } = await reader.read();
         if (done) break;
         // const chunk = decoder.decode(value);
-        const message = decoder.decode(value);
-        console.log("Morceau reçu :", message);
+        // const message = decoder.decode(value);
+        // console.log("Morceau reçu :", message);
+        console.log("Value brute du reader :", value);
 
-        setStatusMessage(message);
+        // setStatusMessage(message);
       }
 
       if (response.ok) {
@@ -221,9 +222,9 @@ function Prospection() {
                             {p.is_active && (
                               <div className="flex items-center text-blue-600">
                                 <div className="animate-spin rounded-full h-3 w-3 border-2 border-current border-t-transparent"></div>
-                                <p className="text-gray-500 text-xs mt-0.5">
+                                {/* <p className="text-gray-500 text-xs mt-0.5">
                                   {statusMessage || "En attente..."}
-                                </p>
+                                </p>*/}
                               </div>
                             )}
                           </div>

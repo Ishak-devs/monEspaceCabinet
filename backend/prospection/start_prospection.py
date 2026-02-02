@@ -1,5 +1,7 @@
 import os
 import random
+import re
+import subprocess
 import time
 import urllib.parse
 
@@ -10,6 +12,7 @@ from data.prompt.prospection.prompt_message_prospection import (
 )
 from fastapi import FastAPI
 from pydantic import BaseModel
+from selenium.webdriver.chrome.service import Service
 
 # from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -38,7 +41,7 @@ def run_chrome(job_title: str, config_db):
     profil_path = os.path.join(os.getcwd(), "linkedin_profile")
 
     options.add_argument(f"--user-data-dir={profil_path}")
-    options.add_argument("--headless=new")
+    # options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-setuid-sandbox")
@@ -52,16 +55,31 @@ def run_chrome(job_title: str, config_db):
         instruction = prompt_message_prospection(job_title)
         message = call_groq(instruction)
         print(f"{message}")
-        yield "On appel groq..."
+        yield "On prépare un message..."
 
     except Exception as e:
         yield f"⚠️ Erreur IA : {str(e)[:50]}. Utilisation du message par défaut."
         message = "Bonjour"
 
-    os.system("pkill -9 chrome")
+    # os.system("pkill -9 chrome")
+    os.system("taskkill /f /im chrome.exe /t >nul 2>&1")
+    os.system("taskkill /f /im chromedriver.exe /t >nul 2>&1")
+    chrome_service = Service(log_path="chromedriver.log")
     if os.path.exists("linkedin_profile/SingletonLock"):
         os.remove("linkedin_profile/SingletonLock")
-    driver = uc.Chrome(options=options, use_subprocess=True, version_main=143)
+    v_chrome = int(
+        next(
+            re.finditer(
+                r"\d+", subprocess.check_output(["google-chrome", "--version"]).decode()
+            )
+        ).group()
+    )
+    driver = uc.Chrome(
+        options=options,
+        service=chrome_service,
+        use_subprocess=True,
+        version_main=v_chrome,
+    )
     driver.maximize_window()
     driver.execute_cdp_cmd(
         "Page.addScriptToEvaluateOnNewDocument",
@@ -74,7 +92,7 @@ def run_chrome(job_title: str, config_db):
 
     try:
         driver.get("https://www.linkedin.com/feed/")
-        time.sleep(120)
+        # time.sleep(120)
         yield "Accès à LinkedIn..."
         time.sleep(random.uniform(3, 6))
         wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
