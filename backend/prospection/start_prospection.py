@@ -37,9 +37,10 @@ def slow_type(element, text):
 
 
 def run_chrome(job_title: str, config_db):
+    print(f"[DEBUG] Entrée dans run_chrome pour: {job_title}")
     options = uc.ChromeOptions()
     profil_path = os.path.join(os.getcwd(), "linkedin_profile")
-
+    print(f"📂 [DEBUG] Path profil: {profil_path}")
     options.add_argument(f"--user-data-dir={profil_path}")
     # options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
@@ -52,6 +53,7 @@ def run_chrome(job_title: str, config_db):
 
     job_title = config_db.get("job_title")
     try:
+        print("🤖 [DEBUG] Appel Groq pour le message...")
         instruction = prompt_message_prospection(job_title)
         message = call_groq(instruction)
         print(f"{message}")
