@@ -17,8 +17,8 @@ def send_message(driver, job_title, message, config_db):
         try:
             time.sleep(random.uniform(5, 8))
 
-            # search_url = "https://www.linkedin.com/in/vinushan-vincent-8064173a4/"
-            search_url = f"https://www.linkedin.com/search/results/people/?keywords={job_title}&origin=GLOBAL_SEARCH_CARD"
+            search_url = "https://www.linkedin.com/in/vinushan-vincent-8064173a4/"
+            # search_url = f"https://www.linkedin.com/search/results/people/?keywords={job_title}&origin=GLOBAL_SEARCH_CARD"
             driver.get(search_url)
             yield "On accède aux profils pour envoyer des messages..."
             time.sleep(random.uniform(6, 8))
@@ -75,7 +75,14 @@ def send_message(driver, job_title, message, config_db):
             return
             # on ecris le message
         try:
-            message_box.send_keys(message)
+            # message_box.send_keys(message)
+            def slow_type(element, text):
+                for char in text:
+                    element.send_keys(char)
+
+                    time.sleep(random.uniform(0.1, 0.3))
+
+            slow_type(message_box, message)
             yield "Saisie du message..."
             time.sleep(random.uniform(6, 9))
         except Exception as e:
@@ -131,6 +138,6 @@ def send_message(driver, job_title, message, config_db):
                     print(f"Erreur DB: {e}")
                 else:
                     print(f"Log technique: {e}")
-        # if "driver" in locals():
-        #     driver.quit()
-        #     return
+        if "driver" in locals():
+            driver.quit()
+            return

@@ -48,7 +48,7 @@ def run_chrome(job_title: str, config_db):
     profil_path = os.path.join(os.getcwd(), "linkedin_profile_access")
     print(f"[DEBUG] Path profil: {profil_path}")
     options.add_argument(f"--user-data-dir={profil_path}")
-    options.add_argument("--headless=new")
+    # options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-setuid-sandbox")
@@ -128,66 +128,66 @@ def run_chrome(job_title: str, config_db):
 
     time.sleep(random.uniform(4, 8))
 
-    boutons_conx = driver.find_elements(
-        By.XPATH,
-        "//a[contains(@aria-label, 'Inviter') and contains(@aria-label, 'rejoindre votre réseau')]",
-    )
+    # boutons_conx = driver.find_elements(
+    #     By.XPATH,
+    #     "//a[contains(@aria-label, 'Inviter') and contains(@aria-label, 'rejoindre votre réseau')]",
+    # )
 
-    yield f"✓ {len(boutons_conx)} personnes trouvés en première page..."
+    # yield f"✓ {len(boutons_conx)} personnes trouvés en première page..."
 
-    for i, bouton in enumerate(boutons_conx):
-        try:
-            driver.execute_script(
-                "arguments[0].scrollIntoView({block: 'center'});", bouton
-            )
+    # for i, bouton in enumerate(boutons_conx):
+    #     try:
+    #         driver.execute_script(
+    #             "arguments[0].scrollIntoView({block: 'center'});", bouton
+    #         )
 
-            time.sleep(random.uniform(2, 4))
+    #         time.sleep(random.uniform(2, 4))
 
-            driver.execute_script("arguments[0].click();", bouton)
-            yield f"[{i + 1}] Ouverture popup invitation"
+    #         driver.execute_script("arguments[0].click();", bouton)
+    #         yield f"[{i + 1}] Ouverture popup invitation"
 
-            time.sleep(random.uniform(2, 4))
+    #         time.sleep(random.uniform(2, 4))
 
-            try:
-                time.sleep(5)
-                script_final = """
-                                            function findButton() {
-                                                // 1. Check standard
-                                                let btn = document.querySelector('button[aria-label="Envoyer sans note"]');
-                                                if (btn) return btn;
+    #         try:
+    #             time.sleep(5)
+    #             script_final = """
+    #                                         function findButton() {
+    #                                             // 1. Check standard
+    #                                             let btn = document.querySelector('button[aria-label="Envoyer sans note"]');
+    #                                             if (btn) return btn;
 
-                                                // 2. Check dans le Shadow DOM (interop-outlet)
-                                                let host = document.querySelector('#interop-outlet');
-                                                if (host && host.shadowRoot) {
-                                                    return host.shadowRoot.querySelector('button[aria-label="Envoyer sans note"]');
-                                                }
+    #                                             // 2. Check dans le Shadow DOM (interop-outlet)
+    #                                             let host = document.querySelector('#interop-outlet');
+    #                                             if (host && host.shadowRoot) {
+    #                                                 return host.shadowRoot.querySelector('button[aria-label="Envoyer sans note"]');
+    #                                             }
 
-                                                // 3. Check par texte si aria-label a sauté
-                                                return Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('sans note'));
-                                            }
+    #                                             // 3. Check par texte si aria-label a sauté
+    #                                             return Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('sans note'));
+    #                                         }
 
-                                            let target = findButton();
-                                            if (target) {
-                                                target.click();
-                                                return true;
-                                            }
-                                            return false;
-                                            """
+    #                                         let target = findButton();
+    #                                         if (target) {
+    #                                             target.click();
+    #                                             return true;
+    #                                         }
+    #                                         return false;
+    #                                         """
 
-                success = driver.execute_script(script_final)
-                if success:
-                    yield "✅ Invitation envoyée !"
-                else:
-                    yield " Bouton introuvable même en recherche profonde."
+    #             success = driver.execute_script(script_final)
+    #             if success:
+    #                 yield "✅ Invitation envoyée !"
+    #             else:
+    #                 yield " Bouton introuvable même en recherche profonde."
 
-                yield " Invitation envoyée avec succès !"
-            except Exception as e:
-                error_type = type(e).__name__
-                yield f"Erreur précise [{error_type}] : {str(e)[:100]}"
-        except Exception as e:
-            yield f"  ⚠ Erreur bouton Envoyer : {e}"
+    #             yield " Invitation envoyée avec succès !"
+    #         except Exception as e:
+    #             error_type = type(e).__name__
+    #             yield f"Erreur précise [{error_type}] : {str(e)[:100]}"
+    #     except Exception as e:
+    #         yield f"  ⚠ Erreur bouton Envoyer : {e}"
 
-    yield "--- Invitations terminées ---"
+    # yield "--- Invitations terminées ---"
 
     try:
         from prospection.send_message import send_message
