@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-const API_URL = "http://127.0.0.1:8000";
-
+// const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://filltemplate.onrender.com/";
 function CVUploadForm() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [addSkills, setAddSkills] = useState(null);
@@ -130,9 +130,12 @@ function CVUploadForm() {
 
         {/* Skills Option */}
         <div className="mb-5">
-          <label className="block text-xs font-normal text-gray-700 mb-2">
+          <label className="block text-xs font-normal text-gray-700">
             Ajouter des compétences supplémentaires
           </label>
+          <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-800 border border-green-200 rounded font-semibold uppercase tracking-wider">
+            Opérationnel
+          </span>
           <div className="flex gap-4">
             <div className="flex items-center">
               <input
