@@ -11,6 +11,11 @@ function Prospection() {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [statusLogs, setStatusLogs] = useState(() => {
+    const saved = localStorage.getItem("prospection_logs");
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const FetchProspection = async () => {
     try {
       const headers = await getAuthHeaders();
@@ -63,6 +68,7 @@ function Prospection() {
     // );
 
     setIsLoading(true);
+    setStatusLogs([]);
     // const {
     //   data: { session },
     // } = await supabase.auth.getSession();
@@ -86,11 +92,17 @@ function Prospection() {
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        // const chunk = decoder.decode(value);
+        const chunk = decoder.decode(value);
         const message = decoder.decode(value);
         console.log("Message", message);
         // console.log("Morceau reçu :", message);
         console.log("Value brute du reader :", value);
+
+        setStatusLogs((prev) => {
+          const newLogs = [...prev, chunk];
+          localStorage.setItem("prospection_logs", JSON.stringify(newLogs));
+          return newLogs;
+        });
 
         // setStatusMessage(message);
       }
@@ -213,6 +225,19 @@ function Prospection() {
                       strokeWidth={2}
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
+                    {statusLogs.length > 0 && (
+                      <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded text-[10px] font-mono max-h-40 overflow-y-auto">
+                        <p className="text-gray-400 mb-1">Logs en direct :</p>
+                        {statusLogs.map((log, index) => (
+                          <div
+                            key={index}
+                            className="text-blue-600 border-l-2 border-blue-200 pl-2 mb-1"
+                          >
+                            {log}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
