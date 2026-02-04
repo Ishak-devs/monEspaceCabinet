@@ -1,8 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import { useEffect, useState } from "react";
 
 function Dashboard() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUserData();
+  }, []);
 
   const handleLogout = async () => {
     const { lgt } = await supabase.auth.signOut();
@@ -19,7 +31,7 @@ function Dashboard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-lg font-normal text-gray-900 mb-1">
-            Tableau de bord
+            Tableau de bord {user ? user.email : ""}
           </h1>
           <p className="text-xs text-gray-500">Espace cabinet</p>
           <button
