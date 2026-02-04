@@ -1,17 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 
-function Header({ user, setUser }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
+function Header() {
+  // const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  // const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    navigate("/Connexion");
-  };
+  // const handleLogout = async () => {
+  //   await supabase.auth.signOut();
+  //   setUser(null);
+  //   navigate("/Connexion");
+  // };
+  //
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 font-sans">
@@ -50,7 +67,17 @@ function Header({ user, setUser }) {
         </div>
 
         <div className="hidden md:block">
-          {user ? (
+          {!user ? (
+            <Link
+              to="/Connexion"
+              classname="text-xs px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50"
+            >
+              Connexion
+            </Link>
+          ) : (
+            <span classname="text-xs text-gray-500">{user.full_name}</span>
+          )}
+          {/* {user ? (
             <button
               onClick={handleLogout}
               className="text-xs px-3 py-1.5 text-red-600 border border-red-200 rounded hover:bg-red-50"
@@ -64,7 +91,7 @@ function Header({ user, setUser }) {
             >
               Connexion
             </Link>
-          )}
+          )}*/}
         </div>
       </div>
     </header>
