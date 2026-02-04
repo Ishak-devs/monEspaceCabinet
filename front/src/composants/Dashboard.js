@@ -5,13 +5,24 @@ import { useEffect, useState } from "react";
 function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [nom, setNom] = useState(null);
 
   useEffect(() => {
     const getUserData = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+      if (user) {
+      }
       setUser(user);
+
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      if (data) setNom(data.full_name);
     };
     getUserData();
   }, []);
@@ -31,7 +42,7 @@ function Dashboard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-lg font-normal text-gray-900 mb-1">
-            Tableau de bord {user ? user.email : ""}
+            Tableau de bord {nom ? nom : user ? user.email : ""}
           </h1>
           <p className="text-xs text-gray-500">Espace cabinet</p>
           <button
