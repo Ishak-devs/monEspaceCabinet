@@ -470,7 +470,7 @@ function Prospection() {
                                     clipRule="evenodd"
                                   />
                                 </svg>
-                                Nouveau lancement demain à :{" "}
+                                Lancement automatique demain à :{" "}
                                 {p.hour_start.split("T")[1].slice(0, 5)}
                               </span>
                             )}
