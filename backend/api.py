@@ -296,6 +296,7 @@ async def start_prospection(
 
                 config_db = {
                     "id": data.get("id"),
+                    "user_id": current_user_id,
                     "linkedin_email": data.get("linkedin_email"),
                     "linkedin_password": data.get("linkedin_password"),
                     "job_title": body.intitule,

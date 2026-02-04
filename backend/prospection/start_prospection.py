@@ -35,8 +35,9 @@ def slow_type(element, text):
 
 def run_chrome(job_title: str, config_db):
     print(f"[DEBUG] Entrée dans run_chrome pour: {job_title}")
-    user_id = config_db.get("id", "")
-    if not user_id:
+    uid = config_db.get("user_id")
+    print(f"[DEBUG] User ID: {uid}")
+    if not uid:
         print(
             "❌ ERREUR : Pas d'ID utilisateur, Chrome ne sait pas quel dossier ouvrir !"
         )
@@ -49,7 +50,7 @@ def run_chrome(job_title: str, config_db):
     )
 
     options = uc.ChromeOptions()
-    profil_path = os.path.abspath(f"cookies/profile_{user_id}")
+    profil_path = os.path.abspath(f"cookies/profile_{uid}")
 
     # profil_path = os.path.join(os.getcwd(), "linkedin_profile_informations")
     print(f"[DEBUG] Path profil: {profil_path}")
