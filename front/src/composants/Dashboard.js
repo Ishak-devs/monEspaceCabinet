@@ -9,7 +9,7 @@ function Dashboard() {
     if (lgt) {
       console.error("Erreur déconnexion:", lgt.message);
     } else {
-      navigate("/login");
+      navigate("/Connexion");
     }
   };
 
