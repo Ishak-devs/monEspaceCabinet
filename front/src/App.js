@@ -8,6 +8,7 @@ import Home from "./composants/Home";
 import ProtectedRoute from "./composants/ProtectedRoute";
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
+import Signup_user from "./composants/Signup_user";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -54,6 +55,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CVUploadForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Signup_user"
+          element={
+            <ProtectedRoute>
+              <Signup_user />
             </ProtectedRoute>
           }
         />
