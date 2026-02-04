@@ -192,11 +192,27 @@ class ProspectionRequest(BaseModel):  # contrat
 
 
 @app.get("/backend/prospection/list")
-async def get_prospection():
+async def get_prospection(request: Request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        print("❌ Authentification manquante")
+        raise HTTPException(status_code=401)
+
+    token = auth_header.replace("Bearer ", "")
+
     try:
+        user_response = supabase_client.auth.get_user(token)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Authentification invalide")
+        # if not user_response.user:
+        #     return []
+        current_user_id = user_response.user.id
+        print(f"👤 Utilisateur connecté: {current_user_id}")
+
         res = (
             supabase_client.table("prospection_settings")
             .select("id, job_title, created_at, is_active")
+            .eq("user_id", current_user_id)
             .order("created_at", desc=True)
             .execute()
         )
