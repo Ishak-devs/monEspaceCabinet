@@ -8,7 +8,7 @@ import Home from "./composants/Home";
 import ProtectedRoute from "./composants/ProtectedRoute";
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
-import Signup_user from "./composants/Signup_user";
+import SignupUser from "./composants/SignupUser";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -59,10 +59,10 @@ function App() {
           }
         />
         <Route
-          path="/Signup_user"
+          path="/SignupUser"
           element={
             <ProtectedRoute>
-              <Signup_user />
+              <SignupUser />
             </ProtectedRoute>
           }
         />

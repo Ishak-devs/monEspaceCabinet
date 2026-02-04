@@ -63,10 +63,16 @@ function Header() {
                 Dossier de compétences
               </Link>
               <Link
-                to="/Signup_user"
+                to="/SignupUser"
                 className="text-xs text-gray-600 hover:text-gray-900"
               >
                 Ajouter une personne
+              </Link>
+              <Link
+                to="/"
+                className="text-xs text-gray-600 hover:text-gray-900"
+              >
+                Modifier mes infos
               </Link>
               <Link
                 onClick={handleLogout}
@@ -79,18 +85,17 @@ function Header() {
         </div>
 
         <div className="hidden md:block">
-          {!user ? (
+          {!user && (
             <Link
               to="/Connexion"
-              classname="text-xs px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50"
+              className="text-xs px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50"
             >
               Connexion
             </Link>
-          ) : (
-            <span classname="text-xs text-gray-500">{user.email}</span>
           )}
+        </div>
 
-          {/* {user ? (
+        {/* {user ? (
             <button
               onClick={handleLogout}
               className="text-xs px-3 py-1.5 text-red-600 border border-red-200 rounded hover:bg-red-50"
@@ -105,7 +110,6 @@ function Header() {
               Connexion
             </Link>
           )}*/}
-        </div>
       </div>
     </header>
   );
