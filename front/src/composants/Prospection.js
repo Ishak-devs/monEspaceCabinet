@@ -44,6 +44,10 @@ function Prospection() {
     if (!intitule.trim()) return;
 
     setIsLoading(true);
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     // setStatusMessage("En cours...");
 
     try {
@@ -51,7 +55,10 @@ function Prospection() {
         "http://localhost:8000/backend/prospection/start_prospection",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.access_token}`,
+          },
           body: JSON.stringify({ intitule }),
         },
       );
