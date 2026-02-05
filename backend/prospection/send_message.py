@@ -18,7 +18,7 @@ def send_message(driver, job_title, message, offre, config_db):
     yield f"Démarrage de l'envoi de messages directs pour {job_title}..."
     urls = [
         "https://www.linkedin.com/in/jean-christophe-juvet-3446a168/",
-        "https://www.linkedin.com/in/niels-sauvignon-b02b611b9/",
+        "https://www.linkedin.com/in/vinushan-vincent-8064173a4/",
     ]
     for url in urls:
         try:
@@ -28,7 +28,10 @@ def send_message(driver, job_title, message, offre, config_db):
                 # url = "https://www.linkedin.com/in/jouna%C3%AFd-ben-salah-601b77222/"
                 # search_url = f"https://www.linkedin.com/search/results/people/?keywords={job_title}&origin=GLOBAL_SEARCH_CARD"
                 driver.get(url)
-                yield "On accède au premier profil..."
+
+                for i, url in enumerate(urls, start=1):
+                    yield f"On accède au profil {i}/{len(urls)}..."
+                    time.sleep(random.uniform(5, 8))
 
                 profile_main_content = driver.find_element(
                     By.TAG_NAME, "main"
@@ -44,6 +47,8 @@ def send_message(driver, job_title, message, offre, config_db):
                     continue
 
                 ia_check = prompt_check_ia_profile(offre, profile_main_content)
+                yield "On analyse son profil avec l'offre..."
+                time.sleep(random.uniform(3, 5))
 
                 if not ia_check:
                     print("Candidat non pertinent")

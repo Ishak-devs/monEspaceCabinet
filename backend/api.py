@@ -34,12 +34,12 @@ async def lifespan(app: FastAPI):
         supabase_client.table("prospection_settings").update({"is_active": False}).neq(
             "id", -1
         ).execute()
-        print("Supabase : Tous les statuts ont été réinitialisés.")
+        print("Supabase : Tous les statuts ont été réinitialisés à is active false.")
     except Exception as e:
         print(f"⚠️ Erreur reset démarrage: {e}")
     thread = threading.Thread(target=start_prospect_auto, daemon=True)
     thread.start()
-    print("🔥 Serveur prêt, check Supabase au démarrage...")
+    # print("🔥 Serveur prêt, check Supabase au démarrage...")
     yield
 
 

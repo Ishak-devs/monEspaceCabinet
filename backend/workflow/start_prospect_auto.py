@@ -59,7 +59,10 @@ def start_prospect_auto():
                                 {"is_active": True, "has_run_today": True}
                             ).eq("id", job_id).execute()
                             try:
-                                list(run_chrome(title, details, mode, offre, job))
+                                for step in run_chrome(
+                                    title, details, mode, offre, job
+                                ):
+                                    print(f"LOG [{title}]: {step}")
                             except Exception as e:
                                 print(f"Erreur lors du lancement de {title}: {e}")
 
