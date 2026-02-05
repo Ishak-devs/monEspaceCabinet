@@ -24,26 +24,28 @@ function Prospection() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (
-      file.type ===
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    ) {
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        if (file.name.endsWith("docx")) {
+    if (!file) return;
+
+    const reader = new FileReader();
+    const isDocx = file.name.endsWith(".docx");
+
+    reader.onload = async (event) => {
+      try {
+        if (isDocx) {
           const { value } = await mammoth.extractRawText({
             arrayBuffer: event.target.result,
           });
           setOffre(value);
+        } else {
+          setOffre(event.target.result);
         }
-      };
-      if (file) {
-        reader.readAsText(file);
+      } catch (error) {
+        console.error("Error processing file:", error);
       }
-      file.name.endsWith("docx")
-        ? reader.readAsArrayBuffer(file)
-        : reader.readAsText(file);
-    }
+    };
+    file.name.endsWith("docx")
+      ? reader.readAsArrayBuffer(file)
+      : reader.readAsText(file);
   };
 
   const FetchProspection = async () => {
