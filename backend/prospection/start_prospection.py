@@ -57,7 +57,7 @@ def run_chrome(job_title: str, config_db):
     print(f"[DEBUG] Path profil: {profil_path}")
     options.add_argument(f"--user-data-dir={profil_path}")
     options.add_argument("--profile-directory=Default")
-    options.add_argument("--headless=new")
+    # options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-setuid-sandbox")
@@ -159,8 +159,8 @@ def run_chrome(job_title: str, config_db):
                 "./ancestor::div[contains(@class, 'cf2a0fad') or @data-view-name='search-result-lockup-title']/../..",
             )
             print(f"Container text: {container.text}")
-            infos_profil = container.text.lower()
-            keyword_exclude = ["Nava", "Nava engineering"]
+            infos_profil = container.text.lower().replace("\n", "").strip()
+            keyword_exclude = ["Nava engineering", "Navaengineering"]
 
             if any(keyword in infos_profil for keyword in keyword_exclude):
                 yield "Personne chez nava, on prospecte pas ce profil..."
