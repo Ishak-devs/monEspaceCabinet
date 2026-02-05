@@ -55,14 +55,15 @@ def send_message(driver, job_title, message, config_db):
 
             print(content_lower)
 
-            keyword_exclude = ["nava engineering", "navaengineering"]
-            if any(keyword in content_lower for keyword in keyword_exclude):
-                yield "Candidat interne ou exclu, skip..."
-                print("Personne chez nava, on prospecte pas ce profil...")
-                return
+            # keyword_exclude = ["nava engineering", "navaengineering"]
+            # if any(keyword in content_lower for keyword in keyword_exclude):
+            #     yield "Candidat interne ou exclu, skip..."
+            #     print("Personne chez nava, on prospecte pas ce profil...")
+            #     return
 
             ia_check = prompt_check_ia_profile(job_title, profile_main_content)
             if not ia_check:
+                print("Candidat non pertinent")
                 yield "Candidat non pertinent"
                 return
         except Exception as e:
