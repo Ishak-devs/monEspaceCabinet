@@ -136,8 +136,9 @@ def run_chrome(job_title: str, config_db):
         print(f"❌ Crash avant recherche : {str(e)[:50]}")
     try:
         time.sleep(random.uniform(8, 15))
-        query_encoded = urllib.parse.quote(job_title)
-        target_url = f"https://www.linkedin.com/search/results/people/?keywords={query_encoded}&origin=SWITCH_SEARCH_VERTICAL"
+        # query_encoded = urllib.parse.quote(job_title)
+        target_url = "https://www.linkedin.com/search/results/people/?keywords=nava%20&origin=FACETED_SEARCH&currentCompany=%5B%2286882974%22%5D"
+        # target_url = f"https://www.linkedin.com/search/results/people/?keywords={query_encoded}&origin=SWITCH_SEARCH_VERTICAL"
         driver.get(target_url)
         yield "Filtre personnes..."
     except Exception as e:
@@ -154,10 +155,11 @@ def run_chrome(job_title: str, config_db):
 
     for i, bouton in enumerate(boutons_conx):
         try:
-            container = bouton.find_element(
-                By.XPATH,
-                "./ancestor::div[contains(@class, 'cf2a0fad') or @data-view-name='search-result-lockup-title']/../..",
-            )
+            # container = bouton.find_element(
+            #     By.XPATH,
+            #     "./ancestor::div[contains(@class, 'cf2a0fad') or @data-view-name='search-result-lockup-title']/../..",
+            # )
+            container = bouton.find_element(By.XPATH, "./ancestor::li[1]")
             print(f"Container text: {container.text}")
             infos_profil = container.text.lower().replace("\n", "").strip()
             keyword_exclude = ["Nava engineering", "Navaengineering"]
