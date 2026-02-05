@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
-import mammoth from 'mammoth';
+import mammoth from "mammoth";
+
 function Prospection() {
   const [intitule, setIntitule] = useState("");
 
@@ -23,21 +24,27 @@ function Prospection() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-
-    const reader = new FileReader();
+    if (
+      file.type ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ) {
+      const reader = new FileReader();
       reader.onload = async (event) => {
         if (file.name.endsWith("docx")) {
-        const {value} = await mammoth.extractRawText({arrayBuffer: event.target.result});
-        setOffre(value);
+          const { value } = await mammoth.extractRawText({
+            arrayBuffer: event.target.result,
+          });
+          setOffre(value);
+        }
+      };
+      if (file) {
+        reader.readAsText(file);
       }
+      file.name.endsWith("docx")
+        ? reader.readAsArrayBuffer(file)
+        : reader.readAsText(file);
     }
-    if (file) {
-      reader.readAsText(file);
-    }
-    };
-
-    file.name.endsWith("docx") ? reader.readAsArrayBuffer(file) : reader.readAsText(file);
+  };
 
   const FetchProspection = async () => {
     try {
