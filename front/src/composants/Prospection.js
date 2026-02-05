@@ -88,7 +88,7 @@ function Prospection() {
         {
           method: "POST",
           headers,
-          body: JSON.stringify({ intitule, details }),
+          body: JSON.stringify({ intitule, details, mode }),
         },
       );
 
@@ -215,7 +215,7 @@ function Prospection() {
                         disabled={isLoading}
                         className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50"
                         placeholder="Ex: Développeur Front-end"
-                        required
+                        // required
                       />
                     </div>
 

@@ -1,6 +1,7 @@
 def prompt_message_demarchage(job_title, details):
     return f"""
-    Rédige un message d'approche LinkedIn ultra-court (2 phrases max) pour un {job_title}.
+    Nous somme un cabinet et on fais du démarchage
+    Rédige un message d'approche LinkedIn ultra-court (2 phrases max) pour démarcher des futurs clients
     Prends en compte les détails suivants : {details}
     Le but est de susciter la curiosité sans avoir l'air d'un robot.
     Pas de "Cher/Chère", sois direct et moderne.
