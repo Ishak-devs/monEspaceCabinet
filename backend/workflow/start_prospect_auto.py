@@ -46,6 +46,9 @@ def start_prospect_auto():
                         job_id = job.get("id")
                         title = str(job.get("job_title") or "")
                         details = str(job.get("job_details") or "")
+                        print(
+                            f"DEBUG - Job ID : {job_id}, Title : {title}, Details : {details}"
+                        )
 
                         if job_id and title:
                             print(f"Lancement : {title}")

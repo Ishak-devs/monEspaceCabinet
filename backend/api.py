@@ -312,7 +312,9 @@ async def start_prospection(
                 def stream_generator():
                     try:
                         print(f"🚀 Lancement Chrome pour {body.intitule}")
-                        for step in run_chrome(body.intitule, body.details, config_db):
+                        for step in run_chrome(
+                            body.intitule, body.details or "", config_db
+                        ):
                             yield f"{step}\n"
                     except Exception as e:
                         import traceback
