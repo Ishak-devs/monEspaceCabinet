@@ -239,25 +239,25 @@ function Prospection() {
                         // required
                       />
                     </div>
-
-                    <div>
-                      <label
-                        htmlFor="offre"
-                        className="block text-xs font-normal text-gray-600 mb-1.5"
-                      >
-                        Uploader l'offre pour facilier la recherche
-                      </label>
-                      <input
-                        id="offre"
-                        type="file"
-                        onchange={(e) => setOffre(e.target.files[0])}
-                        // value={offre}
-                        disabled={isLoading}
-                        accept=".pdf, .doc, .docx"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50" // required
-                      />
-                    </div>
-
+                    {mode === "prospection" && (
+                      <div>
+                        <label
+                          htmlFor="offre"
+                          className="block text-xs font-normal text-gray-600 mb-1.5"
+                        >
+                          Uploader l'offre pour facilier la recherche
+                        </label>
+                        <input
+                          id="offre"
+                          type="file"
+                          onchange={(e) => setOffre(e.target.files[0])}
+                          // value={offre}
+                          disabled={isLoading}
+                          accept=".pdf, .doc, .docx"
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50" // required
+                        />
+                      </div>
+                    )}
                     {/* Radio Buttons Type */}
                     <div>
                       <label className="block text-xs font-normal text-gray-600 mb-2">

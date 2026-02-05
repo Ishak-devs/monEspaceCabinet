@@ -32,5 +32,5 @@ def get_infos_prospect():
         }
 
         print(f" Lancement pour {config_db['linkedin_email']}")
-        for update in run_chrome(job_title, config_db):
+        for update in run_chrome(job_title, offre, config_db):
             print(update)

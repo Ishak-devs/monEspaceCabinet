@@ -4,6 +4,7 @@ import re
 import subprocess
 import sys
 import time
+from typing import Optional
 
 import undetected_chromedriver as uc
 from data.prompt.prospection.prompt_message_demarchage import (
@@ -32,6 +33,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 class ProspectionRequest(BaseModel):
     intitule: str
     details: str
+    offre: Optional[str] = None
 
 
 def slow_type(element, text):
