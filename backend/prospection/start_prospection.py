@@ -159,10 +159,12 @@ def run_chrome(job_title: str, config_db):
             #     By.XPATH,
             #     "./ancestor::div[contains(@class, 'cf2a0fad') or @data-view-name='search-result-lockup-title']/../..",
             # )
-            container = bouton.find_element(By.XPATH, "./ancestor::li[1]")
+            container = bouton.find_element(
+                By.XPATH, "./ancestor::div[@role='listitem'][1]"
+            )
             print(f"Container text: {container.text}")
             infos_profil = container.text.lower().replace("\n", "").strip()
-            keyword_exclude = ["Nava engineering", "Navaengineering"]
+            keyword_exclude = ["nava engineering", "navaengineering"]
 
             if any(keyword in infos_profil for keyword in keyword_exclude):
                 yield "Personne chez nava, on prospecte pas ce profil..."
