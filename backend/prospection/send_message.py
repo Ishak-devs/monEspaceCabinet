@@ -91,6 +91,7 @@ def send_message(driver, job_title, message, config_db):
             def slow_type(element, text):
                 for char in text:
                     element.send_keys(char)
+                    time.sleep(random.uniform(0.05, 0.1))
 
             # message_box.send_keys(message)
             slow_type(message_box, message)
