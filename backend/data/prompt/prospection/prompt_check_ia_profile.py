@@ -2,11 +2,11 @@
 from data.call_groq import call_groq
 
 
-def prompt_check_ia_profile(job_title, profile_main_content):
+def prompt_check_ia_profile(offre, profile_main_content):
 
     prompt = f"""
         Analyse ce profil LinkedIn : {profile_main_content}
-        Est-ce qu'il correspond à un poste de {job_title} ?
+        Est-ce qu'il correspond à cette {offre} ?
         Réponds uniquement par 'OUI' ou 'NON'.
         """
 

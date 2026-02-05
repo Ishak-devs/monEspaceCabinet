@@ -43,10 +43,12 @@ def slow_type(element, text):
         time.sleep(random.uniform(0.1, 0.3))
 
 
-def run_chrome(job_title: str, details: str, mode: str, config_db):
+def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
+    print(f"[DEBUG] Entrée dans run_chrome pour: {offre}")
     print(f"[DEBUG] Entrée dans run_chrome pour: {job_title}")
     print(f"[DEBUG] Détails de la prospection : {details}")
     uid = config_db.get("user_id")
+    # offre = body.offre
     print(f"[DEBUG] User ID: {uid}")
 
     if not uid:
@@ -252,7 +254,7 @@ def run_chrome(job_title: str, details: str, mode: str, config_db):
     try:
         from prospection.send_message import send_message
 
-        for update in send_message(driver, job_title, message, config_db):
+        for update in send_message(driver, job_title, message, offre, config_db):
             yield update
     except Exception as e:
         print(f"Erreur passage messages : {e}")

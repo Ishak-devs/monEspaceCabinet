@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, cast
 from core.generate_dossier import generate_dossier_api, validate_cv_file
 from database import supabase_client
 from fastapi import (
-    BackgroundTasks,
+    # BackgroundTasks,
     FastAPI,
     File,
     Form,
@@ -191,6 +191,7 @@ class ProspectionRequest(BaseModel):  # contrat
     intitule: str
     details: Optional[str]
     mode: str
+    offre: str
 
 
 @app.get("/backend/prospection/list")
@@ -228,7 +229,7 @@ async def get_prospection(request: Request):
 @app.post("/backend/prospection/start_prospection")
 async def start_prospection(
     body: ProspectionRequest,
-    background_tasks: BackgroundTasks,
+    # background_tasks: BackgroundTasks,
     request: Request,
 ):
     print("⏳ lancement...")
@@ -271,6 +272,7 @@ async def start_prospection(
                         "query": body.intitule,
                         "details": body.details,
                         "mode": body.mode,
+                        "offre": offre,
                         "is_active": True,
                         "user_id": current_user_id,
                         "hour_start": datetime.now().astimezone().isoformat(),
@@ -315,7 +317,11 @@ async def start_prospection(
                     try:
                         print(f"🚀 Lancement Chrome pour {body.intitule}")
                         for step in run_chrome(
-                            body.intitule, body.details or "", body.mode, config_db
+                            body.intitule,
+                            body.details or "",
+                            body.mode,
+                            body.offre,
+                            config_db,
                         ):
                             yield f"{step}\n"
                     except Exception as e:

@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 # from selenium.webdriver.support.ui import WebDriverWait
 
 
-def send_message(driver, job_title, message, config_db):
+def send_message(driver, job_title, message, offre, config_db):
     yield f"Démarrage de l'envoi de messages directs pour {job_title}..."
     try:
         try:
@@ -61,7 +61,8 @@ def send_message(driver, job_title, message, config_db):
             #     print("Personne chez nava, on prospecte pas ce profil...")
             #     return
 
-            ia_check = prompt_check_ia_profile(job_title, profile_main_content)
+            ia_check = prompt_check_ia_profile(offre, profile_main_content)
+
             if not ia_check:
                 print("Candidat non pertinent")
                 yield "Candidat non pertinent"
