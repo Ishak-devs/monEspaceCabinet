@@ -16,16 +16,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 def send_message(driver, job_title, message, offre, config_db):
     yield f"Démarrage de l'envoi de messages directs pour {job_title}..."
+    urls = [
+        "https://www.linkedin.com/in/jouna%C3%AFd-ben-salah-601b77222/",
+        "https://www.linkedin.com/in/niels-sauvignon-b02b611b9/",
+    ]
     for url in urls:
         try:
             try:
                 time.sleep(random.uniform(5, 8))
 
-                search_url = (
-                    "https://www.linkedin.com/in/jouna%C3%AFd-ben-salah-601b77222/"
-                )
+                # url = "https://www.linkedin.com/in/jouna%C3%AFd-ben-salah-601b77222/"
                 # search_url = f"https://www.linkedin.com/search/results/people/?keywords={job_title}&origin=GLOBAL_SEARCH_CARD"
-                driver.get(search_url)
+                driver.get(url)
                 yield "On accède aux profils pour envoyer des messages..."
                 time.sleep(random.uniform(6, 8))
             except Exception as e:
@@ -60,18 +62,18 @@ def send_message(driver, job_title, message, offre, config_db):
 
                 print(content_lower)
 
-                # keyword_exclude = ["nava engineering", "navaengineering"]
-                # if any(keyword in content_lower for keyword in keyword_exclude):
-                #     yield "Candidat interne ou exclu, skip..."
-                #     print("Personne chez nava, on prospecte pas ce profil...")
-                #     return
+                keyword_exclude = ["nava engineering", "navaengineering"]
+                if any(keyword in content_lower for keyword in keyword_exclude):
+                    yield "Candidat interne ou exclu, skip..."
+                    print("Personne chez nava, on prospecte pas ce profil...")
+                    continue
 
                 ia_check = prompt_check_ia_profile(offre, profile_main_content)
 
                 if not ia_check:
                     print("Candidat non pertinent")
                     yield "Candidat non pertinent"
-                    # return
+                    continue
             except Exception as e:
                 print(f"Error checking profile content: {e}")
 
