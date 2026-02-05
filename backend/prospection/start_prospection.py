@@ -37,6 +37,7 @@ def run_chrome(job_title: str, config_db):
     print(f"[DEBUG] Entrée dans run_chrome pour: {job_title}")
     uid = config_db.get("user_id")
     print(f"[DEBUG] User ID: {uid}")
+    keyword_exclude = ["Nava", "Nava engineering"]
     if not uid:
         print(
             "❌ ERREUR : Pas d'ID utilisateur, Chrome ne sait pas quel dossier ouvrir !"
