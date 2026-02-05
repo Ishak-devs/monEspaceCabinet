@@ -272,7 +272,7 @@ async def start_prospection(
                         "query": body.intitule,
                         "details": body.details,
                         "mode": body.mode,
-                        "offre": offre,
+                        "offre": body.offre,
                         "is_active": True,
                         "user_id": current_user_id,
                         "hour_start": datetime.now().astimezone().isoformat(),
