@@ -189,6 +189,7 @@ async def generate_dossier(
 
 class ProspectionRequest(BaseModel):  # contrat
     intitule: str
+    details: str
 
 
 @app.get("/backend/prospection/list")
@@ -251,6 +252,7 @@ async def start_prospection(
         "id", "null"
     ).execute()
     print(f"DEBUG: Requête reçue pour {body.intitule}")
+    print(f"DEBUG: Détails de la prospection : {body.details}")
     if not prospection_lock.acquire(blocking=False):
         print("❌ LOCK BLOQUÉ : Une autre instance tourne déjà")
         return {"status": "error", "message": "Prospection déjà en cours"}

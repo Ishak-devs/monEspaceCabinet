@@ -24,6 +24,7 @@ from data.call_groq import call_groq
 
 class ProspectionRequest(BaseModel):
     intitule: str
+    details: str
 
 
 def slow_type(element, text):
@@ -33,8 +34,9 @@ def slow_type(element, text):
         time.sleep(random.uniform(0.1, 0.3))
 
 
-def run_chrome(job_title: str, config_db):
+def run_chrome(job_title: str, details: str, config_db):
     print(f"[DEBUG] Entrée dans run_chrome pour: {job_title}")
+    print(f"[DEBUG] Détails de la prospection : {details}")
     uid = config_db.get("user_id")
     print(f"[DEBUG] User ID: {uid}")
 
@@ -75,9 +77,10 @@ def run_chrome(job_title: str, config_db):
     options.add_argument("--media-cache-size=1")
 
     job_title = config_db.get("job_title")
+
     try:
         print("🤖 [DEBUG] Appel Groq pour le message...")
-        instruction = prompt_message_prospection(job_title)
+        instruction = prompt_message_prospection(job_title, details)
         message = call_groq(instruction)
         print(f"{message}")
         yield "On prépare un message..."
