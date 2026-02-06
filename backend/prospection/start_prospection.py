@@ -19,6 +19,7 @@ from data.prompt.prospection.prompt_message_demarchage import (
 from data.prompt.prospection.prompt_message_prospection import (
     prompt_message_prospection,
 )
+from data.supabase_client import supabase_client
 from pydantic import BaseModel
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.action_chains import ActionChains
@@ -175,7 +176,11 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
                 )
 
                 email_user = config_db.get("linkedin_email")
-                pass_user = config_db.get("linkedin_password")
+
+                rpc_res = supabase_client.rpc(
+                    "get_decrypted_password", {"user_id_param": uid}
+                ).execute()
+                pass_user = rpc_res.data
 
                 pass_input = driver.find_element(By.ID, "password")
 
@@ -197,13 +202,11 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
 
                 time.sleep(random.uniform(3, 6))
 
-                actions.move_to_element(
-                    pass_input
-                ).click().send_keys().click().perform()
+                actions.move_to_element(pass_input).click().click().perform()
                 if pass_user:
                     slow_type(driver, pass_user)
                 else:
-                    print("Mot de passe non trouvé dans la configuration")
+                    print("Email non trouvé dans la configuration")
                     yield (
                         "Mot de passe linkedin non trouvé, vous devait le renseignez dans la section (modifier mes infos)"
                     )
