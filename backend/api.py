@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, cast
 from core.generate_dossier import generate_dossier_api, validate_cv_file
 from database import supabase_client
 from fastapi import (
-    BackgroundTasks,
+    # BackgroundTasks,
     FastAPI,
     File,
     Form,
@@ -46,6 +46,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Fillcloud API", version="1.0.0", lifespan=lifespan)
 KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
 print(f"KEY: {KEY_SECRET}")
+user_lock = {}
 
 # Configuration CORS pour autoriser le front React
 app.add_middleware(
@@ -229,10 +230,12 @@ async def get_prospection(request: Request):
 @app.post("/backend/prospection/start_prospection")
 async def start_prospection(
     body: ProspectionRequest,
-    background_tasks: BackgroundTasks,
+    # background_tasks: BackgroundTasks,
     request: Request,
 ):
+
     print("⏳ lancement...")
+
     auth_header = request.headers.get("Authorization")
     if not auth_header:
         print("❌ Authentification manquante")
@@ -250,12 +253,16 @@ async def start_prospection(
         print(f"Erreur Supabase User: {e}")
         return {"status": "error", "message": "Erreur lors de l'authentification"}
 
+    if current_user_id not in user_lock:
+        user_lock[current_user_id] = threading.Lock()
+
     supabase_client.table("prospection_settings").update({"is_active": False}).not_.is_(
         "id", "null"
     ).execute()
     print(f"DEBUG: Requête reçue pour {body.intitule}")
-    if not prospection_lock.acquire(blocking=False):
-        print("❌ LOCK BLOQUÉ : Une autre instance tourne déjà")
+    if not user_lock[current_user_id].acquire(blocking=False):
+        # print("❌ LOCK BLOQUÉ : Une autre instance tourne déjà")
+        print(f"❌{current_user_id} vous avez déja un lancement en cours")
         return {"status": "error", "message": "Prospection déjà en cours"}
 
     try:
