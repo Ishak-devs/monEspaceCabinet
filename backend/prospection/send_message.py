@@ -15,11 +15,24 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 def send_message(driver, job_title, message, offre, config_db):
+
     yield f"Démarrage de l'envoi de messages directs pour {job_title}..."
+    links = driver.fin_element(
+        By.XPATH,
+        "//span[contains(@class, 'entity-result-title-line)]//a[contains(@href, '/in/')]",
+    )
     urls = []
-    for url in urls:
+    for link in links:
+        url = link.get_attribute("href").split("?")[0]
+        if url not in urls:
+            urls.append(url)
+
+    yield f"Nombre de profils trouvés : {len(urls)}"
+
+    for u, url in enumerate(urls, start=1):
         try:
             try:
+                yield f"Tratement du prodil {u}/{len(urls)}..."
                 time.sleep(random.uniform(5, 8))
 
                 # url = "https://www.linkedin.com/in/jouna%C3%AFd-ben-salah-601b77222/"
