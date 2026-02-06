@@ -5,7 +5,8 @@ import subprocess
 import sys
 import time
 import urllib.parse
-from sqlite3.dbapi2 import Time
+
+# from sqlite3.dbapi2 import Time
 from typing import Optional
 
 import undetected_chromedriver as uc

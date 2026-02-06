@@ -22,6 +22,7 @@ from fastapi import (
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from lock import prospection_lock
+from locks import user_lock
 from postgrest.base_request_builder import APIResponse
 from prospection.start_prospection import run_chrome
 from pydantic import BaseModel
@@ -46,7 +47,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Fillcloud API", version="1.0.0", lifespan=lifespan)
 KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
 print(f"KEY: {KEY_SECRET}")
-user_lock = {}
+
 
 # Configuration CORS pour autoriser le front React
 app.add_middleware(
@@ -256,8 +257,8 @@ async def start_prospection(
     if current_user_id not in user_lock:
         user_lock[current_user_id] = threading.Lock()
 
-    supabase_client.table("prospection_settings").update({"is_active": False}).not_.is_(
-        "id", "null"
+    supabase_client.table("prospection_settings").update({"is_active": False}).eq(
+        "id", current_user_id
     ).execute()
     print(f"DEBUG: Requête reçue pour {body.intitule}")
     if not user_lock[current_user_id].acquire(blocking=False):

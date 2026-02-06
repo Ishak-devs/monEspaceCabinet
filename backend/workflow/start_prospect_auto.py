@@ -3,6 +3,7 @@
 # import time
 # from datetime import time as dt_time
 import random
+import threading
 import time
 from datetime import datetime, timedelta
 
@@ -12,9 +13,10 @@ from typing import Any, cast
 # import pytz
 # import supabase
 from database import supabase_client
+from locks import user_lock
 
 # from typing_extensions import Sequence
-from lock import prospection_lock
+# from lock import prospection_lock
 from prospection.start_prospection import run_chrome
 
 
@@ -38,51 +40,70 @@ def start_prospect_auto():
             print(f"DEBUG - Nombre de jobs trouvés : {len(data)}")
             # prospection_lock = Lock()
 
-            if prospection_lock.acquire(
-                blocking=False
-            ):  # Pour recuperer le verrou si il est pas pris
-                try:
-                    for job in data:
-                        job_id = job.get("id")
-                        title = str(job.get("job_title") or "")
-                        details = str(job.get("job_details") or "")
-                        mode = str(job.get("mode") or "")
-                        offre = str(job.get("offre") or "")
+            # Pour recuperer le verrou si il est pas pris
+            try:
+                for job in data:
+                    uid = job.get("user_id")
+                    job_id = job.get("id")
+                    title = str(job.get("job_title") or "")
+                    details = str(job.get("job_details") or "")
+                    mode = str(job.get("mode") or "")
+                    offre = str(job.get("offre") or "")
 
-                        print(
-                            f"DEBUG - Job ID : {job_id}, Title : {title}, Details : {details}"
-                        )
+                    if uid not in user_lock:
+                        user_lock[uid] = threading.Lock()
 
-                        if job_id and title:
-                            print(f"Lancement : {title}")
-                            supabase_client.table("prospection_settings").update(
-                                {"is_active": True, "has_run_today": True}
-                            ).eq("id", job_id).execute()
-                            try:
-                                for step in run_chrome(
-                                    title, details, mode, offre, job
-                                ):
-                                    print(f"LOG [{title}]: {step}")
-                            except Exception as e:
-                                print(f"Erreur lors du lancement de {title}: {e}")
-
-                            demain = maintenant + timedelta(days=1)
-                            prochaine_heure = demain.replace(
-                                hour=random.randint(8, 19), minute=random.randint(0, 59)
+                    if user_lock[uid].acquire(blocking=False):
+                        try:
+                            print(
+                                f"DEBUG - Job ID : {job_id}, Title : {title}, Details : {details}"
                             )
-                            supabase_client.table("prospection_settings").update(
-                                {
-                                    "is_active": False,
-                                    # "has_run_today": True,
-                                    "hour_start": prochaine_heure.isoformat(),
-                                }
-                            ).eq("id", job_id).execute()
-                finally:
-                    prospection_lock.release()
+
+                            if job_id and title:
+                                print(f"Lancement : {title}")
+                                supabase_client.table("prospection_settings").update(
+                                    {"is_active": True, "has_run_today": True}
+                                ).eq("id", job_id).execute()
+                                try:
+                                    for step in run_chrome(
+                                        title, details, mode, offre, job
+                                    ):
+                                        print(f"LOG [{title}]: {step}")
+                                        demain = maintenant + timedelta(days=1)
+                                        prochaine_heure = demain.replace(
+                                            hour=random.randint(8, 19),
+                                            minute=random.randint(0, 59),
+                                        )
+                                        supabase_client.table(
+                                            "prospection_settings"
+                                        ).update(
+                                            {
+                                                "is_active": False,
+                                                # "has_run_today": True,
+                                                "hour_start": prochaine_heure.isoformat(),
+                                            }
+                                        ).eq("id", job_id).execute()
+                                except Exception as e:
+                                    print(f"Erreur lors du lancement de {title}: {e}")
+
+                                finally:
+                                    user_lock[uid].release()
+                        except Exception as e:
+                            print({e})
+                            time.sleep(600)
+                            print("Reload automatique pour verifier les prospect")
+            except Exception as e:
+                print({e})
+                time.sleep(600)
+                print("Reload automatique pour verifier les prospect")
         except Exception as e:
             print({e})
-        time.sleep(600)
-        print("Reload automatique pour verifier les prospect")
+            time.sleep(600)
+            print("Reload automatique pour verifier les prospect")
+
+        # finally:
+        #     # Libération du lock pour cet utilisateur
+        #     user_lock[uid].release()
 
 
 if __name__ == "__main__":
