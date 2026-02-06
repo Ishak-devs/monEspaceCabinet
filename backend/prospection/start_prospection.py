@@ -5,6 +5,7 @@ import subprocess
 import sys
 import time
 import urllib.parse
+from sqlite3.dbapi2 import Time
 from typing import Optional
 
 import undetected_chromedriver as uc
@@ -19,6 +20,7 @@ from data.prompt.prospection.prompt_message_prospection import (
 )
 from pydantic import BaseModel
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.action_chains import ActionChains
 
 # from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -38,10 +40,11 @@ class ProspectionRequest(BaseModel):
     offre: Optional[str] = None
 
 
-def slow_type(element, text):
-    for char in text:
-        element.send_keys(char)
+def slow_type(driver, text):
 
+    actions = ActionChains(driver)
+    for char in text:
+        actions.send_keys(char).perform()
         time.sleep(random.uniform(0.1, 0.3))
 
 
@@ -145,32 +148,60 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
         },
     )
 
-    wait = WebDriverWait(driver, 15)
+    # wait = WebDriverWait(driver, 15)
 
     try:
         driver.get("https://www.linkedin.com/feed/")
         # time.sleep(120)
         yield "Accès à LinkedIn..."
         time.sleep(random.uniform(3, 6))
-        if "https://www.linkedin.com/login/" in driver.current_url:
+        current_url = driver.current_url
+        print("Current URL:", current_url)
+        if "https://www.linkedin.com/login/" in current_url:
+            # from selenium.webdriver.common.action_chains import ActionChains
+
             try:
                 yield "Nous avons été redirigé vers la page de connexion..."
                 time.sleep(random.uniform(3, 6))
 
-                email_input = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.ID, "username"))
+                print("Page de login...")
+                wait = WebDriverWait(driver, 10)
+                email_input = wait.until(
+                    EC.element_to_be_clickable((By.ID, "username"))
                 )
-                email_input.click()
-                slow_type(email_input, "kouicicontact@yahoo.com")
-                yield "Email saisi..."
-                time.sleep(random.uniform(3, 6))
+                print("email trouvé")
+                pass_input = driver.find_element(By.ID, "password")
+                print("password trouvé")
 
-                slow_type(driver.find_element(By.ID, "password"), "ishak2301")
-                yield "Mot de passe saisi..."
-                time.sleep(random.uniform(3, 6))
+                email_input.clear()
+                pass_input.clear()
 
-                driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-                yield "Connexion réussie..."
+                actions = ActionChains(driver)
+                actions.move_to_element(email_input).click().send_keys(
+                    "kouicicontact@yahoo.com"
+                )
+                print("Email entered")
+                time.sleep(random.uniform(3, 6))
+                actions.move_to_element(pass_input).click().send_keys("ishak2301")
+                time.sleep(random.uniform(3, 6))
+                print("Login successful")
+
+            #     email_input = WebDriverWait(driver, 10).until(
+            #         EC.presence_of_element_located((By.ID, "username"))
+            #     )
+            #     email_input.click()
+            #     # from selenium.webdriver.common.action_chains import ActionChains
+
+            #     slow_type(driver, "kouicicontact@yahoo.com")
+            #     yield "Email saisi..."
+            #     time.sleep(random.uniform(3, 6))
+
+            #     slow_type(driver.find_element(By.ID, "password"), "ishak2301")
+            #     yield "Mot de passe saisi..."
+            #     time.sleep(random.uniform(3, 6))
+
+            #     driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+            #     yield "Connexion réussie..."
             except Exception as e:
                 print(f"Échec de la connexion{e}]...")
                 # driver.quit()
@@ -189,8 +220,8 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
 
             # driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
-        wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
-        yield "Chargement..."
+        # wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+        # yield "Chargement..."
         human_mouse_move(driver)
         time.sleep(random.uniform(2, 4))
     except Exception as e:
