@@ -33,7 +33,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 class ProspectionRequest(BaseModel):
     intitule: str
-    details: str
+    details: Optional[str] = None
     offre: Optional[str] = None
 
 
@@ -96,12 +96,12 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
         time.sleep(3)
         instruction = ""
         if mode == "prospection":
-            instruction = prompt_message_prospection(job_title, details)
+            instruction = prompt_message_prospection(job_title, details, offre)
         elif mode == "demarchage":
             instruction = prompt_message_demarchage(job_title, details)
         message = call_groq(instruction)
         print(f"{message}")
-        yield "Le modèle va généré un message..."
+        yield "Traitement des informations fournies..."
 
     except Exception as e:
         yield f"⚠️ Erreur IA : {str(e)[:50]}. Utilisation du message par défaut."

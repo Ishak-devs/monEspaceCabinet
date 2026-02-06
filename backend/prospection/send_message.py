@@ -16,14 +16,41 @@ from treatment.send_mail import send_mail
 
 
 def send_message(driver, job_title, message, offre, config_db):
+    print("Début de l'envoi de messages directs...")
     yield f"Démarrage de l'envoi de messages directs pour {job_title}..."
-    urls = [
-        "https://www.linkedin.com/in/jean-christophe-juvet-3446a168/",
-        "https://www.linkedin.com/in/vinushan-vincent-8064173a4/",
-    ]
-    for url in urls:
+    # links = driver.find_elements(
+    #     By.XPATH,
+    #     "//span[contains(@class, 'entity-result__title-line')]//a[contains(@href, '/in/')]",
+    # )
+    try:
+        # time.sleep(random.uniform(2, 4))
+        # driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
+        time.sleep(random.uniform(5, 7))
+        # links = driver.find_elements(
+        #     By.XPATH,
+        #     "//a[contains(@href, '/in/') and not(contains(@class, 'scale-down'))]",
+        # )
+        links = driver.find_elements(By.CSS_SELECTOR, "a[href*='/in/']")
+        time.sleep(2)
+        urls = []
+        for link in links:
+            url = link.get_attribute("href").split("?")[0]
+            if url not in urls:
+                urls.append(url)
+
+        yield f"Nombre de profils trouvés : {len(urls)}"
+        print(f"Nombre de profils trouvés : {len(urls)}")
+
+    except Exception as e:
+        print(f"Erreur lors de la récupération des liens : {e}")
+        # yield f"Erreur lors de la récupération des liens : {e}"
+        return
+
+    for u, url in enumerate(urls, start=1):
         try:
             try:
+                print(f"Traitement du profil {u}/{len(urls)}...")
+                yield f"Traitement du profil {u}/{len(urls)}..."
                 time.sleep(random.uniform(5, 8))
 
                 # url = "https://www.linkedin.com/in/jouna%C3%AFd-ben-salah-601b77222/"
@@ -37,9 +64,9 @@ def send_message(driver, job_title, message, offre, config_db):
                 profile_main_content = driver.find_element(
                     By.TAG_NAME, "main"
                 ).text.lower()
-                content_lower = profile_main_content.lower()
+                content_lower = profile_main_content
 
-                print(content_lower)
+                print(f"Contenu pour checker les candidats chez nava: {content_lower}")
 
                 keyword_exclude = ["nava engineering", "navaengineering"]
                 if any(keyword in content_lower for keyword in keyword_exclude):
@@ -65,7 +92,7 @@ def send_message(driver, job_title, message, offre, config_db):
                 traceback.print_exc()
                 print(f"Détails : {e}")
                 time.sleep(random.uniform(6, 9))
-                yield "Erreur au premier try"
+                yield "Traitement des profils impossibles"
 
             # buton message
             # button = driver.find_element(
