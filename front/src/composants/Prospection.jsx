@@ -16,6 +16,7 @@ function Prospection() {
   const [mode, setMode] = useState("");
   const [details, setDetails] = useState("");
   const [offre, setOffre] = useState("");
+  const [people, Setpeople_precise] = useState("");
 
   const [statusLogs, setStatusLogs] = useState(() => {
     const saved = localStorage.getItem("prospection_logs");
@@ -266,24 +267,38 @@ function Prospection() {
                         // required
                       />
                     </div>
-                    {mode === "prospection" && (
-                      <div>
-                        <label
-                          htmlFor="offre"
-                          className="block text-xs font-normal text-gray-600 mb-1.5"
-                        >
-                          Uploader l'offre pour facilier la recherche
+                    <div>
+                      <label className="block text-xs font-normal text-gray-600 mb-2">
+                        Type d'analyse
+                      </label>
+                      <div className="flex gap-4">
+                        <label className="flex items-center text-xs font-normal text-gray-700 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="people_selection"
+                            value="people_precise"
+                            checked={people === "people_precise"}
+                            onChange={(e) => Setpeople_precise(e.target.value)}
+                            disabled={isLoading}
+                            className="mr-2 accent-black"
+                          />
+                          Cibler des personnes précises
                         </label>
-                        <input
-                          id="offre"
-                          type="file"
-                          onChange={handleFileChange}
-                          disabled={isLoading}
-                          accept=".pdf, .doc, .docx"
-                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50" // required
-                        />
+                        <label className="flex items-center text-xs font-normal text-gray-700 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="people_selection"
+                            value="people_not_precise"
+                            checked={people === "people_not_precise"}
+                            onChange={(e) => Setpeople_precise(e.target.value)}
+                            disabled={isLoading}
+                            className="mr-2 accent-black"
+                          />
+                          Contacter du monde
+                        </label>
                       </div>
-                    )}
+                    </div>
+
                     {/* Radio Buttons Type */}
                     <div>
                       <label className="block text-xs font-normal text-gray-600 mb-2">
@@ -316,6 +331,24 @@ function Prospection() {
                         </label>
                       </div>
                     </div>
+                    {mode === "prospection" && (
+                      <div>
+                        <label
+                          htmlFor="offre"
+                          className="block text-xs font-normal text-gray-600 mb-1.5"
+                        >
+                          Uploader l'offre pour facilier la recherche
+                        </label>
+                        <input
+                          id="offre"
+                          type="file"
+                          onChange={handleFileChange}
+                          disabled={isLoading}
+                          accept=".pdf, .doc, .docx"
+                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50" // required
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <button
