@@ -16,10 +16,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 def send_message(driver, job_title, message, offre, config_db):
     yield f"Démarrage de l'envoi de messages directs pour {job_title}..."
-    urls = [
-        "https://www.linkedin.com/in/jean-christophe-juvet-3446a168/",
-        "https://www.linkedin.com/in/vinushan-vincent-8064173a4/",
-    ]
+    urls = []
     for url in urls:
         try:
             try:
