@@ -15,24 +15,34 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 def send_message(driver, job_title, message, offre, config_db):
-
+    print("Début de l'envoi de messages directs...")
     yield f"Démarrage de l'envoi de messages directs pour {job_title}..."
-    links = driver.fin_element(
-        By.XPATH,
-        "//span[contains(@class, 'entity-result-title-line)]//a[contains(@href, '/in/')]",
-    )
-    urls = []
-    for link in links:
-        url = link.get_attribute("href").split("?")[0]
-        if url not in urls:
-            urls.append(url)
+    # links = driver.find_elements(
+    #     By.XPATH,
+    #     "//span[contains(@class, 'entity-result__title-line')]//a[contains(@href, '/in/')]",
+    # )
+    try:
+        links = driver.find_elements(
+            By.XPATH, "//a[contains(@href, '/in/') and @data-test-app-aware-link]"
+        )
+        urls = []
+        for link in links:
+            url = link.get_attribute("href").split("?")[0]
+            if url not in urls:
+                urls.append(url)
 
-    yield f"Nombre de profils trouvés : {len(urls)}"
+        yield f"Nombre de profils trouvés : {len(urls)}"
+        print(f"Nombre de profils trouvés : {len(urls)}")
+    except Exception as e:
+        print(f"Erreur lors de la récupération des liens : {e}")
+        # yield f"Erreur lors de la récupération des liens : {e}"
+        return
 
     for u, url in enumerate(urls, start=1):
         try:
             try:
-                yield f"Tratement du prodil {u}/{len(urls)}..."
+                print(f"Traitement du profil {u}/{len(urls)}...")
+                yield f"Traitement du profil {u}/{len(urls)}..."
                 time.sleep(random.uniform(5, 8))
 
                 # url = "https://www.linkedin.com/in/jouna%C3%AFd-ben-salah-601b77222/"
