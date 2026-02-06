@@ -56,10 +56,6 @@ def send_message(driver, job_title, message, offre, config_db):
                 # search_url = f"https://www.linkedin.com/search/results/people/?keywords={job_title}&origin=GLOBAL_SEARCH_CARD"
                 driver.get(url)
 
-                for i, url in enumerate(urls, start=1):
-                    yield f"On accède au profil {i}/{len(urls)}..."
-                    time.sleep(random.uniform(5, 8))
-
                 profile_main_content = driver.find_element(
                     By.TAG_NAME, "main"
                 ).text.lower()
