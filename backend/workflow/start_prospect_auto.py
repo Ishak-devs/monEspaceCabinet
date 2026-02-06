@@ -69,29 +69,28 @@ def start_prospect_auto():
                                         title, details, mode, offre, job
                                     ):
                                         print(f"LOG [{title}]: {step}")
-                                        demain = maintenant + timedelta(days=1)
-                                        prochaine_heure = demain.replace(
-                                            hour=random.randint(8, 19),
-                                            minute=random.randint(0, 59),
-                                        )
-                                        supabase_client.table(
-                                            "prospection_settings"
-                                        ).update(
-                                            {
-                                                "is_active": False,
-                                                # "has_run_today": True,
-                                                "hour_start": prochaine_heure.isoformat(),
-                                            }
-                                        ).eq("id", job_id).execute()
+
                                 except Exception as e:
                                     print(f"Erreur lors du lancement de {title}: {e}")
+                                demain = maintenant + timedelta(days=1)
+                                prochaine_heure = demain.replace(
+                                    hour=random.randint(8, 19),
+                                    minute=random.randint(0, 59),
+                                )
+                                supabase_client.table("prospection_settings").update(
+                                    {
+                                        "is_active": False,
+                                        # "has_run_today": True,
+                                        "hour_start": prochaine_heure.isoformat(),
+                                    }
+                                ).eq("id", job_id).execute()
 
-                                finally:
-                                    user_lock[uid].release()
-                        except Exception as e:
-                            print({e})
-                            time.sleep(600)
-                            print("Reload automatique pour verifier les prospect")
+                        finally:
+                            user_lock[uid].release()
+                        # except Exception as e:
+                        #     print({e})
+                        #     time.sleep(600)
+                        #     print("Reload automatique pour verifier les prospect")
             except Exception as e:
                 print({e})
                 time.sleep(600)
