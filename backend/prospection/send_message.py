@@ -23,7 +23,9 @@ def send_message(driver, job_title, message, offre, config_db):
     # )
     try:
         time.sleep(random.uniform(2, 4))
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
+        # driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
+        time.sleep(random.uniform(5, 10))
         links = driver.find_elements(
             By.XPATH, "//a[contains(@href, '/in/') and @data-test-app-aware-link]"
         )
