@@ -157,7 +157,7 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
         time.sleep(random.uniform(3, 6))
         current_url = driver.current_url
         print("Current URL:", current_url)
-        if "https://www.linkedin.com/login/" in current_url:
+        if "login" in driver.current_url or "uas" in driver.current_url:
             # from selenium.webdriver.common.action_chains import ActionChains
 
             try:
@@ -165,13 +165,14 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
                 time.sleep(random.uniform(3, 6))
 
                 print("Page de login...")
+                yield "Nous allons nous connecter..."
                 wait = WebDriverWait(driver, 10)
                 email_input = wait.until(
                     EC.element_to_be_clickable((By.ID, "username"))
                 )
-                print("email trouvé")
+                # print("email trouvé")
                 pass_input = driver.find_element(By.ID, "password")
-                print("password trouvé")
+                # print("password trouvé")
 
                 email_input.clear()
                 pass_input.clear()
@@ -179,29 +180,20 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
                 actions = ActionChains(driver)
                 actions.move_to_element(email_input).click().send_keys(
                     "kouicicontact@yahoo.com"
-                )
-                print("Email entered")
+                ).perform()
+                # print("Email entered")
+                #
+
                 time.sleep(random.uniform(3, 6))
-                actions.move_to_element(pass_input).click().send_keys("ishak2301")
+
+                actions.move_to_element(pass_input).click().send_keys(
+                    "ishak2301", Keys.ENTER
+                ).perform()
+
                 time.sleep(random.uniform(3, 6))
-                print("Login successful")
+                yield "Connexion réussie..."
 
-            #     email_input = WebDriverWait(driver, 10).until(
-            #         EC.presence_of_element_located((By.ID, "username"))
-            #     )
-            #     email_input.click()
-            #     # from selenium.webdriver.common.action_chains import ActionChains
-
-            #     slow_type(driver, "kouicicontact@yahoo.com")
-            #     yield "Email saisi..."
-            #     time.sleep(random.uniform(3, 6))
-
-            #     slow_type(driver.find_element(By.ID, "password"), "ishak2301")
-            #     yield "Mot de passe saisi..."
-            #     time.sleep(random.uniform(3, 6))
-
-            #     driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
-            #     yield "Connexion réussie..."
+                # print("Login successful")
             except Exception as e:
                 print(f"Échec de la connexion{e}]...")
                 # driver.quit()
