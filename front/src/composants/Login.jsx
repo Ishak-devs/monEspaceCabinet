@@ -28,10 +28,7 @@ function Login({ onLoginSuccess }) {
 
       if (onLoginSuccess) onLoginSuccess(data.user);
       navigate("/Dashboard");
-<<<<<<< HEAD
-=======
       console.log("Login successful");
->>>>>>> e41096b09f38605e97168f30a0173ed1439c220f
     } catch (error) {
       console.error("Erreur:", error);
       setError("Erreur de connexion");
