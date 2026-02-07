@@ -11,9 +11,7 @@ MÉTHODE :
 2. CLASSIFICATION STRATÉGIQUE DES OUTILS :
    - Regroupe les logiciels et outils par "titre" de catégorie métier (ex: "Bureautique", "ERP", "CAO").
    - Ne liste pas les outils en vrac, range-les intelligemment.
-
-3. CONTRÔLE QUALITÉ :
-   - Zéro faute d'orthographe et suppression des doublons.
+   - Ne récupère PAS les langues
 
 RÈGLES CRITIQUES :
 - Ne crée JAMAIS de catégories d'outils vides.

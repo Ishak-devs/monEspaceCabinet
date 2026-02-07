@@ -7,10 +7,14 @@ function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  // const [success, setSuccess] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
+    // setSuccess(false);
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -20,11 +24,17 @@ function Login({ onLoginSuccess }) {
       console.log(data);
 
       if (error) throw error;
+      // setError("Erreur de connexion");
 
       if (onLoginSuccess) onLoginSuccess(data.user);
       navigate("/Dashboard");
+<<<<<<< HEAD
+=======
+      console.log("Login successful");
+>>>>>>> e41096b09f38605e97168f30a0173ed1439c220f
     } catch (error) {
       console.error("Erreur:", error);
+      setError("Erreur de connexion");
     } finally {
       setLoading(false);
     }
@@ -67,6 +77,7 @@ function Login({ onLoginSuccess }) {
               required
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400"
             />
+            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
           </div>
 
           <button

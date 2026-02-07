@@ -4,14 +4,25 @@ import unicodedata
 from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
-from threading import Lock
-from typing import Any, Dict, List, cast
+
+# from threading import Lock
+from typing import Any, Dict, List, Optional, cast
 
 from core.generate_dossier import generate_dossier_api, validate_cv_file
 from database import supabase_client
-from fastapi import BackgroundTasks, FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import (
+    # BackgroundTasks,
+    FastAPI,
+    File,
+    Form,
+    HTTPException,
+    Request,
+    UploadFile,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
+from lock import prospection_lock
+from locks import user_lock
 from postgrest.base_request_builder import APIResponse
 from prospection.start_prospection import run_chrome
 from pydantic import BaseModel
@@ -20,6 +31,13 @@ from workflow.start_prospect_auto import start_prospect_auto
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    try:
+        supabase_client.table("prospection_settings").update({"is_active": False}).neq(
+            "id", -1
+        ).execute()
+        print("Supabase : Tous les statuts ont été réinitialisés.")
+    except Exception as e:
+        print(f"⚠️ Erreur reset démarrage: {e}")
     thread = threading.Thread(target=start_prospect_auto, daemon=True)
     thread.start()
     print("🔥 Serveur prêt, check Supabase au démarrage...")
@@ -28,17 +46,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Fillcloud API", version="1.0.0", lifespan=lifespan )
 KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
-prospection_lock = Lock()
+print(f"KEY: {KEY_SECRET}")
+
 
 # Configuration CORS pour autoriser le front React
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  #
-        "https://nava-eng.vercel.app",
-        "https://fillcloud.vercel.app",
-        "https://fillcloud-m938kynst-ishaks-projects-1e2e49cc.vercel.app",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -177,18 +191,38 @@ async def generate_dossier(
 
 class ProspectionRequest(BaseModel):  # contrat
     intitule: str
+    mode: str
+    details: str
+    offre: Optional[str]
 
 
 @app.get("/backend/prospection/list")
-async def get_prospection():
+async def get_prospection(request: Request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        print("❌ Authentification manquante")
+        raise HTTPException(status_code=401)
+
+    token = auth_header.replace("Bearer ", "")
+
     try:
+        user_response = supabase_client.auth.get_user(token)
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Authentification invalide")
+        # if not user_response.user:
+        #     return []
+        current_user_id = user_response.user.id
+        print(f"👤 Utilisateur connecté: {current_user_id}")
+
         res = (
             supabase_client.table("prospection_settings")
-            .select("id, job_title, created_at, is_active")
+            .select("id, job_title, created_at, is_active, hour_start")
+            .eq("user_id", current_user_id)
             .order("created_at", desc=True)
             .execute()
         )
         return res.data if res.data else []
+
     except Exception as e:
         print(f"Erreur Supabase List: {e}")
         return []
@@ -196,42 +230,81 @@ async def get_prospection():
 
 @app.post("/backend/prospection/start_prospection")
 async def start_prospection(
-    request: ProspectionRequest, background_tasks: BackgroundTasks
+    body: ProspectionRequest,
+    # background_tasks: BackgroundTasks,
+    request: Request,
 ):
-    if not prospection_lock.acquire(blocking=False):
-        return {"status": "error", "message": "Prospection déjà en cours"}
+
+    print("⏳ lancement...")
+
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        print("❌ Authentification manquante")
+        return {"status": "error", "message": "Authentification manquante"}
+
+    token = auth_header.replace("Bearer ", "")
+
     try:
+        user_response = supabase_client.auth.get_user(token)
+        print(f"User response: {user_response}")
+        print(f"token:{token}")
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Authentification invalide")
+        current_user_id = user_response.user.id
+        print(f"✅ Utilisateur authentifié : {current_user_id}")
+    except Exception as e:
+        print(f"Erreur Supabase User: {e}")
+        return {"status": "error", "message": "Erreur lors de l'authentification"}
+
+    if current_user_id not in user_lock:
+        user_lock[current_user_id] = threading.Lock()
+
+    supabase_client.table("prospection_settings").update({"is_active": False}).eq(
+        "user_id", current_user_id
+    ).execute()
+    # supabase_client.table("prospection_settings").update({"is_active": False}).eq(
+    #     "user_id", current_user_id
+    # ).execute()
+    print(f"DEBUG: Requête reçue pour {body.intitule}")
+    if not user_lock[current_user_id].acquire(blocking=False):
+        # print("❌ LOCK BLOQUÉ : Une autre instance tourne déjà")
+        print(f"❌{current_user_id} vous avez déja un lancement en cours")
+        return {"status": "error", "message": "Prospection déjà en cours"}
+
+    try:
+        print("🔒 LOCK ACQUIS")
+
         SELECT_QUERY = f"*,profiles!inner(linkedin_email,linkedin_password:pgp_sym_decrypt(linkedin_password::bytea,'{KEY_SECRET}'))"
         if SELECT_QUERY:
             try:
-                res = supabase_client.rpc(
-                    "get_decrypted_settings",
-                    {"job_title_input": request.intitule, "key_input": KEY_SECRET},
-                ).execute()
-                if not res or res.data is None:
-                    return {
-                        "status": "error",
-                        "message": "Impossible de charger les données",
-                    }
-            except Exception as e:
-                print(f"❌ ERREUR SUPABASE SELECT : {e}")
-                prospection_lock.release()
-                return {
-                    "status": "error",
-                    "message": f"Erreur base de données : {str(e)}",
-                }
-            try:
+                print("🔒 insert db")
                 supabase_client.table("prospection_settings").insert(
                     {
-                        "job_title": request.intitule,
-                        "query": request.intitule,
+                        "job_title": body.intitule,
+                        "query": body.intitule,
                         "is_active": True,
-                        "user_id": "b48d5631-7f20-4837-904c-ae55f1e60fd3",
+                        "details": body.details,
+                        "offre": body.offre or "".replace("\x00", ""),
+                        "user_id": current_user_id,
                         "hour_start": datetime.now().astimezone().isoformat(),
                     }
                 ).execute()
             except Exception as e:
                 print(f"❌ ERREUR SUPABASE INSERT : {e}")
+
+            print("🔒 select db")
+            print("⏳ Tentative d'appel RPC...")
+            res = supabase_client.rpc(
+                "get_decrypted_settings",
+                {"job_title_input": body.intitule, "key_input": KEY_SECRET},
+            ).execute()
+            print(f"🔍 DEBUG - Données brutes RPC: {res.data}")
+            print(f"🔍 DEBUG - Type de données: {type(res.data)}")
+
+    except Exception as e:
+        print(f"❌ ERREUR RPC : {e}")
+
+        #             print("RPC terminée...")
 
         response = cast(APIResponse, res)
         if res and hasattr(res, "data") and res.data:
@@ -239,81 +312,139 @@ async def start_prospection(
                 cast(List[Dict[str, Any]], response.data) if response.data else []
             )
             data = data_list[0] if data_list else {}
+            print(f"🔍 DEBUG - Contenu de data: {data}")
+            print(f"🔍 DEBUG - Clés disponibles: {data.keys() if data else 'VIDE'}")
 
-            # profile = data.get("profiles", {})
             config_db = {
                 "id": data.get("id"),
+                "user_id": current_user_id,
                 "linkedin_email": data.get("linkedin_email"),
                 "linkedin_password": data.get("linkedin_password"),
-                "job_title": request.intitule,
+                "job_title": body.intitule,
             }
-            def run_in_background():
+            print(f"📧 Email récupéré: {config_db.get('linkedin_email')}")
+            print(
+                f"Password récupéré: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
+            )
+
+            def stream_generator():
                 try:
-                    run_chrome(request.intitule, config_db)
-                    return {"status": "success", "message": "Prospection terminée avec succès"}
+                    print(f"🚀 Lancement Chrome pour {body.intitule}")
+                    for step in run_chrome(
+                        body.intitule,
+                        body.details,
+                        body.mode,
+                        body.offre,
+                        config_db,
+                    ):
+                        yield f"{step}\n"
                 except Exception as e:
-                                return {"status": "error", "message": f"Erreur pendant l'exécution : {str(e)}"}
+                    import traceback
+
+                    traceback.print_exc()
+                    print(f"Erreur lors de la prospection : {str(e)}")
+                    # yield f"❌ Erreur : {str(e)}\n"
                 finally:
-                                    if prospection_lock.locked():
-                                        prospection_lock.release()
+                    supabase_client.table("prospection_settings").update(
+                        {"is_active": False}
+                    ).not_.is_("id", "null").execute()
+                    if prospection_lock.locked():
+                        prospection_lock.release()
+                    print("🔓 Session terminée")
 
-                background_tasks.add_task(run_in_background)
-                return {"status": "success", "message": "Prospection lancée avec succès"}
+            return StreamingResponse(stream_generator(), media_type="text/plain")
 
-
-            # def wrapped_generator():
+            # def run_in_background(job_title, config):
+            #     print(f"🚀🚀🚀 BACKGROUND TASK STARTED pour {job_title}")
+            #     print(f"🔍 Config reçue: {config}")
             #     try:
-            #         yield from run_chrome(request.intitule, config_db)
+            #         for step in run_chrome(body.intitule, config):
+            #             print(f"🤖 [DEBUG] Étape {step}")
+            #     except Exception as e:
+            #         print(f"💥 CRASH DANS LE BACKGROUND : {e}")
+            #         return {
+            #             "status": "error",
+            #             "message": f"Erreur pendant l'exécution : {str(e)}",
+            #         }
             #     finally:
-            #         prospection_lock.release()
+            #         try:
+            #             supabase_client.table("prospection_settings").update(
+            #                 {"is_active": False}
+            #             ).not_.is_("id", "null").execute()
+            #             print("✅ DB: Statut réinitialisé à False")
+            #         except Exception as e:
+            #             print(f"❌ ERREUR SUPABASE UPDATE : {e}")
+            #             pass
+            #         if prospection_lock.locked():
+            #             prospection_lock.release()
+            #             print("🔓 LOCK LIBÉRÉ")
 
-            # return StreamingResponse(wrapped_generator(), media_type="text/plain")
+            # print(f"DEBUG CONFIG: {config_db}")
+            # background_tasks.add_task(run_in_background, body.intitule, config_db)
 
-    except Exception as e:
-        return {"status": "error", "message": str(e)}
-        print(f"❌ ERREUR SUPABASE DERNIER EXCEPT : {e}")
-
-    # finally:
-    #     if prospection_lock.locked():
-    #                         prospection_lock.release()
+            # return {"status": "success", "message": "Chrome va se lancer"}
 
 
-@app.post("/api/prospection/async-stream")
-async def start_prospection_stream(request: ProspectionRequest):
-    try:
-        res = supabase_client.rpc(
-            "get_decrypted_settings",
-            {"job_title_input": request.intitule, "key_input": KEY_SECRET},
-        ).execute()
+# print(f"DEBUG CONFIG: {config_db}")
+# background_tasks.add_task(
+#     run_in_background, request.intitule, config_db
+# )
 
-        if not res.data:
-            return {"status": "error", "message": "Config introuvable"}
-        response = cast(APIResponse, res)
+#                 return {"status": "success", "message": "Chrome va se lancer"}
 
-        data_list = cast(List[Dict[str, Any]], response.data) if response.data else []
-        data = data_list[0] if data_list else {}
+#             if not res or res.data is None:
+#                 return {
+#                     "status": "error",
+#                     "message": "Impossible de charger les données",
+#                 }
+#     except Exception as e:
+#         print(f"❌ ERREUR SUPABASE SELECT : {e}")
+#         prospection_lock.release()
+#         return {
+#             "status": "error",
+#             "message": f"Erreur base de données : {str(e)}",
+#         }
 
-        profile = data.get("profiles", {})
-        config_db = {
-            "id": data.get("id"),
-            "linkedin_email": profile.get("linkedin_email"),
-            "linkedin_password": profile.get("linkedin_password"),
-            "job_title": request.intitule,
-        }
-    except Exception as e:
-        return {"status": "error", "message": f"Erreur DB : {str(e)}"}
 
-    # def wrapped_generator():
-    #     if not prospection_lock.acquire(blocking=False):
-    #         yield "⚠️ Déjà en cours"
-    #         return
-    #     try:
-    #         yield from run_chrome(request.intitule, config_db)
-    #     finally:
-    #         prospection_lock.release()
+# @app.post("/api/prospection/async-stream")
+# async def start_prospection_stream(request: ProspectionRequest):
+#     supabase_client.table("prospection_settings").update({"is_active": False}).not_.is_(
+#         "id", "null"
+#     ).execute()
+#     try:
+#         res = supabase_client.rpc(
+#             "get_decrypted_settings",
+#             {"job_title_input": request.intitule, "key_input": KEY_SECRET},
+#         ).execute()
 
-    # # 3. On renvoie le stream direct au front
-    # return StreamingResponse(wrapped_generator(), media_type="text/plain")
+#         if not res.data:
+#             return {"status": "error", "message": "Config introuvable"}
+#             prospection_lock.release()
+#         response = cast(APIResponse, res)
+
+#         data_list = cast(List[Dict[str, Any]], response.data) if response.data else []
+#         data = data_list[0] if data_list else {}
+
+#         profile = data.get("profiles", {})
+#         config_db = {
+#             "id": data.get("id"),
+#             "linkedin_email": profile.get("linkedin_email"),
+#             "linkedin_password": profile.get("linkedin_password"),
+#             "job_title": request.intitule,
+#         }
+#     except Exception as e:
+#         return {"status": "error", "message": f"Erreur DB : {str(e)}"}
+
+#     def wrapped_generator():
+#         if not prospection_lock.acquire(blocking=False):
+#             yield "⚠️ Déjà en cours"
+#             return
+#         try:
+#             yield from run_chrome(request.intitule, config_db)
+#         finally:
+#             prospection_lock.release()
+
+#     return StreamingResponse(wrapped_generator(), media_type="text/plain")
 
 
 if __name__ == "__main__":
