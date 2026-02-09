@@ -238,6 +238,7 @@ async def start_prospection(
 ):
 
     print("⏳ lancement...")
+    res = None
 
     auth_header = request.headers.get("Authorization")
     if not auth_header:
