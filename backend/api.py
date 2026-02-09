@@ -194,7 +194,7 @@ async def generate_dossier(
 class ProspectionRequest(BaseModel):  # contrat
     intitule: str
     mode: str
-    details: Optional[str]
+    details: str
     offre: Optional[str]
 
 
@@ -305,7 +305,6 @@ async def start_prospection(
                         "offre": body.offre or "".replace("\x00", ""),
                         "user_id": current_user_id,
                         "hour_start": prochaine_heure.replace(tzinfo=None).isoformat(),
-                        # "hour_start": datetime.now().astimezone().isoformat(),
                     }
                 ).execute()
             except Exception as e:
@@ -322,86 +321,85 @@ async def start_prospection(
 
     except Exception as e:
         print(f"❌ ERREUR RPC : {e}")
+        # res = None
 
-        #             print("RPC terminée...")
+    config_db = {}
 
+    if res and hasattr(res, "data") and res.data:
         response = cast(APIResponse, res)
-        if res and hasattr(res, "data") and res.data:
-            data_list = (
-                cast(List[Dict[str, Any]], response.data) if response.data else []
-            )
-            data = data_list[0] if data_list else {}
-            print(f"🔍 DEBUG - Contenu de data: {data}")
-            print(f"🔍 DEBUG - Clés disponibles: {data.keys() if data else 'VIDE'}")
+        data_list = cast(List[Dict[str, Any]], response.data) if response.data else []
+        data = data_list[0] if data_list else {}
+        print(f"🔍 DEBUG - Contenu de data: {data}")
+        print(f"🔍 DEBUG - Clés disponibles: {data.keys() if data else 'VIDE'}")
 
-            config_db = {
-                "id": data.get("id"),
-                "user_id": current_user_id,
-                "linkedin_email": data.get("linkedin_email"),
-                "linkedin_password": data.get("linkedin_password"),
-                "job_title": body.intitule,
-            }
-            print(f"📧 Email récupéré: {config_db.get('linkedin_email')}")
-            print(
-                f"Password récupéré: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
-            )
+        config_db = {
+            "id": data.get("id"),
+            "user_id": current_user_id,
+            "linkedin_email": data.get("linkedin_email"),
+            "linkedin_password": data.get("linkedin_password"),
+            "job_title": body.intitule,
+        }
+        print(f"📧 Email récupéré: {config_db.get('linkedin_email')}")
+        print(
+            f"Password récupéré: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
+        )
 
-            def stream_generator():
-                try:
-                    print(f"🚀 Lancement Chrome pour {body.intitule}")
-                    for step in run_chrome(
-                        body.intitule,
-                        body.details,
-                        body.mode,
-                        body.offre,
-                        config_db,
-                    ):
-                        yield f"{step}\n"
-                except Exception as e:
-                    import traceback
+    def stream_generator():
+        try:
+            print(f"🚀 Lancement Chrome pour {body.intitule}")
+            for step in run_chrome(
+                body.intitule,
+                body.details,
+                body.mode,
+                body.offre,
+                config_db,
+            ):
+                yield f"{step}\n"
+        except Exception as e:
+            import traceback
 
-                    traceback.print_exc()
-                    print(f"Erreur lors de la prospection : {str(e)}")
-                    # yield f"❌ Erreur : {str(e)}\n"
-                finally:
-                    supabase_client.table("prospection_settings").update(
-                        {"is_active": False}
-                    ).not_.is_("id", "null").execute()
-                    if prospection_lock.locked():
-                        prospection_lock.release()
-                    print("🔓 Session terminée")
+            traceback.print_exc()
+            print(f"Erreur lors de la prospection : {str(e)}")
+            # yield f"❌ Erreur : {str(e)}\n"
+        finally:
+            supabase_client.table("prospection_settings").update(
+                {"is_active": False}
+            ).not_.is_("id", "null").execute()
+            if prospection_lock.locked():
+                prospection_lock.release()
+            print("🔓 Session terminée")
 
-            return StreamingResponse(stream_generator(), media_type="text/plain")
+    return StreamingResponse(stream_generator(), media_type="text/plain")
 
-            # def run_in_background(job_title, config):
-            #     print(f"🚀🚀🚀 BACKGROUND TASK STARTED pour {job_title}")
-            #     print(f"🔍 Config reçue: {config}")
-            #     try:
-            #         for step in run_chrome(body.intitule, config):
-            #             print(f"🤖 [DEBUG] Étape {step}")
-            #     except Exception as e:
-            #         print(f"💥 CRASH DANS LE BACKGROUND : {e}")
-            #         return {
-            #             "status": "error",
-            #             "message": f"Erreur pendant l'exécution : {str(e)}",
-            #         }
-            #     finally:
-            #         try:
-            #             supabase_client.table("prospection_settings").update(
-            #                 {"is_active": False}
-            #             ).not_.is_("id", "null").execute()
-            #             print("✅ DB: Statut réinitialisé à False")
-            #         except Exception as e:
-            #             print(f"❌ ERREUR SUPABASE UPDATE : {e}")
-            #             pass
-            #         if prospection_lock.locked():
-            #             prospection_lock.release()
-            #             print("🔓 LOCK LIBÉRÉ")
+    # def run_in_background(job_title, config):
+    #     print(f"🚀🚀🚀 BACKGROUND TASK STARTED pour {job_title}")
+    #     print(f"🔍 Config reçue: {config}")
+    #     try:
+    #         for step in run_chrome(body.intitule, config):
+    #             print(f"🤖 [DEBUG] Étape {step}")
+    #     except Exception as e:
+    #         print(f"💥 CRASH DANS LE BACKGROUND : {e}")
+    #         return {
+    #             "status": "error",
+    #             "message": f"Erreur pendant l'exécution : {str(e)}",
+    #         }
+    #     finally:
+    #         try:
+    #             supabase_client.table("prospection_settings").update(
+    #                 {"is_active": False}
+    #             ).not_.is_("id", "null").execute()
+    #             print("✅ DB: Statut réinitialisé à False")
+    #         except Exception as e:
+    #             print(f"❌ ERREUR SUPABASE UPDATE : {e}")
+    #             pass
+    #         if prospection_lock.locked():
+    #             prospection_lock.release()
+    #             print("🔓 LOCK LIBÉRÉ")
 
-            # print(f"DEBUG CONFIG: {config_db}")
-            # background_tasks.add_task(run_in_background, body.intitule, config_db)
+    # print(f"DEBUG CONFIG: {config_db}")
+    # background_tasks.add_task(run_in_background, body.intitule, config_db)
 
-            # return {"status": "success", "message": "Chrome va se lancer"}
+    # return {"status": "success", "message": "Chrome va se lancer"}
 
 
 # print(f"DEBUG CONFIG: {config_db}")
