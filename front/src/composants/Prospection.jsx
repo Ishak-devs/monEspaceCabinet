@@ -344,7 +344,7 @@ function Prospection() {
                         </label>
                       </div>
                     </div>
-                    {mode === "Sourcing" && (
+                    {mode === "sourcing" && (
                       <div>
                         <label
                           htmlFor="offre"
