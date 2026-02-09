@@ -6,6 +6,7 @@ import random
 import threading
 import time
 from datetime import datetime, timedelta
+from threading import Lock
 
 # from threading import Lock
 from typing import Any, cast
@@ -18,6 +19,8 @@ from locks import user_lock
 # from typing_extensions import Sequence
 # from lock import prospection_lock
 from prospection.start_prospection import run_chrome
+
+prospection_lock = Lock()
 
 
 def start_prospect_auto():

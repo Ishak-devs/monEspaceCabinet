@@ -44,7 +44,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Fillcloud API", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="Fillcloud API", version="1.0.0", lifespan=lifespan )
 KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
 print(f"KEY: {KEY_SECRET}")
 
