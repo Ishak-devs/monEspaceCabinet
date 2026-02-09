@@ -430,7 +430,7 @@ function ProspectionSourcing() {
                       strokeWidth={2}
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
-                    {statusLogs.length > 0 && (
+                    {/* {statusLogs.length > 0 && (
                       <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded text-[10px] font-mono max-h-40 overflow-y-auto">
                         <p className="text-gray-400 mb-1">Logs en direct :</p>
                         {statusLogs.map((log, index) => (
@@ -442,7 +442,7 @@ function ProspectionSourcing() {
                           </div>
                         ))}
                       </div>
-                    )}
+                    )}*/}
                   </div>
                 </div>
               </div>
