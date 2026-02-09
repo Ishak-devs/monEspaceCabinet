@@ -218,19 +218,19 @@ def send_message(driver, job_title, message, offre, config_db):
             print(e)
             continue
 
-        finally:
-            config_id = config_db.get("id")
-            if config_id:
-                try:
-                    supabase_client.table("prospection_settings").update(
-                        {"is_active": False}
-                    ).eq("id", config_id).execute()
-                    # yield f"✅ Session terminée {config_id}, fermeture navigateur.."
-                except Exception as e:
-                    if "204" not in str(e) and "Missing response" not in str(e):
-                        print(f"Erreur DB: {e}")
-                    else:
-                        print(f"Log technique: {e}")
+    # finally:
+    #     config_id = config_db.get("id")
+    #     if config_id:
+    #         try:
+    #             supabase_client.table("prospection_settings").update(
+    #                 {"is_active": False}
+    #             ).eq("id", config_id).execute()
+    #             # yield f"✅ Session terminée {config_id}, fermeture navigateur.."
+    #         except Exception as e:
+    #             if "204" not in str(e) and "Missing response" not in str(e):
+    #                 print(f"Erreur DB: {e}")
+    #             else:
+    #                 print(f"Log technique: {e}")
     if "driver" in locals():
         driver.quit()
         return
