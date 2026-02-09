@@ -7,10 +7,15 @@ const ProtectedRoute = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setLoading(false);
     });
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) return <div>Chargement...</div>;
