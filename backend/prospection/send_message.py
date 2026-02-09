@@ -60,6 +60,7 @@ def send_message(driver, job_title, message, offre, config_db):
                 current_user_id = config_db.get("user_id")
                 yield "On va vérifier si le profil à été contacté récemment..."
                 print("On va vérifier si le profil à été contacté récemment...")
+                time.sleep(random.uniform(5, 8))
                 check_contact = (
                     supabase_client.table("url_contactees")
                     .select("id")
@@ -71,6 +72,7 @@ def send_message(driver, job_title, message, offre, config_db):
                 if check_contact.data:
                     yield f"⏭️ Déjà contacté ({url}), skip..."
                     print("Déjà dans la base, on passe au suivant.")
+                    time.sleep(random.uniform(5, 8))
                     continue
 
                 # for i, url in enumerate(urls, start=1):
@@ -93,9 +95,21 @@ def send_message(driver, job_title, message, offre, config_db):
                     .execute()
                 )
 
-                config_db = res.data
-                cabinet_name = config_db.get("nom")
-                print(f"Nom du cabinet: {cabinet_name}")
+                data = res.data if isinstance(res.data, list) else []
+
+                if data:
+                    first_row = data[0]
+                    cabinet_join = first_row.get("cabinets") or {}
+                    cabinet_name = str(cabinet_join.get("nom") or "")
+                    print(f"Nom du cabinet: {cabinet_name}")
+                else:
+                    print("Pas de cabinet trouvé")
+                    cabinet_name = ""
+
+                # config_db = res.data
+                # row = res.data[0] if res.data else {}
+                # cabinet_name = row.get("nom")
+                # print(f"Nom du cabinet: {cabinet_name}")
 
                 print("On va vérifier si cette personne est chez nous...")
                 yield "On va vérifier si cette personne est chez nous..."
