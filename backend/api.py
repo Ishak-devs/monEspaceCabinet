@@ -338,6 +338,8 @@ async def start_prospection(
             "linkedin_email": data.get("linkedin_email"),
             "linkedin_password": data.get("linkedin_password"),
             "job_title": body.intitule,
+            "telephone": data.get("telephone"),
+            "full_name": data.get("full_name"),
         }
         print(f"📧 Email récupéré: {config_db.get('linkedin_email')}")
         print(

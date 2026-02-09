@@ -87,38 +87,44 @@ def send_message(driver, job_title, message, offre, config_db):
                 print(f"Contenu pour checker les candidats chez nava: {content_lower}")
 
                 # current_user_id = config_db.get("user_id")
+                #
+
+                current_user_id = config_db.get("user_id")
                 res = (
                     supabase_client.table("profiles")
                     .select("*, cabinets(nom)")
                     .eq("id", current_user_id)
-                    .single()
+                    # .single()
                     .execute()
                 )
 
-                data = res.data if isinstance(res.data, list) else []
+                cabinet_name = ""
+                if res.data and len(res.data) > 0:
+                    first_row = res.data[0]
+                    if isinstance(first_row, dict):
+                        cabinet_data = first_row.get("cabinets", {})
+                        if isinstance(cabinet_data, dict):
+                            cabinet_name = (
+                                str(cabinet_data.get("nom") or "").lower().strip()
+                            )
+                            print(f"Cabinet name: {cabinet_name}")
 
-                if data:
-                    first_row = data[0]
-                    cabinet_join = first_row.get("cabinets") or {}
-                    cabinet_name = str(cabinet_join.get("nom") or "")
-                    print(f"Nom du cabinet: {cabinet_name}")
-                else:
-                    print("Pas de cabinet trouvé")
-                    cabinet_name = ""
+                    # cabinet_data = res.data[0].get("cabinets", {})
+                    # first_row = data[0]
+                    # cabinet_name = cabinet_data.get("nom", "").lower().strip()
+                    # print(f"Cabinet name: {cabinet_name}")
 
-                # config_db = res.data
-                # row = res.data[0] if res.data else {}
-                # cabinet_name = row.get("nom")
-                # print(f"Nom du cabinet: {cabinet_name}")
+                yield "On va vérifier si la personne est chez nous..."
+                print("On va vérifier si la personne est chez nous...")
+                time.sleep(6)
+                if cabinet_name:
+                    exclusions = [cabinet_name, cabinet_name.replace(" ", "")]
 
-                print("On va vérifier si cette personne est chez nous...")
-                yield "On va vérifier si cette personne est chez nous..."
-                time.sleep(random.uniform(3, 5))
-
-                if any(keyword in content_lower for keyword in cabinet_name):
-                    yield "Candidat interne ou exclu, skip..."
-                    print("Personne chez nous, on ne prospecte pas ce profil...")
-                    continue
+                    if any(excl in infos_profil for excl in exclusions):
+                        yield f"Candidat de chez {cabinet_name}, skip..."
+                        print(f"Interne ({cabinet_name}), on zappe.")
+                        time.sleep(random.uniform(3, 5))
+                        continue
 
                 ia_check, is_top, argument = prompt_check_ia_profile(
                     offre, profile_main_content

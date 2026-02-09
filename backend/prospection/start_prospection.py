@@ -43,8 +43,8 @@ class ProspectionRequest(BaseModel):
     intitule: str
     details: Optional[str] = None
     offre: Optional[str] = None
-    telephone: Optional[int] = None
-    full_name: Optional[str] = None
+    # telephone: Optional[int] = None
+    # full_name: Optional[str] = None
 
 
 def slow_type(element, text):
@@ -61,6 +61,8 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
     uid = config_db.get("user_id")
     # offre = body.offre
     print(f"[DEBUG] User ID: {uid}")
+    # tel_final = config_db.get("telephone") or ""
+    # name_final = config_db.get("full_name") or ""
 
     if not uid:
         print(
@@ -89,7 +91,7 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
     print(f"[DEBUG] Path profil: {profil_path}")
     options.add_argument(f"--user-data-dir={profil_path}")
     options.add_argument("--profile-directory=Default")
-    # options.add_argument("--headless=new")
+    options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-setuid-sandbox")
@@ -99,8 +101,24 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
     options.add_argument("--media-cache-size=1")
 
     job_title = config_db.get("job_title")
-    telephone = config_db.get("telephone")
+    print("Titre du poste:", job_title)
+
+    # tel_final = data.get("telephone") or ""
+    # name_final = data.get("full_name") or ""
+
     full_name = config_db.get("full_name")
+
+    telephone = config_db.get("telephone")
+
+    print(f"Nom complet: {full_name}")
+    print(f"Numéro de téléphone: {telephone}")
+
+    # telephone = config_db.get("telephone")
+    # print("Numéro de téléphone:", telephone)
+
+    # full_name = config_db.get("full_name")
+    # print("Prénom:", full_name)
+
     KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
     print(f"KEY: {KEY_SECRET}")
     try:
@@ -118,6 +136,7 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
             )
         message = call_groq(instruction)
         print(f"{message}")
+
         yield "Traitement des informations fournies..."
 
     except Exception as e:

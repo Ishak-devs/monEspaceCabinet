@@ -293,7 +293,7 @@ function ProspectionSourcing() {
                             disabled={isLoading}
                             className="mr-2 accent-black"
                           />
-                          Cibler des personnes précises
+                          Recherche inteligente
                         </label>
                         <label className="flex items-center text-xs font-normal text-gray-700 cursor-pointer">
                           <input
