@@ -58,6 +58,7 @@ def send_message(driver, job_title, message, offre, config_db):
                 # search_url = f"https://www.linkedin.com/search/results/people/?keywords={job_title}&origin=GLOBAL_SEARCH_CARD"
                 driver.get(url)
                 current_user_id = config_db.get("user_id")
+                print(f"current_user_id: {current_user_id}")
                 yield "On va vérifier si le profil à été contacté récemment..."
                 print("On va vérifier si le profil à été contacté récemment...")
                 time.sleep(random.uniform(5, 8))
@@ -68,12 +69,14 @@ def send_message(driver, job_title, message, offre, config_db):
                     .eq("user_id", current_user_id)
                     .execute()
                 )
+                print(f"check_contact: {check_contact}")
 
                 if check_contact.data:
                     yield f"⏭️ Déjà contacté ({url}), skip..."
                     print("Déjà dans la base, on passe au suivant.")
                     time.sleep(random.uniform(5, 8))
                     continue
+                yield "Pas encore contacté..."
 
                 # for i, url in enumerate(urls, start=1):
                 #     yield f"On accède au profil {i}/{len(urls)}..."
@@ -119,20 +122,28 @@ def send_message(driver, job_title, message, offre, config_db):
                 time.sleep(6)
 
                 infos_profil = driver.find_element(By.TAG_NAME, "body").text.lower()
+                print(f"infos_profil: {infos_profil}")
 
                 if cabinet_name:
                     exclusions = [cabinet_name, cabinet_name.replace(" ", "")]
+                    print(f"Exclusions: {exclusions}")
 
                     if any(excl in infos_profil for excl in exclusions):
                         yield f"Candidat de chez {cabinet_name}, skip..."
                         print(f"Interne ({cabinet_name}), on zappe.")
                         time.sleep(random.uniform(3, 5))
                         continue
+                    else
+                        print(
+                            f"Pas de spécifications au cabinet {cabinet_name} dans son profil..."
+                        )
+                        yield f"Pas de spécifications au cabinet {cabinet_name} dans son profil..."
 
                 ia_check, is_top, argument = prompt_check_ia_profile(
                     offre, profile_main_content
                 )
                 yield "On analyse son profil avec l'offre..."
+                print(f"ia_check: {ia_check}, is_top: {is_top}, argument: {argument}")
                 time.sleep(random.uniform(3, 5))
 
                 if not ia_check:
