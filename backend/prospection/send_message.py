@@ -57,6 +57,21 @@ def send_message(driver, job_title, message, offre, config_db):
                 # url = "https://www.linkedin.com/in/jouna%C3%AFd-ben-salah-601b77222/"
                 # search_url = f"https://www.linkedin.com/search/results/people/?keywords={job_title}&origin=GLOBAL_SEARCH_CARD"
                 driver.get(url)
+                current_user_id = config_db.get("user_id")
+                yield "On va vérifier si le profil à été contacté récemment..."
+                print("On va vérifier si le profil à été contacté récemment...")
+                check_contact = (
+                    supabase_client.table("url_contactees")
+                    .select("id")
+                    .eq("url", url)
+                    .eq("user_id", current_user_id)
+                    .execute()
+                )
+
+                if check_contact.data:
+                    yield f"⏭️ Déjà contacté ({url}), skip..."
+                    print("Déjà dans la base, on passe au suivant.")
+                    continue
 
                 # for i, url in enumerate(urls, start=1):
                 #     yield f"On accède au profil {i}/{len(urls)}..."
@@ -69,7 +84,7 @@ def send_message(driver, job_title, message, offre, config_db):
 
                 print(f"Contenu pour checker les candidats chez nava: {content_lower}")
 
-                current_user_id = config_db.get("user_id")
+                # current_user_id = config_db.get("user_id")
                 res = (
                     supabase_client.table("profiles")
                     .select("*, cabinets(nom)")

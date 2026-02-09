@@ -397,16 +397,30 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
                 supabase_client.table("profiles")
                 .select("*, cabinets(nom)")
                 .eq("id", current_user_id)
-                .single()
+                # .single()
                 .execute()
             )
+            print(f"Supabase response: {res}")
 
-            cabinet_data = res.data.get("cabinets", {})
-            cabinet_name = cabinet_data.get("nom", "").lower().strip()
-            print(f"Cabinet name: {cabinet_name}")
+            # cabinet_data = res.data[0].get("cabinets") or {}
+            cabinet_name = ""
+            if res.data and len(res.data) > 0:
+                first_row = res.data[0]
+                if isinstance(first_row, dict):
+                    cabinet_data = first_row.get("cabinets", {})
+                    if isinstance(cabinet_data, dict):
+                        cabinet_name = (
+                            str(cabinet_data.get("nom") or "").lower().strip()
+                        )
+                        print(f"Cabinet name: {cabinet_name}")
 
-            yield "On va vérifier si la personne est chez nous"
-            print("On va vérifier si la personne est chez nous")
+                # cabinet_data = res.data[0].get("cabinets", {})
+                # first_row = data[0]
+                # cabinet_name = cabinet_data.get("nom", "").lower().strip()
+                # print(f"Cabinet name: {cabinet_name}")
+
+            yield "On va vérifier si la personne est chez nous..."
+            print("On va vérifier si la personne est chez nous...")
             time.sleep(6)
             if cabinet_name:
                 exclusions = [cabinet_name, cabinet_name.replace(" ", "")]
