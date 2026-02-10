@@ -141,6 +141,7 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                         )
                         yield f"Pas de spécifications au cabinet {cabinet_name} dans son profil..."
 
+                # can_proceed = True
                 if mode == "sourcing":
                     ia_check, is_top, argument = prompt_check_ia_profile(
                         offre, profile_main_content
@@ -149,6 +150,7 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                     print(
                         f"ia_check: {ia_check}, is_top: {is_top}, argument: {argument}"
                     )
+
                     time.sleep(random.uniform(3, 5))
 
                     if not ia_check:
@@ -159,11 +161,13 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                         yield f"Ce candidat semble être pertinent pour l'offre {offre['title']}"
                         time.sleep(random.uniform(3, 5))
                         print("Candidat pertinent...")
+
                     if is_top:
                         print("Candidat top, on envoie un mail...")
                         send_mail(argument, url, config_db)
                         yield "Mail envoyé"
-                        continue
+                        # continue
+
                 # except Exception as e:
                 #     print(f"Error checking profile content: {e}")
 
