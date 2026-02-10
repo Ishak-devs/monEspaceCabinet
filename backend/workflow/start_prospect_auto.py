@@ -39,6 +39,7 @@ def start_prospect_auto():
                 .lte("hour_start", maintenant.isoformat())
                 .execute()
             )
+            # print(f"CONTENU BRUT SUPABASE : {res.data}")
             data = cast(list[dict[str, Any]], res.data or [])
             print(f"DEBUG - Nombre de jobs trouvés : {len(data)}")
             time.sleep(60)
@@ -50,9 +51,13 @@ def start_prospect_auto():
                     uid = job.get("user_id")
                     job_id = job.get("id")
                     title = str(job.get("job_title") or "")
-                    details = str(job.get("job_details") or "")
+                    details = str(job.get("details") or "")
                     mode = str(job.get("mode") or "")
                     offre = str(job.get("offre") or "")
+
+                    print(
+                        f"DEBUG - Job ID : {job_id}, Title : {title}, Details : {details}"
+                    )
 
                     if uid not in user_lock:
                         user_lock[uid] = threading.Lock()
