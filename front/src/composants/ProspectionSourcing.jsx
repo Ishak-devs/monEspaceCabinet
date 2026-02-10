@@ -130,7 +130,7 @@ function ProspectionSourcing() {
         {
           method: "POST",
           headers,
-          body: JSON.stringify({ intitule, details, mode, offre }),
+          body: JSON.stringify({ intitule, details, mode, offre, people }),
         },
       );
 
