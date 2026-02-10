@@ -10,7 +10,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from treatment.send_mail import send_mail
-from uvicorn import config
+
+# from uvicorn import config
 
 # from selenium.webdriver.support import expected_conditions as EC
 # from selenium.webdriver.support.ui import WebDriverWait
@@ -18,7 +19,7 @@ from uvicorn import config
 
 def send_message(driver, job_title, message, offre, mode, config_db):
     print("Début de l'envoi de messages directs...")
-    print(f"Mode : {mode}")
+    print(f"Mode dans send message : {mode}")
     yield f"Démarrage de l'envoi de messages directs pour {job_title}..."
     # links = driver.find_elements(
     #     By.XPATH,
@@ -158,6 +159,7 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                         print("Candidat top, on envoie un mail")
                         send_mail(argument, url, config_db)
                         yield "Mail envoyé"
+                        continue
                 # except Exception as e:
                 #     print(f"Error checking profile content: {e}")
 

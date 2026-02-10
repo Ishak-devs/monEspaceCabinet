@@ -535,7 +535,7 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
     try:
         from prospection.send_message import send_message
 
-        for update in send_message(driver, job_title, message, offre, config_db):
+        for update in send_message(driver, job_title, message, offre, mode, config_db):
             yield update
     except Exception as e:
         print(f"Erreur passage messages : {e}")
