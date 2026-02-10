@@ -303,6 +303,7 @@ async def start_prospection(
                         "query": body.intitule,
                         "is_active": True,
                         "details": body.details,
+                        "mode": body.mode,
                         "offre": body.offre or "".replace("\x00", ""),
                         "user_id": current_user_id,
                         "hour_start": prochaine_heure.replace(tzinfo=None).isoformat(),
