@@ -158,7 +158,7 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                         yield "Candidat non pertinent"
                         continue
                     else:
-                        yield f"Ce candidat semble être pertinent pour l'offre {offre['title']}"
+                        yield "Ce candidat semble être pertinent pour l'offre..."
                         time.sleep(random.uniform(3, 5))
                         print("Candidat pertinent...")
 

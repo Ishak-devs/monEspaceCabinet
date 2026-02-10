@@ -100,8 +100,8 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
     options.add_argument("--disk-cache-size=1")
     options.add_argument("--media-cache-size=1")
 
-    job_title = config_db.get("job_title")
-    print("Titre du poste:", job_title)
+    job_title = config_db.get("query")
+    print(f"Titre du poste: {job_title}")
 
     # tel_final = data.get("telephone") or ""
     # name_final = data.get("full_name") or ""
@@ -328,7 +328,7 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
                     slow_type(email_input, email_user)
                 else:
                     print("❌ Email manquant dans config_db")
-                    yield "Email linkedin non trouvé dans vos infos."
+                    yield "Email linkedin non trouvé dans vos infos..."
                     return
 
                 time.sleep(random.uniform(2, 4))
