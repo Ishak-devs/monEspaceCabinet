@@ -2,6 +2,7 @@
 # import random
 # import time
 # from datetime import time as dt_time
+import os
 import random
 import threading
 import time
@@ -39,14 +40,19 @@ def start_prospect_auto():
                 .lte("hour_start", maintenant.isoformat())
                 .execute()
             )
+
             # print(f"CONTENU BRUT SUPABASE : {res.data}")
             data = cast(list[dict[str, Any]], res.data or [])
             print(f"DEBUG - Nombre de jobs trouvés : {len(data)}")
             time.sleep(60)
             # prospection_lock = Lock()
+            #
 
             # Pour recuperer le verrou si il est pas pris
             try:
+                KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
+                print(f"KEY: {KEY_SECRET}")
+
                 for job in data:
                     uid = job.get("user_id")
                     job_id = job.get("id")
@@ -54,6 +60,29 @@ def start_prospect_auto():
                     details = str(job.get("details") or "")
                     mode = str(job.get("mode") or "")
                     offre = str(job.get("offre") or "")
+
+                    rpc_res = supabase_client.rpc(
+                        "get_decrypted_settings",
+                        {"job_title_input": title, "key_input": KEY_SECRET},
+                    ).execute()
+                    # data = rpc_res.data
+
+                    # if rpc_res.data and len(rpc_res.data) > 0:
+                    data_list = rpc_res.data
+                    if isinstance(data_list, list) and len(data_list) > 0:
+                        decrypted_data = data_list[0]
+                        if isinstance(decrypted_data, dict):
+                            print("DEBUG - Settings linkedin successfully")
+                            job["linkedin_email"] = decrypted_data.get("linkedin_email")
+                            job["linkedin_password"] = decrypted_data.get(
+                                "linkedin_password"
+                            )
+                            print(f"linkedin_email: {job['linkedin_email']}")
+                            print(f"linkedin_password: {job['linkedin_password']}")
+                        else:
+                            print("DEBUG - Invalid settings format")
+                    else:
+                        print("DEBUG - No settings linkedin found")
 
                     print(
                         f"DEBUG - Job ID : {job_id}, Title : {title}, Details : {details}"
