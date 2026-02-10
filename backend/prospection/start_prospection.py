@@ -103,6 +103,10 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
     job_title = config_db.get("query")
     print(f"Titre du poste: {job_title}")
 
+    if not job_title:
+        job_title = config_db.get("job_title")
+        print(f"Titre du poste: {job_title}")
+
     # tel_final = data.get("telephone") or ""
     # name_final = data.get("full_name") or ""
 
