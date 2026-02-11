@@ -405,7 +405,10 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
                 query_encoded = urllib.parse.quote(job_title)
                 target_url = f"https://www.linkedin.com/search/results/people/?keywords={query_encoded}&origin=SWITCH_SEARCH_VERTICAL&page={page}"
                 driver.get(target_url)
-                yield "On accède à la liste des personnes..."
+                driver.execute_script(
+                    "window.scrollTo(0, document.body.scrollHeight/2);"
+                )
+                yield "On va chercher des personnes..."
             except Exception as e:
                 print(f"{str(e)}")
 
@@ -416,7 +419,7 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
                 "//a[contains(@aria-label, 'Inviter') and contains(@aria-label, 'rejoindre votre réseau')]",
             )
 
-            yield f"✓ {len(boutons_conx)} personnes trouvés en première page..."
+            yield f"✓ {len(boutons_conx)} personnes trouvés..."
 
             for i, bouton in enumerate(boutons_conx):
                 try:
