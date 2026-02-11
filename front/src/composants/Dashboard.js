@@ -75,7 +75,7 @@ function Dashboard() {
 
           {/* Email automatisé */}
           <div
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/EmailAuto")}
             className="border border-gray-200 rounded p-4 cursor-pointer hover:bg-gray-50 transition-colors group"
           >
             <div className="flex items-start">

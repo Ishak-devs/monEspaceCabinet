@@ -78,7 +78,7 @@ function Header({ cabinetName }) {
               </Link>
 
               <Link
-                to="Email_auto"
+                to="EmailAuto"
                 className="text-xs text-gray-600 hover:text-gray-900"
               >
                 Email automatisé
