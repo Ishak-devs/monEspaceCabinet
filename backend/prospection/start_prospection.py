@@ -13,12 +13,12 @@ import undetected_chromedriver as uc
 
 # import urllib.parse
 # from operator import call
-from data.prompt.prospection.prompt_message_prospection import (
-    prompt_message_prospection,
-)
-from data.prompt.prospection.prompt_message_sourcing import (
-    prompt_message_sourcing,
-)
+# from data.prompt.prospection.prompt_message_prospection import (
+#     prompt_message_prospection,
+# )
+# from data.prompt.prospection.prompt_message_sourcing import (
+#     prompt_message_sourcing,
+# )
 from database import supabase_client
 
 # from data.supabase_client import supabase_client
@@ -33,7 +33,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from treatment.behavior.mouse import human_mouse_move
 
-from data.call_groq import call_groq
+# from data.call_groq import call_groq
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # from locks import user_lock
@@ -91,7 +91,7 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
     print(f"[DEBUG] Path profil: {profil_path}")
     options.add_argument(f"--user-data-dir={profil_path}")
     options.add_argument("--profile-directory=Default")
-    options.add_argument("--headless=new")
+    # options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-setuid-sandbox")
@@ -127,19 +127,19 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
     print(f"KEY: {KEY_SECRET}")
     try:
         yield "Lancemenent..."
-        print("🤖 [DEBUG] Appel Groq pour le message...")
-        time.sleep(3)
-        instruction = ""
-        if mode == "prospection":
-            instruction = prompt_message_prospection(
-                job_title, details, telephone, full_name
-            )
-        elif mode == "sourcing":
-            instruction = prompt_message_sourcing(
-                job_title, details, telephone, full_name
-            )
-        message = call_groq(instruction)
-        print(f"{message}")
+        print("Lancement...")
+        # time.sleep(3)
+        # instruction = ""
+        # if mode == "prospection":
+        #     instruction = prompt_message_prospection(
+        #         job_title, details, telephone, full_name
+        #     )
+        # elif mode == "sourcing":
+        #     instruction = prompt_message_sourcing(
+        #         job_title, details, telephone, full_name
+        #     )
+        # message = call_groq(instruction)
+        # print(f"{message}")
 
         yield "Traitement des informations fournies..."
 
@@ -172,6 +172,15 @@ def run_chrome(job_title: str, details: str, mode: str, offre, config_db):
     )
     time.sleep(random.randint(10, 30))
     print("temps choisi : ", random.randint(10, 30))
+
+    print("On va supprimer le lock")
+    lock_path = os.path.join(profil_path, "SingletonLock")
+    if os.path.exists(lock_path):
+        os.remove(lock_path)
+        print(f"✅ Lock supprimé pour le profil {uid}")
+    else:
+        print(f"❌ Lock introuvable pour le profil {uid}")
+
     driver = uc.Chrome(
         options=options,
         service=chrome_service,

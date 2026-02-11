@@ -5,11 +5,19 @@ import traceback
 from data.prompt.prospection.prompt_check_ia_profile import (
     prompt_check_ia_profile,
 )
+from data.prompt.prospection.prompt_message_prospection import (
+    prompt_message_prospection,
+)
+from data.prompt.prospection.prompt_message_sourcing import (
+    prompt_message_sourcing,
+)
 from database import supabase_client
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from treatment.send_mail import send_mail
+
+from data.call_groq import call_groq
 
 # from uvicorn import config
 
@@ -17,7 +25,9 @@ from treatment.send_mail import send_mail
 # from selenium.webdriver.support.ui import WebDriverWait
 
 
-def send_message(driver, job_title, message, offre, mode, config_db):
+def send_message(
+    driver, job_title, offre, mode, config_db, details, telephone, full_name
+):
     print("Début de l'envoi de messages directs...")
     print(f"Mode dans send message : {mode}")
     yield f"Démarrage de l'envoi de messages directs pour {job_title}..."
@@ -140,6 +150,21 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                             f"Pas de spécifications au cabinet {cabinet_name} dans son profil..."
                         )
                         yield f"Pas de spécifications au cabinet {cabinet_name} dans son profil..."
+
+                yield "Lancemenent..."
+                print("🤖 [DEBUG] Appel Groq pour le message...")
+                time.sleep(3)
+                instruction = ""
+                if mode == "prospection":
+                    instruction = prompt_message_prospection(
+                        job_title, details, telephone, full_name
+                    )
+                elif mode == "sourcing":
+                    instruction = prompt_message_sourcing(
+                        job_title, details, telephone, full_name
+                    )
+                message = call_groq(instruction)
+                print(f"{message}")
 
                 # can_proceed = True
                 if mode == "sourcing":
