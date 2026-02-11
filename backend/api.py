@@ -3,7 +3,7 @@ import random
 import threading
 import unicodedata
 from contextlib import asynccontextmanager
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from pathlib import Path
 
 # from time import timezone
@@ -32,21 +32,21 @@ from workflow.start_prospect_auto import start_prospect_auto
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    try:
-        supabase_client.table("prospection_settings").update({"is_active": False}).neq(
-            "id", -1
-        ).execute()
-        print("Supabase : Tous les statuts ont été réinitialisés.")
-    except Exception as e:
-        print(f"⚠️ Erreur reset démarrage: {e}")
+async def thread_(app: FastAPI):
+    # try:
+    #     supabase_client.table("prospection_settings").update(
+    #         {"is_active": False}
+    #     ).execute()
+    #     print("Supabase : Tous les statuts ont été réinitialisés.")
+    # except Exception as e:
+    #     print(f"⚠️ Erreur reset démarrage: {e}")
     thread = threading.Thread(target=start_prospect_auto, daemon=True)
     thread.start()
-    print("🔥 Serveur prêt, check Supabase au démarrage...")
+    print("Lancement de thread...")
     yield
 
 
-app = FastAPI(title="Fillcloud API", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="Fillcloud API", version="1.0.0", lifespan=thread_)
 KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
 print(f"KEY: {KEY_SECRET}")
 
