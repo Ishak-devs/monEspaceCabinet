@@ -305,14 +305,14 @@ def send_message(
                 yield "✅ Message envoyé !"
                 time.sleep(random.uniform(5, 9))
 
-                try:
+                is_still_here = driver.find_elements(By.XPATH, xpath_input)
+
+                if not is_still_here:
                     current_user_id = config_db.get("user_id")
                     print(f"User ID: {current_user_id}")
                     supabase_client.table("url_contactees").insert(
                         {"url": url, "user_id": current_user_id}
                     ).execute()
-                except Exception as e:
-                    print(f"Erreur: {e}")
 
             except Exception as e:
                 traceback.print_exc()
