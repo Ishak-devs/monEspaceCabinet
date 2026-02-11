@@ -41,6 +41,13 @@ function Header() {
           Acceuil
         </Link>
 
+        {/* <Link
+          to="/"
+          className="text-sm font-normal text-gray-900 hover:text-gray-700"
+        >
+          Email automatisé
+        </Link>*/}
+
         <div className="hidden md:flex items-center space-x-4">
           {user && (
             <>
@@ -67,6 +74,13 @@ function Header() {
                 className="text-xs text-gray-600 hover:text-gray-900"
               >
                 Dossier de compétences
+              </Link>
+
+              <Link
+                to="/"
+                className="text-xs text-gray-600 hover:text-gray-900"
+              >
+                Email automatisé
               </Link>
               {/* <Link
                 to="/SignupUser"
