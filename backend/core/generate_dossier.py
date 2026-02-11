@@ -5,13 +5,14 @@ from data.extract_and_call_prompt_api import (
     extract_and_call_prompt_api,
 )
 from docxtpl import DocxTemplate
-from treatment.fix_logiciels_outils import fix_logiciels_outils
 from treatment.jinja2.create_jinra_env import create_jinra_env
 from treatment.json.replace_json_element.replace_empersand import replace_ampersand
 from treatment.json.replace_json_element.replace_level_language import (
     replace_level_language,
 )
 from treatment.path_ressources import ressources_path
+
+from core.fix_logiciels_outils import fix_logiciels_outils
 
 
 def generate_dossier_api(

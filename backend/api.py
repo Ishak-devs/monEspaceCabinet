@@ -23,12 +23,13 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
-from lock import prospection_lock
+
+# from lock import prospection_lock
 from locks import user_lock
 from postgrest.base_request_builder import APIResponse
+from prospection.start_prospect_auto import start_prospect_auto
 from prospection.start_prospection import run_chrome
 from pydantic import BaseModel
-from workflow.start_prospect_auto import start_prospect_auto
 
 
 @asynccontextmanager
