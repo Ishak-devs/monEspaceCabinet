@@ -1,9 +1,11 @@
 import random
 import time
+import traceback
 
 from data.prompt.post_prompt import post_prompt
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -13,7 +15,7 @@ from data.call_groq import call_groq
 def post_message(driver, post):
 
     try:
-        instruction = "Aide nous à généré un message pour Linkedin"
+        instruction = "Donne un message court en une phrase"
         prompt = post_prompt(instruction)
         message_ia = call_groq(prompt)
         print(f"Message généré : {message_ia}")
@@ -44,12 +46,6 @@ def post_message(driver, post):
                 return findDeep("div[contenteditable='true'], div[role='textbox'], .ql-editor");
                 """
 
-        # editor = wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.CSS_SELECTOR, "div[role='textbox'], .ql-editor")
-        #     )
-        # )
-        #
         editor = driver.execute_script(js_find_editor)
         print("Editor found")
 
@@ -63,28 +59,57 @@ def post_message(driver, post):
             actions.perform()
 
             print("Editor clicked")
-            yield "Messag reçu de la part du modèle.."
-            time.sleep(5)
+            yield "Message reçu de la part du modèle..."
+            time.sleep(2)
+            yield "✍️ Écriture du message en cours..."
 
             for char in message_ia:
+                # time.sleep(3)
                 actions.send_keys(char)
                 actions.perform()
-                time.sleep(random.uniform(0.10, 0.15))
-                # print(f"Char sent: {char}")
-
-            publish_xpath = "//button[contains(., 'Publier')]"
-            publish_btn = wait.until(
-                EC.element_to_be_clickable((By.XPATH, publish_xpath))
+                time.sleep(0.01)
+            time.sleep(2)
+            # print(f"Char sent: {char}")
+            #
+            # editor.send_keys(Keys.ENTER)
+            # publish_xpath = "//button[contains(@class, 'share-actions__primary-action') and not(contains(@class, 'disabled'))]"
+            # publish_xpath = "//button[contains(normalize-space(.), 'Publier')]"
+            print("Publish button tentative")
+            publish_xpath = (
+                "//button[contains(@class, 'share-actions__primary-action')]"
             )
+            # publish_btn = wait.until(
+            #     EC.element_to_be_clickable((By.XPATH, publish_xpath))
+            # )
             try:
-                time.sleep(random.uniform(0.50, 0.90))
+                publish_btn = wait.until(
+                    EC.presence_of_element_located((By.XPATH, publish_xpath))
+                )
+                driver.execute_script(
+                    "arguments[0].scrollIntoView({block: 'center'});", publish_btn
+                )
+                driver.execute_script(
+                    "arguments[0].removeAttribute('disabled');", publish_btn
+                )
+                time.sleep(1)
                 driver.execute_script("arguments[0].click();", publish_btn)
+                # except Exception as e:
+                #     print(f"Erreur lors de la recherche du bouton de publication : {e}")
+
+                # try:
+                #     publish_btn.click()
+                # except Exception as e:
+                #     print(f"Erreur lors du clic sur le bouton de publication : {e}")
+                #     driver.execute_script("arguments[0].click();", publish_btn)
+                time.sleep(3)
+                # driver.execute_script("arguments[0].click();", publish_btn)
                 print("Message published")
-                yield "Message publié..."
+                yield "Message publié avec succès..."
                 time.sleep(5)
 
-            except Exception as e:
-                print(f"Erreur lors de la publication du message : {e}")
+            except Exception:
+                traceback.print_exc()
+                print("------------------------")
 
     except Exception as e:
         print(f"Erreur : {e}")

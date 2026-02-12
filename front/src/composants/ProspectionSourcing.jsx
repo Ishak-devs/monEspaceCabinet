@@ -16,8 +16,7 @@ function ProspectionSourcing() {
   const [mode, setMode] = useState("");
   const [details, setDetails] = useState("");
   const [offre, setOffre] = useState("");
-  // const [people, Setpeople_precise] = useState("");
-
+  const [post, setPost] = useState("");
   const [statusLogs, setStatusLogs] = useState(() => {
     const saved = localStorage.getItem("prospection_logs");
     return saved ? JSON.parse(saved) : [];
@@ -179,6 +178,25 @@ function ProspectionSourcing() {
             Prospection et sourcing
           </h1>
           <p className="text-gray-500 text-xs mt-0.5">Gestion</p>
+        </div>
+
+        <div>
+          <label
+            htmlFor="post"
+            className="block text-xs font-normal text-gray-600 mb-1.5"
+          >
+            Indication au modèle concernant les posts
+          </label>
+          <input
+            id="post"
+            type="text"
+            value={post}
+            onChange={(e) => setPost(e.target.value)}
+            disabled={isLoading}
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50"
+            placeholder="post..."
+            // required
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
