@@ -1,27 +1,17 @@
-# import datetime
-# import random
-# import time
-# from datetime import time as dt_time
 import os
 import random
 import threading
 import time
 from datetime import datetime, timedelta
-from threading import Lock
 
 # from threading import Lock
 from typing import Any, cast
 
-# import pytz
-# import supabase
 from database import supabase_client
 from locks import user_lock
-
-# from typing_extensions import Sequence
-# from lock import prospection_lock
 from prospection.start_prospection import run_chrome
 
-prospection_lock = Lock()
+# prospection_lock = Lock()
 
 
 def start_prospect_auto():
@@ -32,7 +22,7 @@ def start_prospect_auto():
     while True:
         try:
             maintenant = datetime.now().astimezone()
-            # delai = random.randint(1, 55)
+
             res = (
                 supabase_client.table("prospection_settings")
                 .select("*")
@@ -41,12 +31,10 @@ def start_prospect_auto():
                 .execute()
             )
 
-            # print(f"CONTENU BRUT SUPABASE : {res.data}")
+            print(f"CONTENU BRUT SUPABASE : {res.data}")
             data = cast(list[dict[str, Any]], res.data or [])
             print(f"DEBUG - Nombre de jobs trouvés : {len(data)}")
             time.sleep(60)
-            # prospection_lock = Lock()
-            #
 
             # Pour recuperer le verrou si il est pas pris
             try:

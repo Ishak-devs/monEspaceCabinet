@@ -2,28 +2,30 @@ import random
 import time
 import traceback
 
+from core.send_mail import send_mail
 from data.prompt.prospection.prompt_check_ia_profile import (
     prompt_check_ia_profile,
+)
+from data.prompt.prospection.prompt_message_prospection import (
+    prompt_message_prospection,
+)
+from data.prompt.prospection.prompt_message_sourcing import (
+    prompt_message_sourcing,
 )
 from database import supabase_client
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from treatment.send_mail import send_mail
 
-# from uvicorn import config
-
-# from selenium.webdriver.support import expected_conditions as EC
-# from selenium.webdriver.support.ui import WebDriverWait
+from data.call_groq import call_groq
 
 
-def send_message(driver, job_title, message, offre, mode, config_db):
+def send_message(
+    driver, job_title, offre, mode, config_db, details, telephone, full_name
+):
     print("Début de l'envoi de messages directs...")
     print(f"Mode dans send message : {mode}")
-    yield f"Démarrage de l'envoi de messages directs pour {job_title}..."
-
-    offre_content = str(offre).strip() if offre else ""
-
+    yield f"Démarrage envoi de messages pour {job_title}... en mode {mode}"
     # links = driver.find_elements(
     #     By.XPATH,
     #     "//span[contains(@class, 'entity-result__title-line')]//a[contains(@href, '/in/')]",
@@ -44,12 +46,11 @@ def send_message(driver, job_title, message, offre, mode, config_db):
             if url not in urls:
                 urls.append(url)
 
-        yield f"Nombre de profils trouvés : {len(urls)}"
-        print(f"Nombre de profils trouvés : {len(urls)}")
+        yield f"{len(urls)} profils trouvés..."
+        print(f"{len(urls)} profils trouvés")
 
     except Exception as e:
         print(f"Erreur lors de la récupération des liens : {e}")
-        # yield f"Erreur lors de la récupération des liens : {e}"
         return
 
     for u, url in enumerate(urls, start=1):
@@ -64,6 +65,7 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                 driver.get(url)
                 current_user_id = config_db.get("user_id")
                 print(f"current_user_id: {current_user_id}")
+
                 yield "On va vérifier si le profil à été contacté récemment..."
                 print("On va vérifier si le profil à été contacté récemment...")
                 time.sleep(random.uniform(5, 8))
@@ -83,26 +85,18 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                     continue
                 yield "Pas encore contacté..."
 
-                # for i, url in enumerate(urls, start=1):
-                #     yield f"On accède au profil {i}/{len(urls)}..."
-                #     time.sleep(random.uniform(5, 8))
-
                 profile_main_content = driver.find_element(
                     By.TAG_NAME, "main"
                 ).text.lower()
                 content_lower = profile_main_content
 
-                print(f"Contenu pour checker les candidats chez nava: {content_lower}")
-
-                # current_user_id = config_db.get("user_id")
-                #
+                print(f"Contenu pour checker les candidats : {content_lower}")
 
                 current_user_id = config_db.get("user_id")
                 res = (
                     supabase_client.table("profiles")
                     .select("*, cabinets(nom)")
                     .eq("id", current_user_id)
-                    # .single()
                     .execute()
                 )
 
@@ -117,12 +111,7 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                             )
                             print(f"Cabinet name: {cabinet_name}")
 
-                    # cabinet_data = res.data[0].get("cabinets", {})
-                    # first_row = data[0]
-                    # cabinet_name = cabinet_data.get("nom", "").lower().strip()
-                    # print(f"Cabinet name: {cabinet_name}")
-
-                yield "On va vérifier si la personne est chez nous..."
+                yield f"On va vérifier si le profil mentionne {cabinet_name}..."
                 print("On va vérifier si la personne est chez nous...")
                 time.sleep(6)
 
@@ -144,7 +133,6 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                         )
                         yield f"Pas de spécifications au cabinet {cabinet_name} dans son profil..."
 
-                # can_proceed = True
                 if mode == "sourcing":
                     if len(offre_content) > 10:
                         print("Offre Transmise...")
@@ -158,23 +146,28 @@ def send_message(driver, job_title, message, offre, mode, config_db):
 
                         time.sleep(random.uniform(3, 5))
 
-                        if not ia_check:
-                            print("Candidat non pertinent")
-                            yield "Candidat non pertinent"
-                            continue
-                        else:
-                            yield "Ce candidat semble être pertinent pour l'offre..."
-                            time.sleep(random.uniform(3, 5))
-                            print("Candidat pertinent...")
+                    if is_top:
+                        print("Candidat top, on envoie un mail...")
+                        send_mail(argument, url, config_db)
+                        yield "Mail envoyé"
+                        # continue
+                        #
 
-                        if is_top:
-                            print("Candidat top, on envoie un mail...")
-                            send_mail(argument, url, config_db)
-                            yield "Mail envoyé"
-                            # continue
-
-                # except Exception as e:
-                #     print(f"Error checking profile content: {e}")
+                yield "🤖 Appel du modèle pour générer un message..."
+                print("🤖 [DEBUG] Appel Groq pour le message...")
+                time.sleep(random.uniform(6, 8))
+                instruction = ""
+                if mode == "prospection":
+                    instruction = prompt_message_prospection(
+                        job_title, details, telephone, full_name
+                    )
+                elif mode == "sourcing":
+                    instruction = prompt_message_sourcing(
+                        job_title, details, telephone, full_name
+                    )
+                message = call_groq(instruction)
+                print(f"{message}")
+                yield "Message reçu..."
 
                 time.sleep(random.uniform(6, 8))
             except Exception as e:
@@ -209,17 +202,6 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                     )
                 )
             )
-            # container = button.find_element(
-            #     By.XPATH, "./ancestor::div[@role='listitem'][1]"
-            # )
-            # print(f"Container text: {container.text}")
-            # infos_profil = container.text.lower().replace("\n", "").strip()
-            # keyword_exclude = ["nava engineering", "navaengineering"]
-
-            # if any(keyword in infos_profil for keyword in keyword_exclude):
-            #     yield "Personne chez nava, on prospecte pas ce profil..."
-            #     print("Personne chez nava, on prospecte pas ce profil...")
-            #     return
 
             driver.execute_script(
                 "arguments[0].scrollIntoView({block: 'center'});", button
@@ -245,6 +227,7 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                 return
                 # on ecris le message
             try:
+                message = ""
 
                 def slow_type(element, text):
                     for char in text:
@@ -285,14 +268,14 @@ def send_message(driver, job_title, message, offre, mode, config_db):
                 yield "✅ Message envoyé !"
                 time.sleep(random.uniform(5, 9))
 
-                try:
-                    current_user_id = config_db.get("user_id")
-                    print(f"User ID: {current_user_id}")
-                    supabase_client.table("url_contactees").insert(
-                        {"url": url, "user_id": current_user_id}
-                    ).execute()
-                except Exception as e:
-                    print(f"Erreur: {e}")
+                # is_still_here = driver.find_elements(By.XPATH, xpath_input)
+
+                # if not is_still_here:
+                current_user_id = config_db.get("user_id")
+                print(f"User ID: {current_user_id}")
+                supabase_client.table("url_contactees").insert(
+                    {"url": url, "user_id": current_user_id}
+                ).execute()
 
             except Exception as e:
                 traceback.print_exc()
@@ -305,19 +288,9 @@ def send_message(driver, job_title, message, offre, mode, config_db):
             print(e)
             continue
 
-    # finally:
-    #     config_id = config_db.get("id")
-    #     if config_id:
-    #         try:
-    #             supabase_client.table("prospection_settings").update(
-    #                 {"is_active": False}
-    #             ).eq("id", config_id).execute()
-    #             # yield f"✅ Session terminée {config_id}, fermeture navigateur.."
-    #         except Exception as e:
-    #             if "204" not in str(e) and "Missing response" not in str(e):
-    #                 print(f"Erreur DB: {e}")
-    #             else:
-    #                 print(f"Log technique: {e}")
+        finally:
+            yield "✅FIn de programme, nous avons contacté {count} utilisateurs"
+
     if "driver" in locals():
         driver.quit()
         return

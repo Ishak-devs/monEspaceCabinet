@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
 import { useEffect, useState } from "react";
+import Header from "./Header";
 
 function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [nom, setNom] = useState(null);
+  const [cabinet, setCabinet] = useState(null);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -18,33 +20,31 @@ function Dashboard() {
 
       const { data } = await supabase
         .from("profiles")
-        .select("full_name")
+        .select("full_name, cabinets(nom)")
         .eq("id", user.id)
         .single();
 
-      if (data) setNom(data.full_name);
+      if (data) {
+        setNom(data.full_name);
+        const nomcabinet = Array.isArray(data.cabinets)
+          ? data.cabinets[0]?.nom
+          : data.cabinets?.nom;
+
+        setCabinet(nomcabinet);
+      }
     };
     getUserData();
   }, []);
 
-  // const handleLogout = async () => {
-  //   const { lgt } = await supabase.auth.signOut();
-  //   if (lgt) {
-  //     console.error("Erreur déconnexion:", lgt.message);
-  //   } else {
-  //     navigate("/Connexion");
-  //   }
-  // };
-
   return (
     <div className="min-h-screen bg-white font-sans">
+      {/* <Header cabinetName={cabinet} />;*/}
       <div className="max-w-4xl mx-auto p-4 md:p-6">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-lg font-normal text-gray-900 mb-1">
             Tableau de bord {nom ? nom : user ? user.email : ""}
           </h1>
-          <p className="text-xs text-gray-500">Espace cabinet</p>
+          <p className="text-xs text-gray-500">Espace cabinet {cabinet}</p>
           {/* <button
             onClick={handleLogout}
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
@@ -75,7 +75,7 @@ function Dashboard() {
 
           {/* Email automatisé */}
           <div
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/EmailAuto")}
             className="border border-gray-200 rounded p-4 cursor-pointer hover:bg-gray-50 transition-colors group"
           >
             <div className="flex items-start">
