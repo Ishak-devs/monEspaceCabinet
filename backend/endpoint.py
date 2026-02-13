@@ -291,8 +291,8 @@ async def start_chrome(
                             body.intitule,
                             body.details,
                             body.mode,
-                            body.offre,
-                            body.telephone,
+                            body.offre or "",
+                            body.telephone or "",
                             body.full_name,
                             config_db,
                         ):
@@ -307,8 +307,9 @@ async def start_chrome(
                         supabase_client.table("prospection_settings").update(
                             {"is_active": False}
                         ).not_.is_("id", "null").execute()
-                        if prospection_lock.locked():
-                            prospection_lock.release()
+                        if user_lock[current_user_id].locked():
+                            user_lock[current_user_id].release()
+
                         print("🔓 Session terminée")
 
                 return StreamingResponse(stream_generator(), media_type="text/plain")
