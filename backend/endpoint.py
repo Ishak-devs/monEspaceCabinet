@@ -244,8 +244,6 @@ async def start_chrome(
                         "details": body.details,
                         "offre": body.offre or "".replace("\x00", ""),
                         "user_id": current_user_id,
-                        # "telephone": body.telephone or "",
-                        # "full_name": body.full_name or "",
                         "hour_start": prochaine_heure.isoformat(),
                     }
                 ).execute()
