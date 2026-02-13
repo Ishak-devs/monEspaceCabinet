@@ -129,9 +129,26 @@ function ProspectionSourcing() {
         {
           method: "POST",
           headers,
-          body: JSON.stringify({ intitule, details, mode, offre, post }),
+          body: JSON.stringify({
+            intitule,
+            details,
+            mode,
+            offre,
+            post,
+            telephone: "",
+            full_name: "",
+          }),
         },
       );
+
+      // const response = await fetch(
+      //   "http://192.168.122.1:8000/backend/prospection/start_chrome",
+      //   {
+      //     method: "POST",
+      //     headers,
+      //     body: JSON.stringify({ intitule, details, mode, offre }),
+      //   },
+      // );
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
