@@ -212,9 +212,7 @@ async def start_chrome(
     supabase_client.table("prospection_settings").update({"is_active": False}).not_.is_(
         "id", "null"
     ).execute()
-    # supabase_client.table("prospection_settings").update({"is_active": False}).eq(
-    #     "user_id", current_user_id
-    # ).execute()
+
     print(f"Requête supabase reçue pour {body.intitule}")
     if not user_lock[current_user_id].acquire(blocking=False):
         # print("❌ LOCK BLOQUÉ : Une autre instance tourne déjà")
