@@ -198,6 +198,40 @@ function ProspectionSourcing() {
         </div>
 
         <div>
+          <label className="block text-xs font-normal text-gray-600 mb-2">
+            Type de travail
+          </label>
+          <div className="flex gap-4">
+            <label className="flex items-center text-xs font-normal text-gray-700 cursor-pointer">
+              <input
+                type="radio"
+                name="vue_equipe"
+                value="vue_equipe"
+                checked={mode === "vue_equipe"}
+                onChange={(e) => setMode(e.target.value)}
+                disabled={isLoading}
+                className="mr-2 accent-black"
+                required
+              />
+              Vue d'équipe
+            </label>
+            <label className="flex items-center text-xs font-normal text-gray-700 cursor-pointer">
+              <input
+                type="radio"
+                name="vue_personelle"
+                value="vue_personelle"
+                checked={mode === "vue_personelle"}
+                onChange={(e) => setMode(e.target.value)}
+                disabled={isLoading}
+                className="mr-2 accent-black"
+                required
+              />
+              Vue personnelle
+            </label>
+          </div>
+        </div>
+
+        <div>
           <label
             htmlFor="post"
             className="block text-xs font-normal text-gray-600 mb-1.5"
