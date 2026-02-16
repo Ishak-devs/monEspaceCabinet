@@ -54,6 +54,7 @@ def send_message(
         return
 
     for u, url in enumerate(urls, start=1):
+        message = ""
         try:
             try:
                 print(f"Traitement du profil {u}/{len(urls)}...")
@@ -234,7 +235,6 @@ def send_message(
                 return
                 # on ecris le message
             try:
-                message = ""
 
                 def slow_type(element, text):
                     for char in text:
