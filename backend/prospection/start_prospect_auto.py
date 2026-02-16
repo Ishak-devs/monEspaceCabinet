@@ -69,7 +69,7 @@ def start_prospect_auto():
                             and get_post_instruction.data
                             and len(get_post_instruction.data) > 0
                         ):
-                            post = (
+                            post = str(
                                 get_post_instruction.data[0].get("instruction_post")
                                 or ""
                             )
