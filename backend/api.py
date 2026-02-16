@@ -243,6 +243,7 @@ async def start_prospection(
 
         print("Recuperation de l id du cabinet")
 
+        cabinet_id = None
         res_cabinet = (
             supabase_client.table("profiles")
             .select("cabinet_id")
@@ -251,7 +252,6 @@ async def start_prospection(
             .execute()
         )
 
-        # cabinet_id = None
         if res_cabinet.data and isinstance(res_cabinet.data, dict):
             cabinet_id = res_cabinet.data.get("cabinet_id")
 

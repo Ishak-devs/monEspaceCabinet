@@ -17,8 +17,9 @@ def post_message(driver, post, config_db):
 
     full_name = config_db.get("full_name")
     telephone = config_db.get("telephone")
-    cabinet_name = config_db.get("cabinets", {}).get("nom") if config_db else None
+    cabinet_name = config_db.get("cabinet_name")
     print(
+        "Infos pour post message:"
         f"Full Name: {full_name}, Telephone: {telephone}, Cabinet Name: {cabinet_name}"
     )
 

@@ -47,7 +47,7 @@ def run_chrome(
     print(f"[DEBUG] Entrée dans run_chrome pour: {job_title}")
     print(f"[DEBUG] Détails de la prospection : {details}")
     print(f"[DEBUG] Mode : {mode}")
-    print(f"[DEBUG] Post : {post}")
+    print(f"[DEBUG] Détails pour le post linkedin : {post}")
     print(f"CONFIG DB: {config_db}")
 
     uid = config_db.get("user_id")
