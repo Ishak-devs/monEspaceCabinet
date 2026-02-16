@@ -324,6 +324,7 @@ async def start_prospection(
         config_db = {
             "id": data.get("id"),
             "cabinet_id": data.get("cabinet_id"),
+            "cabinet_name": data.get("cabinets", {}).get("nom") if data else None,
             "user_id": current_user_id,
             "linkedin_email": data.get("linkedin_email"),
             "linkedin_password": data.get("linkedin_password"),
