@@ -186,18 +186,6 @@ async def get_prospection(request: Request):
             .execute()
         )
 
-        res_cabinet = (
-            supabase_client.table("profiles")
-            .select("cabinet_id")
-            .eq("id", current_user_id)
-            .single()
-            .execute()
-        )
-
-        cabinet_id = None
-        if res_cabinet.data and isinstance(res_cabinet.data, dict):
-            cabinet_id = res_cabinet.data.get("cabinet_id")
-
         return res.data if res.data else []
 
     except Exception as e:
@@ -252,6 +240,22 @@ async def start_prospection(
 
     try:
         print("LOCK ACQUIS")
+
+        print("Recuperation de l id du cabinet")
+
+        res_cabinet = (
+            supabase_client.table("profiles")
+            .select("cabinet_id")
+            .eq("id", current_user_id)
+            .single()
+            .execute()
+        )
+
+        cabinet_id = None
+        if res_cabinet.data and isinstance(res_cabinet.data, dict):
+            cabinet_id = res_cabinet.data.get("cabinet_id")
+
+            print(f"ID du cabinet récupéré : {cabinet_id}")
 
         print("On lance la requête")
 
