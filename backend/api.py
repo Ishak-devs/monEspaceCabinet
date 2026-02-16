@@ -251,6 +251,20 @@ async def start_prospection(
             .execute()
         )
 
+        # res_cabinet = (
+        #     supabase_client.table("profiles")
+        #     .select("*, cabinets(nom)")
+        #     .eq("id", current_user_id)
+        #     .execute()
+        # )
+
+        # cabinet_name = "Inconnu"
+        # if res.data and len(res.data) > 0:
+        #     first_row = res.data[0]
+        #     cabinet_data = first_row.get("cabinets", {})
+        #     if isinstance(cabinet_data, dict):
+        #         cabinet_name = cabinet_data.get("nom", "Inconnu")
+
         cabinet_id = None
         if res_cabinet.data and isinstance(res_cabinet.data, dict):
             cabinet_id = res_cabinet.data.get("cabinet_id")
@@ -321,10 +335,24 @@ async def start_prospection(
         data = data_list[0] if data_list else {}
         print(f"Contenu de data: {data}")
 
+        res_cabinet = (
+            supabase_client.table("profiles")
+            .select("*, cabinets(nom)")
+            .eq("id", current_user_id)
+            .execute()
+        )
+
+        cabinet_name = None
+        if isinstance(res_cabinet.data, List) and len(res_cabinet.data) > 0:
+            first_row = cast(Dict[str, Any], res_cabinet.data[0])
+            cabinet_data = first_row.get("cabinets", {})
+            if isinstance(cabinet_data, dict):
+                cabinet_name = cabinet_data.get("nom", "Nom cabinet Inconnu")
+
         config_db = {
             "id": data.get("id"),
             "cabinet_id": data.get("cabinet_id"),
-            "cabinet_name": data.get("cabinets", {}).get("nom") if data else None,
+            "cabinet_name": cabinet_name,
             "user_id": current_user_id,
             "linkedin_email": data.get("linkedin_email"),
             "linkedin_password": data.get("linkedin_password"),
