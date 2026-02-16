@@ -251,21 +251,7 @@ async def start_prospection(
             .execute()
         )
 
-        # res_cabinet = (
-        #     supabase_client.table("profiles")
-        #     .select("*, cabinets(nom)")
-        #     .eq("id", current_user_id)
-        #     .execute()
-        # )
-
-        # cabinet_name = "Inconnu"
-        # if res.data and len(res.data) > 0:
-        #     first_row = res.data[0]
-        #     cabinet_data = first_row.get("cabinets", {})
-        #     if isinstance(cabinet_data, dict):
-        #         cabinet_name = cabinet_data.get("nom", "Inconnu")
-
-        cabinet_id = None
+        # cabinet_id = None
         if res_cabinet.data and isinstance(res_cabinet.data, dict):
             cabinet_id = res_cabinet.data.get("cabinet_id")
 
