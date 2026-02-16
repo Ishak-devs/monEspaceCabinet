@@ -261,14 +261,25 @@ async def start_prospection(
                         "is_active": True,
                         "details": body.details,
                         "mode": body.mode,
-                        "post": body.post,
                         "offre": body.offre or "".replace("\x00", ""),
                         "user_id": current_user_id,
                         "hour_start": prochaine_heure.replace(tzinfo=None).isoformat(),
                     }
                 ).execute()
             except Exception as e:
-                print(f" ERREUR SUPABASE INSERT : {e}")
+                print(
+                    f" ERREUR SUPABASE INSERT DANS LA TABLE PROSPECTION_SETTINGS : {e}"
+                )
+
+            try:
+                supabase_client.table("posts").insert(
+                    {
+                        "user_id": current_user_id,
+                        "post": body.post,
+                    }
+                ).execute()
+            except Exception as e:
+                print(f" ERREUR SUPABASE INSERT DANS LA TABLE POSTS : {e}")
 
             print("⏳ Tentative d'appel RPC...")
             res = supabase_client.rpc(
