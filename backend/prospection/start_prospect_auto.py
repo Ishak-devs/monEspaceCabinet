@@ -43,11 +43,13 @@ def start_prospect_auto():
 
                 for job in data:
                     uid = job.get("user_id")
+                    job_title = str(job.get("job_title") or "")
                     job_id = job.get("id")
                     title = str(job.get("job_title") or "")
                     details = str(job.get("details") or "")
                     mode = str(job.get("mode") or "")
                     offre = str(job.get("offre") or "")
+                    config_db = job.get("config_db") or {}
 
                     rpc_res = supabase_client.rpc(
                         "get_decrypted_settings",
@@ -97,7 +99,12 @@ def start_prospect_auto():
                                 ).eq("id", job_id).execute()
                                 try:
                                     for step in run_chrome(
-                                        title, details, mode, offre, job
+                                        title,
+                                        details,
+                                        mode,
+                                        offre,
+                                        job_title,
+                                        config_db,
                                     ):
                                         print(f"LOG [{title}]: {step}")
 
@@ -124,11 +131,11 @@ def start_prospect_auto():
                         #     print("Reload automatique pour verifier les prospect")
             except Exception as e:
                 print({e})
-                time.sleep(600)
+                time.sleep(15)
                 print("Reload automatique pour verifier les prospect")
         except Exception as e:
             print({e})
-            time.sleep(600)
+            time.sleep(15)
             print("Reload automatique pour verifier les prospect")
 
         # finally:
