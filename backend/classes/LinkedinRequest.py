@@ -9,5 +9,5 @@ class LinkedinRequest(BaseModel):  # contrat
     details: str
     telephone: str
     full_name: str
-    offre: Optional[str]
-    post: Optional[str]
+    offre: Optional[str] = None
+    post: Optional[str] = None
