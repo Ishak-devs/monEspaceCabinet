@@ -1,6 +1,7 @@
 import random
 import time
 import traceback
+from datetime import datetime
 
 from data.prompt.post_prompt import post_prompt
 from database import supabase_client
@@ -29,7 +30,13 @@ def post_message(driver, post, config_db):
     data: Any = res.data
     if list(res.data) and len(res.data) > 0:
         row: dict = data[0]
-        return row["created_at"]
+
+        post_recent = (datetime.now() - row["created_at"]).days < 2
+        print(f"post_recent : {post_recent}")
+
+        if post_recent:
+            yield "On à poster récemment..."
+            print("On a poster récemment...")
 
     print(data)
 
