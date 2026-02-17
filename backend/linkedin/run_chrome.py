@@ -5,7 +5,6 @@ import time
 from typing import Optional
 
 from database import supabase_client
-from httpx import post
 from linkedin.configurations.config_chrome import config_chrome
 from linkedin.login_linkedin import login_linkedin
 from linkedin.post_message import post_message
@@ -13,7 +12,6 @@ from linkedin.request_connexion import request_connexion
 from linkedin.send_message import send_message
 from pydantic import BaseModel
 from selenium.webdriver.common.by import By
-from treatment.behavior.mouse import human_mouse_move
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -25,18 +23,21 @@ class ProspectionRequest(BaseModel):
 
 
 def run_chrome(
-    driver,
     job_title: str,
     details: str,
     mode: str,
     offre,
+    post,
     config_db,
     telephone,
     full_name: str = "",
+    cabinet_name: str = "",
 ):
-    config_chrome(config_db)
 
     uid = config_db.get("user_id")
+    driver = config_chrome(config_db)
+    current_url = ""
+
     print(f"[DEBUG] User ID: {uid}")
     print(f"[DEBUG] Offre : {offre}")
     print(f"[DEBUG] Entrée dans run_chrome pour: {job_title}")
@@ -44,46 +45,44 @@ def run_chrome(
     print(f"[DEBUG] Mode : {mode}")
     print(f"CONFIG DB: {config_db}")
 
-    try:
-        yield "Lancement..."
-        time.sleep(random.uniform(3, 6))
-        yield "On tente l'accès à notre "
-        driver.get("https://www.linkedin.com/feed/")
-        yield "Accès à LinkedIn..."
-        time.sleep(random.uniform(3, 6))
-        current_url = driver.current_url
-        print("Current URL:", current_url)
+    if driver is not None:
+        try:
+            yield "Lancement..."
+            time.sleep(random.uniform(3, 6))
+            yield "On tente l'accès à linkedin"
 
-    except Exception as e:
-        print(f"Erreur réseau : {e}")
+            driver.get("https://www.linkedin.com/feed/")
+            yield "Accès à LinkedIn..."
+            time.sleep(random.uniform(3, 6))
+            current_url = driver.current_url
+            print("Current URL:", current_url)
 
-    if "login" in driver.current_url or "uas" in driver.current_url:
-        login_linkedin(driver, uid, job_title, supabase_client, config_db)
+        except Exception as e:
+            print(f"Erreur réseau : {e}")
 
-    try:
-        yield from post_message(driver, post)
-        time.sleep(5)
-        yield from request_connexion(job_title, driver, config_db)
-        yield from send_message(
-            driver, job_title, offre, mode, config_db, details, telephone, full_name
-        )
+        if "login" in driver.current_url or "uas" in driver.current_url:
+            login_linkedin(driver, uid, job_title, supabase_client, config_db)
 
-        for page in range(1, 2):
-            time.sleep(random.uniform(8, 12))
-            human_mouse_move(driver)
+        try:
+            yield from post_message(driver, post, config_db)
+            time.sleep(5)
+            yield from request_connexion(job_title, driver, config_db)
+            yield from send_message(
+                driver, job_title, offre, mode, config_db, details, telephone, full_name
+            )
 
-    finally:
-        config_id = config_db.get("id")
-        if config_id:
-            try:
-                supabase_client.table("prospection_settings").update(
-                    {"is_active": False}
-                ).eq("id", config_id).execute()
+        finally:
+            config_id = config_db.get("id")
+            if config_id:
+                try:
+                    supabase_client.table("prospection_settings").update(
+                        {"is_active": False}
+                    ).eq("id", config_id).execute()
 
-            except Exception as e:
-                if "204" not in str(e) and "Missing response" not in str(e):
-                    print(f"Erreur DB: {e}")
-                else:
-                    print(f"Log technique: {e}")
+                except Exception as e:
+                    if "204" not in str(e) and "Missing response" not in str(e):
+                        print(f"Erreur DB: {e}")
+                    else:
+                        print(f"Log technique: {e}")
 
-    yield "--- Invitations terminées, Nous avons envoyé {count} invitations ---"
+        yield "--- Invitations terminées, Nous avons envoyé {count} invitations ---"

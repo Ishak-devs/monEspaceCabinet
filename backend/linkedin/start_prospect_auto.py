@@ -50,6 +50,8 @@ def start_prospect_auto():
                     mode = str(job.get("mode") or "")
                     offre = str(job.get("offre") or "")
                     post = str(job.get("post") or "")
+                    telephone = str(job.get("telephone") or "")
+                    full_name = str(job.get("full_name") or "")
                     config_db = job.get("config_db") or {}
 
                     rpc_res = supabase_client.rpc(
@@ -73,19 +75,9 @@ def start_prospect_auto():
                             first_item = post_data[0]
                             if isinstance(first_item, dict):
                                 post = str(first_item.get("instruction_post") or "")
-                        # if (
-                        #     get_post_instruction
-                        #     and get_post_instruction.data
-                        #     and len(get_post_instruction.data) > 0
-                        # ):
-                        #     post = str(
-                        #         get_post_instruction.data[0].get("instruction_post")
-                        #         or ""
-                        #     )
-                    # data = rpc_res.data
 
-                    # if rpc_res.data and len(rpc_res.data) > 0:
                     data_list = rpc_res.data
+
                     if isinstance(data_list, list) and len(data_list) > 0:
                         decrypted_data = data_list[0]
                         if isinstance(decrypted_data, dict):
@@ -124,6 +116,7 @@ def start_prospect_auto():
                                 supabase_client.table("prospection_settings").update(
                                     {"is_active": True, "has_run_today": True}
                                 ).eq("id", job_id).execute()
+
                                 try:
                                     if not isinstance(config_db, dict):
                                         config_db = {}
@@ -137,14 +130,16 @@ def start_prospect_auto():
                                     }
 
                                     for step in run_chrome(
-                                        driver,
                                         title,
                                         details,
                                         mode,
                                         offre,
                                         post,
                                         config_db,
+                                        telephone,
+                                        full_name,
                                     ):
+                                        print(step)
 
                                 except Exception as e:
                                     print(f"Erreur lors du lancement de {title}: {e}")

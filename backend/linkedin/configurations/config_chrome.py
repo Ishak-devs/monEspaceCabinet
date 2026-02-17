@@ -16,9 +16,9 @@ def config_chrome(config_db):
         )
         return
 
-    print(f"🔍 [RUN_CHROME] Email: {config_db.get('linkedin_email')}")
+    print(f"🔍 [CONFIG] Email: {config_db.get('linkedin_email')}")
     print(
-        f"🔍 [RUN_CHROME] Password présent: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
+        f"🔍 [CONFIG] Password présent: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
     )
 
     options = uc.ChromeOptions()
@@ -82,3 +82,4 @@ def config_chrome(config_db):
             "source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
         },
     )
+    return driver

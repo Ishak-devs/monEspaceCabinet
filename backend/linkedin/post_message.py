@@ -18,23 +18,19 @@ def post_message(driver, post, config_db):
     full_name = config_db.get("full_name")
     telephone = config_db.get("telephone")
     cabinet_name = config_db.get("cabinet_name")
+
     print(
         "Infos pour post message:"
         f"Full Name: {full_name}, Telephone: {telephone}, Cabinet Name: {cabinet_name}"
     )
 
     try:
-<<<<<<< HEAD:backend/linkedin/post_message.py
-        instruction = "Donne un message court en une phrase"
-        prompt = post_prompt(instruction)
-=======
         # instruction = "Donne un message court en une phrase"
         prompt = post_prompt(post, full_name, telephone, cabinet_name)
-        print(f"POST : {post}")
-
->>>>>>> clean_code:backend/prospection/post_message.py
         message_ia = call_groq(prompt)
+
         print(f"Message généré : {message_ia}")
+        print(f"Post : {post}")
 
         wait = WebDriverWait(driver, 30)
         post_input = WebDriverWait(driver, 10).until(
@@ -95,11 +91,6 @@ def post_message(driver, post, config_db):
                     EC.presence_of_element_located((By.XPATH, xpath_button_post))
                 )
 
-<<<<<<< HEAD:backend/linkedin/post_message.py
-                time.sleep(1)
-                button_post.click()
-                print("Message publié")
-=======
                 driver.execute_script(post_button())
                 # if resultat == "BOUTON_CLIQUE":
                 print("✅ Message publié !")
@@ -111,7 +102,6 @@ def post_message(driver, post, config_db):
                 #         == 0
                 #     ):
                 #         print("✅ Le post semble être parti tout seul !")
->>>>>>> clean_code:backend/prospection/post_message.py
 
             except Exception:
                 print("❌ Bouton introuvable par le script JS")

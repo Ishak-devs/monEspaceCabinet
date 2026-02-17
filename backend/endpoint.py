@@ -2,13 +2,12 @@ import os
 import threading
 import unicodedata
 from contextlib import asynccontextmanager
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, cast
 
 import uvicorn
+from classes.LinkedinRequest import LinkedinRequest
 from core.generate_dossier import generate_dossier_api
-from database import supabase_client
 from fastapi import (
+    Depends,
     FastAPI,
     File,
     Form,
@@ -17,12 +16,16 @@ from fastapi import (
     UploadFile,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, StreamingResponse
-from linkedin.run_chrome import run_chrome
+from fastapi.responses import FileResponse
+from generate_next_hour import generatehour
 from linkedin.start_prospect_auto import start_prospect_auto
-from locks import user_lock
-from postgrest.base_request_builder import APIResponse
-from pydantic import BaseModel
+from query.cabinets.get_cabinet_id import get_cabinet_id
+from query.cabinets.get_cabinet_informations import get_cabinet_informations
+from query.cabinets.insert_prospection_settings import (
+    insert_prospection_settings,
+)
+from query.linkedin.get_prospection_list import get_prospection_list
+from query.user.get_user_id import get_user_id
 
 
 @asynccontextmanager
@@ -141,277 +144,28 @@ async def generate_dossier(
         )
 
 
-class ProspectionRequest(BaseModel):  # contrat
-    intitule: str
-    mode: str
-    details: str
-    telephone: str
-    full_name: str
-    offre: Optional[str]
-
-
 @app.get("/backend/prospection/list")
-async def get_prospection(request: Request):
-    auth_header = request.headers.get("Authorization")
-    if not auth_header:
-        print("❌ Authentification manquante")
-        raise HTTPException(status_code=401)
-
-    token = auth_header.replace("Bearer ", "")
-
-    try:
-        user_response = supabase_client.auth.get_user(token)
-        if not user_response or not user_response.user:
-            raise HTTPException(status_code=401, detail="Authentification invalide")
-        current_user_id = user_response.user.id
-        print(f"👤 Utilisateur connecté : {current_user_id}")
-
-        res = (
-            supabase_client.table("prospection_settings")
-            .select("id, job_title, created_at, is_active, hour_start")
-            .eq("user_id", current_user_id)
-            .order("created_at", desc=True)
-            .execute()
-        )
-
-        return res.data if res.data else []
-
-    except Exception as e:
-        print(f"Erreur Supabase: {e}")
-        return []
+async def get_prospection(current_user_id: str = Depends(get_user_id)):
+    return get_prospection_list(current_user_id)
 
 
 @app.post("/backend/linkedin/start_chrome")
 async def start_chrome(
-    body: ProspectionRequest,
-    request: Request,
+    body: LinkedinRequest,
+    current_user_id: str = Depends(get_user_id),
+    cabinet_id: str = Depends(get_cabinet_id),
 ):
-    print("lancement...")
-    res = None
 
-    auth_header = request.headers.get("Authorization")
-    if not auth_header:
-        print("Authentification manquante")
-        return {"status": "error", "message": "Authentification manquante"}
+    get_cabinet_informations(current_user_id, cabinet_id)
 
-    token = auth_header.replace("Bearer ", "")
+    SELECT_QUERY = f"*,profiles!inner(linkedin_email,linkedin_password:pgp_sym_decrypt(linkedin_password::bytea,'{KEY_SECRET}'))"
+    if SELECT_QUERY:
+        print("insert db...")
 
-    try:
-        user_response = supabase_client.auth.get_user(token)
+    generate_next_hour = generatehour()
 
-        print(f"User response: {user_response}")
-        print(f"token:{token}")
-
-        if not user_response or not user_response.user:
-            raise HTTPException(status_code=401, detail="Authentification invalide")
-        current_user_id = user_response.user.id
-        print(f"Utilisateur authentifié : {current_user_id}")
-    except Exception as e:
-        print(f"Erreur Supabase User: {e}")
-        return {"status": "error", "message": "Erreur lors de l'authentification"}
-
-    supabase_client.table("prospection_settings").update({"is_active": False}).not_.is_(
-        "id", "null"
-    ).execute()
-
-    print(f"Requête supabase reçue pour {body.intitule}")
-    if not user_lock[current_user_id].acquire(blocking=False):
-        # print("❌ LOCK BLOQUÉ : Une autre instance tourne déjà")
-        print(f"❌{current_user_id} vous avez déja un lancement en cours")
-        return {"status": "error", "message": "Prospection déjà en cours"}
-
-    try:
-        print("LOCK ACQUIS")
-
-        print("Recuperation de l'id du cabinet")
-
-        cabinet_id = None
-        res_cabinet = (
-            supabase_client.table("profiles")
-            .select("cabinet_id")
-            .eq("id", current_user_id)
-            .single()
-            .execute()
-        )
-
-        if res_cabinet.data and isinstance(res_cabinet.data, dict):
-            cabinet_id = res_cabinet.data.get("cabinet_id")
-
-            print(f"ID du cabinet récupéré : {cabinet_id}")
-
-        print("On lance la requête")
-
-        SELECT_QUERY = f"*,profiles!inner(linkedin_email,linkedin_password:pgp_sym_decrypt(linkedin_password::bytea,'{KEY_SECRET}'))"
-        if SELECT_QUERY:
-            try:
-                print("insert db...")
-                import random
-
-                prochaine_heure = (
-                    datetime.now().astimezone() + timedelta(days=1)
-                ).replace(
-                    hour=random.randint(8, 19),
-                    minute=random.randint(0, 59),
-                )
-
-                supabase_client.table("prospection_settings").insert(
-                    {
-                        "job_title": body.intitule,
-                        "query": body.intitule,
-                        "is_active": True,
-                        "details": body.details,
-                        "cabinet_id": cabinet_id,
-                        "mode": body.mode,
-                        "offre": body.offre or "".replace("\x00", ""),
-                        "user_id": current_user_id,
-                        "hour_start": prochaine_heure.isoformat(),
-                    }
-                ).execute()
-            except Exception as e:
-                print(
-                    f" ERREUR SUPABASE INSERT DANS LA TABLE PROSPECTION_SETTINGS : {e}"
-                )
-
-            try:
-                supabase_client.table("posts").upsert(
-                    {
-                        "user_id": current_user_id,
-                        "instruction_post": body.post,
-                    },
-                    on_conflict="user_id",
-                ).execute()
-                print("✅ POST INSERTE dans la table POSTS")
-            except Exception as e:
-                print(f" ERREUR SUPABASE INSERT DANS LA TABLE POSTS : {e}")
-
-            print("⏳ Tentative d'appel RPC...")
-            res = supabase_client.rpc(
-                "get_decrypted_settings",
-                {"job_title_input": body.intitule, "key_input": KEY_SECRET},
-            ).execute()
-
-            print(f"🔍 DEBUG - Données brutes RPC: {res.data}")
-            print(f"🔍 DEBUG - Type de données: {type(res.data)}")
-
-            print("RPC terminée...")
-
-            response = cast(APIResponse, res)
-            if res and hasattr(res, "data") and res.data:
-                data_list = (
-                    cast(List[Dict[str, Any]], response.data) if response.data else []
-                )
-                data = data_list[0] if data_list else {}
-                data["user_id"] = current_user_id
-                print(f"🔍 DEBUG - Contenu de data: {data}")
-                print(f"🔍 DEBUG - Clés disponibles: {data.keys() if data else 'VIDE'}")
-
-                config_db = {
-                    "id": data.get("id"),
-                    "user_id": current_user_id,
-                    "linkedin_email": data.get("linkedin_email"),
-                    "linkedin_password": data.get("linkedin_password"),
-                    "job_title": body.intitule,
-                }
-                print(f"📧 Email récupéré: {config_db.get('linkedin_email')}")
-                print(
-                    f"Password récupéré: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
-                )
-
-                def stream_generator():
-                    try:
-                        print(f"🚀 Lancement Chrome pour {body.intitule}")
-                        for step in run_chrome(
-                            driver=None,
-                            job_title=body.intitule,
-                            details=body.details,
-                            mode=body.mode,
-                            offre=body.offre or "",
-                            config_db=config_db,
-                            telephone=body.telephone or "",
-                            full_name=body.full_name or "",
-                        ):
-                            yield f"{step}\n"
-                    except Exception as e:
-                        import traceback
-
-                        traceback.print_exc()
-                        print(f"Erreur lors de la prospection : {str(e)}")
-                        # yield f"❌ Erreur : {str(e)}\n"
-                    finally:
-                        supabase_client.table("prospection_settings").update(
-                            {"is_active": False}
-                        ).not_.is_("id", "null").execute()
-                        if user_lock[current_user_id].locked():
-                            user_lock[current_user_id].release()
-
-                        print("🔓 Session terminée")
-
-                return StreamingResponse(stream_generator(), media_type="text/plain")
-
-            if not res or res.data is None:
-                return {
-                    "status": "error",
-                    "message": "Impossible de charger les données",
-                }
-    except Exception as e:
-        print(f"❌ ERREUR RPC : {e}")
-
-    # config_db = {}
-
-    # if res and hasattr(res, "data") and res.data:
-    #     response = cast(APIResponse, res)
-    #     data_list = cast(List[Dict[str, Any]], response.data) if response.data else []
-    #     data = data_list[0] if data_list else {}
-    #     print(f"Contenu de data: {data}")
-
-    #     config_db = {
-    #         "id": data.get("id"),
-    #         "user_id": current_user_id,
-    #         "linkedin_email": data.get("linkedin_email"),
-    #         "linkedin_password": data.get("linkedin_password"),
-    #         "job_title": body.intitule,
-    #         "telephone": data.get("telephone"),
-    #         "full_name": data.get("full_name"),
-    #         "email": data.get("email"),
-    #     }
-    #     print(f"📧 Email linkedin récupéré: {config_db.get('linkedin_email')}")
-    #     print(f"📧 Email récupéré: {config_db.get('email')}")
-    #     print(
-    #         f"Password récupéré: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
-    #     )
-
-    # def stream_generator():
-    #     try:
-    #         print(f"DEBUG: type de config_db est {type(config_db)}")
-    #         print(f"Lancement Chrome pour {body.intitule}")
-    #         for step in run_chrome(
-    #             driver=None,
-    #             job_title=body.intitule,
-    #             details=body.details,
-    #             mode=body.mode,
-    #             offre=body.offre or "",
-    #             config_db=config_db,
-    #             telephone=body.telephone,
-    #             full_name=body.full_name,
-    #         ):
-    #             yield f"{step}\n"
-    #     except Exception as e:
-    #         import traceback
-
-    #         traceback.print_exc()
-    #         print(f"Erreur lors de la prospection : {str(e)}")
-
-    #     finally:
-    #         supabase_client.table("prospection_settings").update(
-    #             {"is_active": False}
-    #         ).not_.is_("id", "null").execute()
-
-    #         if user_lock[current_user_id].locked():
-    #             user_lock[current_user_id].release()
-    #         print("Session terminée")
-
-    # return StreamingResponse(stream_generator(), media_type="text/plain")
+    insert_prospection_settings(body, cabinet_id, current_user_id, generate_next_hour)
 
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", host="0.0.0.0", port=8001)  # config
+    uvicorn.run("endpoint:app", host="0.0.0.0", port=8001)  # config
