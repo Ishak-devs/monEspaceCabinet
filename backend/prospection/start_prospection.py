@@ -269,6 +269,7 @@ def run_chrome(
 
     try:
         print("[DEBUG-STEP] Lancement post_message")
+
         yield from post_message(driver, post, config_db)
         time.sleep(5)
         print("[DEBUG-STEP] Lancement recherche personne")

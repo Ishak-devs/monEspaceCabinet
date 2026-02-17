@@ -3,17 +3,35 @@ import time
 import traceback
 
 from data.prompt.post_prompt import post_prompt
+from database import supabase_client
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 
 # from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from typing_extensions import Any
 
 from data.call_groq import call_groq
 
 
 def post_message(driver, post, config_db):
+
+    yield "On va checker la derniere fois qu'on a posté..."
+    print("On va checker la derniere fois qu'on a posté...")
+    res = (
+        supabase_client.table("prospection_settings")
+        .select("created_at")
+        .eq("id", config_db.get("id"))
+        .execute()
+    )
+
+    data: Any = res.data
+    if list(res.data) and len(res.data) > 0:
+        row: dict = data[0]
+        return row["created_at"]
+
+    print(data)
 
     full_name = config_db.get("full_name")
     telephone = config_db.get("telephone")
