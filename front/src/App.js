@@ -13,7 +13,7 @@ import RechercheCandidat from "./composants/RechercheCandidat";
 import EmailAuto from "./composants/EmailAuto";
 import AjouterPersonne from "./composants/AjouterPersonne";
 // import SignupUser from "./composants/SignupUser";
-import Disscussion from "./composants/Disscussion";
+import Discussion from "./composants/Discussion";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -68,7 +68,7 @@ function App() {
           path="/Disscussion"
           element={
             <ProtectedRoute>
-              <Disscussion />
+              <Discussion />
             </ProtectedRoute>
           }
         />

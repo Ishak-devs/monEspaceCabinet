@@ -81,7 +81,7 @@ function Header({ cabinetName }) {
                 to="/Disscussion"
                 className="text-xs text-gray-600 hover:text-gray-900"
               >
-                Disscussion
+                Dépôt fichiers
               </Link>
 
               <Link
