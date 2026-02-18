@@ -288,23 +288,29 @@ async def start_prospection(
                 print(
                     f" ERREUR SUPABASE INSERT DANS LA TABLE PROSPECTION_SETTINGS : {e}"
                 )
-        if body.post and body.post.strip():
-            try:
-                supabase_client.table("posts").upsert(
-                    {
-                        "user_id": current_user_id,
-                        "instruction_post": body.post,
-                    },
-                    on_conflict="user_id",
-                ).execute()
-                print("✅ POST INSERTE dans la table POSTS")
-            except Exception as e:
-                print(f" ERREUR SUPABASE INSERT DANS LA TABLE POSTS : {e}")
+            if body.post and body.post.strip():
+                print("Body : ", body.post)
+                try:
+                    supabase_client.table("posts").upsert(
+                        {
+                            "user_id": current_user_id,
+                            "instruction_post": body.post,
+                            # "last_posted_at": datetime.now().isoformat(),
+                        },
+                        on_conflict="user_id",
+                    ).execute()
+                    print("✅ POST INSERTE dans la table POSTS")
+                except Exception as e:
+                    print(f" ERREUR SUPABASE INSERT DANS LA TABLE POSTS : {e}")
 
             print("⏳ Tentative d'appel RPC...")
             res = supabase_client.rpc(
                 "get_decrypted_settings",
-                {"job_title_input": body.intitule, "key_input": KEY_SECRET},
+                {
+                    "job_title_input": body.intitule,
+                    "key_input": KEY_SECRET,
+                    "user_id_input": current_user_id,
+                },
             ).execute()
 
             print(f"🔍 DEBUG - Données brutes RPC: {res.data}")

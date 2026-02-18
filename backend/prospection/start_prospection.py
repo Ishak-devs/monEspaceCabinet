@@ -89,10 +89,10 @@ def run_chrome(
     options.add_argument("--disk-cache-size=1")
     options.add_argument("--media-cache-size=1")
 
-    job_title = config_db.get("query")
-    if job_title:
-        print(f"Titre du poste: {job_title}")
-
+    # job_title = config_db.get("query")
+    # if job_title:
+    #     print(f"Titre du poste: {job_title}")
+    job_title = job_title or config_db.get("query")
     # if not job_title:
     #     job_title = config_db.get("job_title")
     #     print(f"Titre du poste: {job_title}")
@@ -276,7 +276,7 @@ def run_chrome(
 
         yield "🔍 Recherche..."
 
-        for page in range(1, 4):
+        for page in range(1, 2):
             time.sleep(random.uniform(8, 12))
             human_mouse_move(driver)
             print("accès a la recherche de personnes ")
@@ -418,7 +418,7 @@ def run_chrome(
                         if success:
                             yield "✅ Invitation envoyée !"
                         else:
-                            yield "On ne trouve pas le bouton Envoyer, on va actualiser la page"
+                            yield "On ne trouve pas le bouton Envoyer, on va actualiser la page, dans ce cas on actualise la page..."
                             driver.refresh()
 
                         yield " Invitation envoyée avec succès !"

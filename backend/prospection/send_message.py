@@ -82,7 +82,7 @@ def send_message(
                     yield f"⏭️ Déjà contacté ({url}), skip..."
                     print("Déjà dans la base, on passe au suivant.")
                     time.sleep(random.uniform(5, 8))
-                    return
+                    continue
                 yield "Pas encore contacté..."
 
                 profile_main_content = driver.find_element(
@@ -231,7 +231,8 @@ def send_message(
                 print(f"Détails : {e}")
                 yield "❌ Échec à l'étape : Recherche Input"
                 time.sleep(random.uniform(6, 9))
-                return
+                yield "On a rencontré un soucis lors de la recherche du bouton d'envoi, rien de grave on continue avec d'autres profils..."
+                continue
                 # on ecris le message
             try:
 
@@ -249,7 +250,8 @@ def send_message(
                 print(f"Détails : {e}")
                 yield "❌ Échec à l'étape : Saisie du message"
                 time.sleep(random.uniform(6, 9))
-                return
+                yield "On a rencontré un soucis au moment de saisir le message, rien de grave on continue avec d'autres profils..."
+                continue
                 # on cherche le bouton
             try:
                 send_btn = (
@@ -261,7 +263,8 @@ def send_message(
                 print(f"Détails : {e}")
                 yield "❌ Échec à l'étape : localisation bouton"
                 time.sleep(random.uniform(6, 9))
-                return
+                yield "On a rencontré un soucis au moment de localiser le bouton d'envoi, rien de grave on continue avec d'autres profils..."
+                continue
                 # on tente le click
             try:
                 driver.execute_script(
@@ -288,11 +291,12 @@ def send_message(
                 print(f"Détails : {e}")
                 yield "❌ Échec à l'étape : Clic Envoi"
                 time.sleep(random.uniform(6, 9))
-                return
+                yield "On a rencontré un soucis lors de l'envoi du message, rien de grave on continue avec d'autres profils..."
+                continue
 
         except Exception as e:
             print(e)
-            return
+            continue
 
         finally:
             yield "✅FIn de programme, nous avons contacté {count} utilisateurs"

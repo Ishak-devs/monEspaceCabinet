@@ -1,6 +1,6 @@
 def prompt_message_sourcing(job_title, details, telephone, full_name):
     return f"""
-Tu es un expert en recrutement et sourcing de talents. Rédige un message LinkedIn naturel pour approcher un candidat potentiel.
+Tu es un expert en recrutement et sourcing de talents. Rédige un message LinkedIn naturel pour approcher de futur sociétés potentiel.
 
 Contexte :
 - Poste ciblé : {job_title}
@@ -10,7 +10,7 @@ Consignes STRICTES :
 1. Maximum 2 phrases courtes et engageantes
 2. Indique que nous avons des profils de candidats qualifiés prêts à être présentés.
 3. Ton moderne et direct (pas de "Cher/Chère", "Madame", "Monsieur")
-4. Change à chaque fois ce que tu dis car j'appelle ce prompt plusieurs fois
+4. Change à chaque fois ce que tu dis car j'appelle ce prompt plusieurs fois.
 5. Objectif : donner envie d'échanger sans être insistant
 6. Terminer par les coordonnées : {telephone} - {full_name}
 7. CRUCIAL : Le message doit être prêt à envoyer TEL QUEL sans aucune modification

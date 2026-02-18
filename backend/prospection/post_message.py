@@ -20,41 +20,44 @@ def post_message(driver, post, config_db):
 
     yield "On va checker la derniere fois qu'on a posté..."
     print("On va checker la derniere fois qu'on a posté...")
+
     res = (
-        supabase_client.table("prospection_settings")
-        .select("created_at")
+        supabase_client.table("posts")
+        .select("id, last_posted_at")
         .eq("user_id", config_db.get("user_id"))
-        .neq("id", config_db.get("id"))
+        # .neq("id", config_db.get("id"))
         .order("created_at", desc=True)
         .limit(1)
         .execute()
     )
+    print(f"resultat de la requete sur la table posts: {res}")
 
     data: Any = res.data
+
     if list(res.data) and len(res.data) > 0:
         row: dict = data[0]
 
+        print(f"data : {data}")
         now = datetime.now(timezone.utc)
-        last_post = datetime.fromisoformat(row["created_at"].replace("+00", "+00:00"))
 
-        delta = now - last_post
+        last_post = datetime.fromisoformat(
+            row["last_posted_at"].replace("+00", "+00:00")
+        )
+        print(f"last_post: {last_post}")
+
+        # delta = now - last_post
+        delta = now.replace(tzinfo=None) - last_post.replace(tzinfo=None)
         post_recent = delta.days < 2
 
         print(
             f"DEBUG: last_post = {last_post}, now = {now}, delta = {delta}, post_recent = {post_recent}"
         )
-        yield "On va checker la derniere fois qu'on a posté..."
+        # yield "On va checker la derniere fois qu'on a posté..."
         time.sleep(1)
 
         if post_recent:
             yield "On à poster récemment... On saute cette étape aujourd'hui"
             print("On a poster récemment...on skip")
-
-        #     diff = (
-        #         datetime.now(timezone.utc)
-        #         - datetime.fromisoformat(row["created_at"].replace("Z", "+00:00"))
-        #     ).days
-        #     print(f"DEBUG: Jours écoulés = {diff}, Date base = {row['created_at']}")
 
         else:
             full_name = config_db.get("full_name")
@@ -113,6 +116,7 @@ def post_message(driver, post, config_db):
                     actions.perform()
 
                     print("Editor clicked")
+                    yield "Nous avons pas posté depuis un moment..."
                     yield "Nous allons saisir un post..."
                     time.sleep(random.uniform(5, 10))
                     yield "✍️ Écriture du message en cours..."
@@ -134,12 +138,22 @@ def post_message(driver, post, config_db):
                         print("✅ Message publié !")
                         yield "✅ Post publié..."
                         time.sleep(random.uniform(5, 10))
-                        # else:
-                        #     if (
-                        #         len(driver.find_elements(By.CSS_SELECTOR, "div[role='dialog']"))
-                        #         == 0
-                        #     ):
-                        #         print("✅ Le post semble être parti tout seul !")
+
+                        try:
+                            print(
+                                "tentative de mise à jour de la date de dernière publication"
+                            )
+
+                            supabase_client.table("posts").update(
+                                {"last_posted_at": datetime.now().isoformat()}
+                            ).eq("id", config_db.get("id")).execute()
+
+                            print("✅ Date de dernière publication mise à jour")
+
+                        except Exception as e:
+                            print(
+                                f"❌ Erreur lors de la mise à jour de la date de dernière publication : {e}"
+                            )
 
                     except Exception:
                         print("❌ Bouton introuvable par le script JS")
