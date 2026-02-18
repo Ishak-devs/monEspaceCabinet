@@ -305,6 +305,7 @@ def run_chrome(
                 query_encoded = urllib.parse.quote(str(job_title or "recrutement"))
                 target_url = f"https://www.linkedin.com/search/results/people/?keywords={query_encoded}&origin=SWITCH_SEARCH_VERTICAL&page={page}"
                 driver.get(target_url)
+                print(target_url)
                 driver.execute_script(
                     "window.scrollTo(0, document.body.scrollHeight/2);"
                 )

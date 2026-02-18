@@ -31,15 +31,28 @@ def post_message(driver, post, config_db):
     if list(res.data) and len(res.data) > 0:
         row: dict = data[0]
 
-        post_recent = (
-            datetime.now(timezone.utc)
-            - datetime.fromisoformat(row["created_at"].replace("Z", "+00:00"))
-        ).days < 2
-        print(f"post_recent : {post_recent}")
+        now = datetime.now(timezone.utc)
+        last_post = datetime.fromisoformat(row["created_at"].replace("+00", "+00:00"))
+
+        delta = now - last_post
+        post_recent = delta.days < 2
+
+        print(
+            f"DEBUG: last_post = {last_post}, now = {now}, delta = {delta}, post_recent = {post_recent}"
+        )
+        yield "On va checker la derniere fois qu'on a posté..."
+        time.sleep(1)
 
         if post_recent:
             yield "On à poster récemment... On saute cette étape aujourd'hui"
-            print("On a poster récemment...")
+            print("On a poster récemment...on skip")
+
+        #     diff = (
+        #         datetime.now(timezone.utc)
+        #         - datetime.fromisoformat(row["created_at"].replace("Z", "+00:00"))
+        #     ).days
+        #     print(f"DEBUG: Jours écoulés = {diff}, Date base = {row['created_at']}")
+
         else:
             full_name = config_db.get("full_name")
             telephone = config_db.get("telephone")
