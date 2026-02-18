@@ -23,7 +23,10 @@ def post_message(driver, post, config_db):
     res = (
         supabase_client.table("prospection_settings")
         .select("created_at")
-        .eq("id", config_db.get("id"))
+        .eq("user_id", config_db.get("user_id"))
+        .neq("id", config_db.get("id"))
+        .order("created_at", desc=True)
+        .limit(1)
         .execute()
     )
 

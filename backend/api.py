@@ -288,7 +288,7 @@ async def start_prospection(
                 print(
                     f" ERREUR SUPABASE INSERT DANS LA TABLE PROSPECTION_SETTINGS : {e}"
                 )
-
+        if body.post and body.post.strip():
             try:
                 supabase_client.table("posts").upsert(
                     {
