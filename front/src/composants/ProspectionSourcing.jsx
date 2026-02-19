@@ -212,10 +212,11 @@ function ProspectionSourcing() {
                 <h6>Filtres de recherche</h6>
 
                 <label>
-                  <input type="checkbox" value="comptes" /> Comptes
+                  <input type="radio" name="filtre" value="comptes" /> Comptes
                 </label>
                 <label>
-                  <input type="checkbox" value="personnes" /> Personnes
+                  <input type="radio" name="filtre" value="personnes" />{" "}
+                  Personnes
                 </label>
                 <div>
                   <div className="space-y-4">
