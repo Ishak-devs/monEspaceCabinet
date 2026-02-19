@@ -215,49 +215,31 @@ function ProspectionSourcing() {
           </div>
           <p className="text-gray-500 text-xs mt-0.5">Gestion</p>
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Formulaire compact */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded border border-gray-200 p-4">
               <h6>Nouveau lancement</h6>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <label>
-                  <input
-                    type="radio"
-                    name="filtre"
-                    value="Entreprises"
-                    onChange={(e) => setSegment(e.target.value)}
-                  />{" "}
-                  Entreprises
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="filtre"
-                    value="Offres"
-                    onChange={(e) => setSegment(e.target.value)}
-                  />{" "}
-                  Offres
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="filtre"
-                    value="Annonces"
-                    onChange={(e) => setSegment(e.target.value)}
-                  />{" "}
-                  Annonces
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="filtre"
-                    value="Personnes"
-                    onChange={(e) => setSegment(e.target.value)}
-                  />{" "}
-                  Personnes
-                </label>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2 mt-2 w-fit">
+                  {["Entreprises", "Offres", "Annonces", "Personnes"].map(
+                    (val) => (
+                      <label
+                        key={val}
+                        className="flex items-center gap-2 text-[11px] text-gray-600 cursor-pointer hover:text-blue-600"
+                      >
+                        <input
+                          type="radio"
+                          name="filtre"
+                          value={val}
+                          className="w-3 h-3 accent-blue-600"
+                          onChange={(e) => setSegment(e.target.value)}
+                        />
+                        {val}
+                      </label>
+                    ),
+                  )}
+                </div>
                 <div>
                   <div className="space-y-4">
                     <div>
