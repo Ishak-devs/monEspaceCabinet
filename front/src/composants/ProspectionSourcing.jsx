@@ -214,10 +214,10 @@ function ProspectionSourcing() {
                   <input
                     type="radio"
                     name="filtre"
-                    value="entreprises"
+                    value="entreprise"
                     onChange={(e) => setSegment(e.target.value)}
                   />{" "}
-                  entreprises
+                  Entreprise
                 </label>
                 <label>
                   <input
@@ -226,7 +226,7 @@ function ProspectionSourcing() {
                     value="offres"
                     onChange={(e) => setSegment(e.target.value)}
                   />{" "}
-                  offres
+                  Offres
                 </label>
                 <label>
                   <input
@@ -235,7 +235,7 @@ function ProspectionSourcing() {
                     value="annonces"
                     onChange={(e) => setSegment(e.target.value)}
                   />{" "}
-                  annonces
+                  Annonces
                 </label>
                 <label>
                   <input

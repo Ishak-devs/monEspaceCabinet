@@ -110,6 +110,8 @@ def run_chrome(
     segment = config_db.get("search_type", "personnes")
     segment = filtre_map.get(segment, "people")
 
+    print(f"Segment: {segment}")
+
     print(f"Nom complet: {full_name}")
     print(f"Numéro de téléphone: {telephone}")
 
@@ -295,6 +297,8 @@ def run_chrome(
             time.sleep(random.uniform(8, 12))
             human_mouse_move(driver)
             print("accès a la recherche de personnes ")
+            yield (f"Début de recherche, on va filtrer par {segment} à la page {page}")
+            time.sleep(random.uniform(2, 4))
 
             try:
                 print("Début de la recherche")
