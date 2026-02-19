@@ -156,6 +156,7 @@ class ProspectionRequest(BaseModel):  # contrat
     intitule: str
     mode: str
     details: str
+    segment: str
     post: Optional[str]
     offre: Optional[str]
 
@@ -352,6 +353,7 @@ async def start_prospection(
             "telephone": data.get("telephone"),
             "full_name": data.get("full_name"),
             "email": data.get("email"),
+            "segment": body.segment,
         }
         print(f"📧 Email linkedin récupéré: {config_db.get('linkedin_email')}")
         print(f"📧 Email récupéré: {config_db.get('email')}")

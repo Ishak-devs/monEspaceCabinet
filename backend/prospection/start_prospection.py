@@ -37,7 +37,12 @@ def slow_type(element, text):
 
 
 def run_chrome(
-    job_title: str, details: str, mode: str, offre: str, post: str, config_db
+    job_title: str,
+    details: str,
+    mode: str,
+    offre: str,
+    post: str,
+    config_db,
 ):
     print("[DEBUG-STEP] Lancement chrome")
 
@@ -107,8 +112,13 @@ def run_chrome(
         "Annonces": "ads",
     }
 
+    print(
+        f"DEBUG FRONT: Valeur reçue dans config_db['segment'] -> {config_db.get('segment')}"
+    )
     segment = config_db.get("segment", "Personnes")
+    print(f"DEBUG LOGIC: segment_brut après extraction -> {segment}")
     segment = filtre_map.get(segment, "people")
+    print(f"DEBUG FINAL: Valeur injectée dans l'URL -> {segment}")
 
     print(f"Segment: {segment}")
 
@@ -296,7 +306,7 @@ def run_chrome(
         for page in range(1, 2):
             time.sleep(random.uniform(8, 12))
             human_mouse_move(driver)
-            print("accès a la recherche de personnes ")
+            print("accès a la recherche... ")
             yield (f"Début de recherche, on va filtrer par {segment} à la page {page}")
             time.sleep(random.uniform(2, 4))
 
@@ -307,11 +317,11 @@ def run_chrome(
                 query_encoded = urllib.parse.quote(str(job_title or "recrutement"))
                 target_url = f"https://www.linkedin.com/search/results/{segment}/?keywords={query_encoded}&origin=SWITCH_SEARCH_VERTICAL&page={page}"
                 driver.get(target_url)
-                print(target_url)
+                print(f"DEBUG URL: {target_url}")
                 driver.execute_script(
                     "window.scrollTo(0, document.body.scrollHeight/2);"
                 )
-                yield "Recherches de personnes..."
+                yield "Recherches..."
             except Exception as e:
                 import traceback
 
