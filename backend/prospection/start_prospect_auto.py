@@ -146,7 +146,7 @@ def start_prospect_auto():
                                         offre,
                                         post,
                                         config_db,
-                                        cabinet_name,
+                                        # cabinet_name,
                                     ):
                                         print(f"LOG [{title}]: {step}")
 
