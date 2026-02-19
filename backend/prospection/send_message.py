@@ -239,7 +239,7 @@ def send_message(
                 def slow_type(element, text):
                     for char in text:
                         element.send_keys(char)
-                        time.sleep(random.uniform(0.05, 0.1))
+                        time.sleep(random.uniform(0.15, 0.25))
 
                 # message_box.send_keys(message)
                 slow_type(message_box, message)
@@ -298,16 +298,19 @@ def send_message(
                 print("On va tenter de fermer la fenêtre")
                 yield "On va fermer la fenêtre de discussion..."
 
-                close_button = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(., 'Fermer')]")
-                    )
+                # close_xpath = "//button[contains(@class, 'msg-overlay') and .//span[contains(text(), 'Fermer votre conversation')]]"
+                close_xpath = "//button[.//svg[@data-test-icon='close-small']]"
+
+                close_btn = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((By.XPATH, close_xpath))
                 )
 
-                driver.execute_script("arguments[0].click();", close_button)
+                driver.execute_script("arguments[0].click();", close_btn)
+                time.sleep(random.uniform(5, 10))
 
-                print("Une fenêtre de discussion a été fermée.")
+                print("la fenêtre de discussion a été fermée.")
                 yield "Fenêtre fermée... On passe au profil suivant"
+                time.sleep(random.uniform(5, 10))
 
             except Exception as e:
                 print(f"Erreur lors de la fermeture des fenêtres : {e}")
