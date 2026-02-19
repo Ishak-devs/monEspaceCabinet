@@ -5,6 +5,8 @@ import mammoth from "mammoth";
 function ProspectionSourcing() {
   const [intitule, setIntitule] = useState("");
 
+  const [segment, setSegment] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
   // const [currentStatus, setCurrentStatus] = useState("");
   const [prospection, setProspection] = useState([]);
@@ -135,6 +137,7 @@ function ProspectionSourcing() {
             mode,
             offre,
             post,
+            segment,
             telephone: "",
             full_name: "",
           }),
@@ -205,17 +208,42 @@ function ProspectionSourcing() {
           {/* Formulaire compact */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded border border-gray-200 p-4">
-              <h2 className="text-sm font-normal text-gray-900 mb-4">
-                Nouveau lancement
-              </h2>
+              <h6>Nouveau lancement</h6>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <h6>Filtres de recherche</h6>
-
                 <label>
-                  <input type="radio" name="filtre" value="comptes" /> Comptes
+                  <input
+                    type="radio"
+                    name="filtre"
+                    value="entreprises"
+                    onChange={(e) => setSegment(e.target.value)}
+                  />{" "}
+                  entreprises
                 </label>
                 <label>
-                  <input type="radio" name="filtre" value="personnes" />{" "}
+                  <input
+                    type="radio"
+                    name="filtre"
+                    value="offres"
+                    onChange={(e) => setSegment(e.target.value)}
+                  />{" "}
+                  offres
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="filtre"
+                    value="annonces"
+                    onChange={(e) => setSegment(e.target.value)}
+                  />{" "}
+                  annonces
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="filtre"
+                    value="personnes"
+                    onChange={(e) => setSegment(e.target.value)}
+                  />{" "}
                   Personnes
                 </label>
                 <div>

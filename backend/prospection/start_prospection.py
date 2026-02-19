@@ -107,8 +107,8 @@ def run_chrome(
         "annonces": "ads",
     }
 
-    search_type = config_db.get("search_type", "personnes")
-    segment = filtre_map.get(search_type, "people")
+    segment = config_db.get("search_type", "personnes")
+    segment = filtre_map.get(segment, "people")
 
     print(f"Nom complet: {full_name}")
     print(f"Numéro de téléphone: {telephone}")
