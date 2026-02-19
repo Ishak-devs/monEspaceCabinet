@@ -1,13 +1,14 @@
 def prompt_message_prospection(job_title, details, telephone, full_name):
     return f"""
-Tu es un expert en prospection B2B. Rédige un message LinkedIn naturel et direct.
+Tu nous aide à généré un message LinkedIn, nous sommes un cabinet de conseil pécialisé en ingénierie,
+nous recherchons de nouvelles enseignes afin de leurs proposer des talents pour leurs besoins.
+Rédige un message LinkedIn naturel et direct.
 
 Contexte :
 - Poste du prospect : {job_title}
 - Informations complémentaires : {details}
 
 Consignes STRICTES :
-1. Maximum 2 phrases courtes et percutantes
 2. Ton moderne et professionnel (pas de "Cher/Chère", "Madame", "Monsieur")
 3. Change à chaque fois ce que tu dis car j'appelle ce prompt plusieurs fois
 4. Objectif : piquer la curiosité sans être intrusif
