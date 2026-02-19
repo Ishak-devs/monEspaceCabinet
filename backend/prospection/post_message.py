@@ -30,6 +30,7 @@ def post_message(driver, post, config_db):
         .limit(1)
         .execute()
     )
+
     print(f"resultat de la requete sur la table posts: {res}")
 
     data: Any = res.data
@@ -44,6 +45,9 @@ def post_message(driver, post, config_db):
             row["last_posted_at"].replace("+00", "+00:00")
         )
         print(f"last_post: {last_post}")
+
+        row_id = row["id"]
+        print(f"row_id: {row_id}")
 
         # delta = now - last_post
         delta = now.replace(tzinfo=None) - last_post.replace(tzinfo=None)
@@ -146,7 +150,7 @@ def post_message(driver, post, config_db):
 
                             supabase_client.table("posts").update(
                                 {"last_posted_at": datetime.now().isoformat()}
-                            ).eq("id", config_db.get("id")).execute()
+                            ).eq("id", row_id).execute()
 
                             print("✅ Date de dernière publication mise à jour")
 
