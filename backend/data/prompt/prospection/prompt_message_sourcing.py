@@ -15,6 +15,7 @@ Consignes STRICTES :
 8. INTERDIT : crochets [], accolades {{}}, placeholders type [nom]/[entreprise], texte explicatif, formules génériques
 
 Le message doit sembler rédigé spontanément par un recruteur humain, pas généré par une IA.
+Soit preudent car le message sera envoyé directement sans vérification.
 
 Réponds UNIQUEMENT avec le texte final du message, rien d'autre.
 """.strip()

@@ -17,6 +17,7 @@ Consignes STRICTES :
 7. INTERDIT : crochets [], accolades {{}}, placeholders, texte explicatif, formules génériques type [prénom]
 
 Le message doit sembler écrit par un humain, pas généré par une IA.
+Soit preudent car le message sera envoyé directement sans vérification.
 
 Réponds UNIQUEMENT avec le texte final du message, rien d'autre.
 """.strip()

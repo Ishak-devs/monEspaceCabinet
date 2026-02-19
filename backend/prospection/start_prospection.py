@@ -100,6 +100,13 @@ def run_chrome(
     full_name = config_db.get("full_name")
     telephone = config_db.get("telephone")
 
+    filtre_map = {
+        "personnes": "people",
+        "entreprises": "companies",
+        "offres": "offers",
+        "annonces": "ads",
+    }
+
     print(f"Nom complet: {full_name}")
     print(f"Numéro de téléphone: {telephone}")
 
@@ -286,23 +293,6 @@ def run_chrome(
             human_mouse_move(driver)
             print("accès a la recherche de personnes ")
 
-            # try:
-            #     yield "On va nettoyer les fenêtres encore ouvertes..."
-            #     print("On nettoie les fenêtres")
-            #     time.sleep(6)
-
-            #     close_buttons = driver.find_elements(
-            #         By.CSS_SELECTOR,
-            #         "button[data-control-name='close_messaging_bubble'], .msg-overlay-bubble-header__control--close",
-            #     )
-            #     print(f"nombre de boutons de fermeture trouvés : {len(close_buttons)}")
-
-            #     for btn in close_buttons:
-            #         print(f"Bouton de fermeture trouvé : {btn}")
-            #         driver.execute_script("arguments[0].click();", btn)
-            # except Exception as e:
-            #     print(f"Crash lors de la fermeture des fenêtres : {str(e)[:50]}")
-
             try:
                 print("Début de la recherche")
                 time.sleep(random.uniform(8, 15))
@@ -447,7 +437,7 @@ def run_chrome(
                 else:
                     print(f"Log technique: {e}")
 
-    yield "--- Invitations terminées, Nous avons envoyé {count} invitations ---"
+    yield "--- Invitations terminées... ---"
 
     try:
         from prospection.send_message import send_message
