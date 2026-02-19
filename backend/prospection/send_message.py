@@ -294,6 +294,23 @@ def send_message(
                 yield "On a rencontré un soucis lors de l'envoi du message, rien de grave on continue avec d'autres profils..."
                 continue
 
+            try:
+                print("On va tenter de fermer la fenêtre")
+                yield "On va fermer la fenêtre de discussion..."
+
+                close_buttons = driver.find_elements(
+                    By.XPATH,
+                    "//button[starts-with(@aria-label, 'Fermer votre conversation')]",
+                )
+
+                for btn in close_buttons:
+                    driver.execute_script("arguments[0].click();", btn)
+                    print("Une fenêtre de discussion a été fermée.")
+                    yield "Fenêtre fermée... On passe au profil suivant"
+
+            except Exception as e:
+                print(f"Erreur lors de la fermeture des fenêtres : {e}")
+
         except Exception as e:
             print(e)
             continue
