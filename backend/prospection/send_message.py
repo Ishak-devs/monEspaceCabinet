@@ -163,7 +163,7 @@ def send_message(
                     #     yield "Mail envoyé"
                     #     # continue
                     #     #
-                time.sleep(random.uniform(3, 5))
+                time.sleep(4)
                 yield "🤖 Appel du modèle pour générer un message..."
                 print("🤖 [DEBUG] Appel Groq pour le message...")
                 time.sleep(random.uniform(6, 8))
@@ -326,7 +326,7 @@ def send_message(
             continue
 
         finally:
-            yield "✅FIn de programme, nous avons contacté {count} utilisateurs"
+            print("bloc finally")
 
     if "driver" in locals():
         driver.quit()

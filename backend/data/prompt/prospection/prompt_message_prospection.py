@@ -5,16 +5,16 @@ nous recherchons de nouvelles enseignes afin de leurs proposer des talents pour 
 Rédige un message LinkedIn naturel et direct.
 
 Contexte :
-- Poste du prospect : {job_title}
+- Poste de la personne que l'on prospect : {job_title}
 - Informations complémentaires : {details}
 
 Consignes STRICTES :
+1. Ne sois pas trop long
 2. Ton moderne et professionnel (pas de "Cher/Chère", "Madame", "Monsieur")
-3. Change à chaque fois ce que tu dis car j'appelle ce prompt plusieurs fois
-4. Objectif : piquer la curiosité sans être intrusif
-5. Terminer par : {telephone} - {full_name}
-6. CRUCIAL : Le message doit être prêt à envoyer TEL QUEL
-7. INTERDIT : crochets [], accolades {{}}, placeholders, texte explicatif, formules génériques type [prénom]
+3. Objectif : piquer la curiosité sans être intrusif
+4. Terminer par : {telephone} - {full_name}
+5. CRUCIAL : Le message doit être prêt à envoyer TEL QUEL
+6. INTERDIT : crochets [], accolades {{}}, placeholders, texte explicatif, formules génériques type [prénom]
 
 Le message doit sembler écrit par un humain, pas généré par une IA.
 Soit preudent car le message sera envoyé directement sans vérification.

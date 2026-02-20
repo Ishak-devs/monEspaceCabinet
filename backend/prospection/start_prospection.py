@@ -344,7 +344,7 @@ def run_chrome(
 
         yield "🔍 Recherche..."
         segment_final = filtre_map.get(config_db.get("segment"), "people")
-        for page in range(1, 5):
+        for page in range(1):
             time.sleep(random.uniform(8, 12))
             human_mouse_move(driver)
             print("accès a la recherche... ")
@@ -494,22 +494,22 @@ def run_chrome(
                 except Exception as e:
                     yield f"  ⚠ Erreur bouton Envoyer : {e}"
 
-        try:
-            from prospection.send_message import send_message
+            # try:
+            #     from prospection.send_message import send_message
 
-            for update in send_message(
-                driver,
-                job_title,
-                mode,
-                config_db,
-                details,
-                telephone,
-                full_name,
-                candidatrecherche,
-            ):
-                yield update
-        except Exception as e:
-            print(f"Erreur passage messages : {e}")
+            #     for update in send_message(
+            #         driver,
+            #         job_title,
+            #         mode,
+            #         config_db,
+            #         details,
+            #         telephone,
+            #         full_name,
+            #         candidatrecherche,
+            #     ):
+            #         yield update
+            # except Exception as e:
+            #     print(f"Erreur passage messages : {e}")
 
     finally:
         config_id = config_db.get("id")
@@ -525,21 +525,27 @@ def run_chrome(
                 else:
                     print(f"Log technique: {e}")
 
-    # yield "--- Invitations terminées... ---"
+    yield "--- Invitations terminées... ---"
 
-    # try:
-    #     from prospection.send_message import send_message
+    yield "--- Vérification des nouvelles acceptations ---"
+    try:
+        driver.get("https://www.linkedin.com/mynetwork/invite-connect/connections/")
+        time.sleep(random.uniform(5, 8))
 
-    #     for update in send_message(
-    #         driver,
-    #         job_title,
-    #         mode,
-    #         config_db,
-    #         details,
-    #         telephone,
-    #         full_name,
-    #         candidatrecherche,
-    #     ):
-    #         yield update
-    # except Exception as e:
-    #     print(f"Erreur passage messages : {e}")
+        from prospection.send_message import send_message
+
+        for update in send_message(
+            driver,
+            job_title,
+            mode,
+            config_db,
+            details,
+            telephone,
+            full_name,
+            candidatrecherche,
+        ):
+            yield update
+
+    except Exception as e:
+        print(f"Erreur lors du check des nouveaux amis : {e}")
+        yield "Erreur lors de la vérification des acceptations."
