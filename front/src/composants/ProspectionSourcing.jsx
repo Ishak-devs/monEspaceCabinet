@@ -339,20 +339,43 @@ function ProspectionSourcing() {
                     </div>
                     {mode === "sourcing" && (
                       <div>
-                        <label
-                          htmlFor="offre"
-                          className="block text-xs font-normal text-gray-600 mb-1.5"
-                        >
-                          Uploader l'offre pour facilier la recherche
-                        </label>
-                        <input
-                          id="offre"
-                          type="file"
-                          onChange={handleFileChange}
-                          disabled={isLoading}
-                          accept=".pdf, .doc, .docx"
-                          className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50" // required
-                        />
+                        {/* <div>
+                          <label
+                            htmlFor="offre"
+                            className="block text-xs font-normal text-gray-600 mb-1.5"
+                          >
+                            Uploader l'offre pour facilier la recherche
+                          </label>
+                          <input
+                            id="offre"
+                            type="file"
+                            onChange={handleFileChange}
+                            disabled={isLoading}
+                            accept=".pdf, .doc, .docx"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50" // required
+                          />
+                        </div>*/}
+
+                        <div className="space-y-4">
+                          <div>
+                            <label
+                              htmlFor="post"
+                              className="block text-xs font-normal text-gray-600 mb-1.5"
+                            >
+                              Indiquer directement le profil recherché
+                            </label>
+                            <input
+                              id="post"
+                              type="text"
+                              // value={post}
+                              // onChange={(e) => setPost(e.target.value)}
+                              disabled={isLoading}
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50"
+                              placeholder="Ex: On recherche un candidat situé..."
+                              // required
+                            />
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>

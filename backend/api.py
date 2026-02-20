@@ -157,6 +157,7 @@ class ProspectionRequest(BaseModel):  # contrat
     mode: str
     details: str
     segment: str
+    # cabinet_name: str
     post: Optional[str]
     offre: Optional[str]
 
