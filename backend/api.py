@@ -157,9 +157,8 @@ class ProspectionRequest(BaseModel):  # contrat
     mode: str
     details: str
     segment: str
-    # cabinet_name: str
+    candidatrecherche: str
     post: Optional[str]
-    PromptSourcing: Optional[str]
 
 
 @app.get("/backend/prospection/list")
@@ -281,7 +280,7 @@ async def start_prospection(
                         "details": body.details,
                         "cabinet_id": cabinet_id,
                         "mode": body.mode,
-                        "PromptSourcing": body.PromptSourcing,
+                        "candidatrecherche": body.candidatrecherche,
                         "user_id": current_user_id,
                         "hour_start": prochaine_heure.replace(tzinfo=None).isoformat(),
                     }
