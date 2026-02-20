@@ -17,38 +17,38 @@ function ProspectionSourcing() {
   const [activeId, setActiveId] = useState(null);
   const [mode, setMode] = useState("");
   const [details, setDetails] = useState("");
-  const [offre, setOffre] = useState("");
+  const [PromptSourcing, SetPromptSourcing] = useState("");
   const [post, setPost] = useState("");
   const [statusLogs, setStatusLogs] = useState(() => {
     const saved = localStorage.getItem("prospection_logs");
     return saved ? JSON.parse(saved) : [];
   });
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
 
-    const reader = new FileReader();
-    const isDocx = file.name.endsWith(".docx");
+  // const reader = new FileReader();
+  // const isDocx = file.name.endsWith(".docx");
 
-    reader.onload = async (event) => {
-      try {
-        if (isDocx) {
-          const { value } = await mammoth.extractRawText({
-            arrayBuffer: event.target.result,
-          });
-          setOffre(value);
-        } else {
-          setOffre(event.target.result);
-        }
-      } catch (error) {
-        console.error("Error processing file:", error);
-      }
-    };
-    file.name.endsWith("docx")
-      ? reader.readAsArrayBuffer(file)
-      : reader.readAsText(file);
-  };
+  //   reader.onload = async (event) => {
+  //     try {
+  //       if (isDocx) {
+  //         const { value } = await mammoth.extractRawText({
+  //           arrayBuffer: event.target.result,
+  //         });
+  //         set(value);
+  //       } else {
+  //         setOffre(event.target.result);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error processing file:", error);
+  //     }
+  //   };
+  //   file.name.endsWith("docx")
+  //     ? reader.readAsArrayBuffer(file)
+  //     : reader.readAsText(file);
+  // };
 
   // const [statusLogs, setStatusLogs] = useState(() => {
   //   const saved = localStorage.getItem("prospection_logs");
@@ -135,7 +135,7 @@ function ProspectionSourcing() {
             intitule,
             details,
             mode,
-            offre,
+            PromptSourcing,
             post,
             segment,
             telephone: "",
@@ -179,7 +179,7 @@ function ProspectionSourcing() {
         setIntitule("");
         setDetails("");
         setSegment("");
-        setOffre("");
+        SetPromptSourcing("");
         setPost("");
         setMode("");
         FetchProspection();
@@ -367,8 +367,10 @@ function ProspectionSourcing() {
                             <input
                               id="post"
                               type="text"
-                              // value={post}
-                              // onChange={(e) => setPost(e.target.value)}
+                              value={PromptSourcing}
+                              onChange={(e) =>
+                                SetPromptSourcing(e.target.value)
+                              }
                               disabled={isLoading}
                               className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50"
                               placeholder="Ex: On recherche un candidat situé..."

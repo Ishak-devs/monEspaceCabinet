@@ -281,7 +281,7 @@ async def start_prospection(
                         "details": body.details,
                         "cabinet_id": cabinet_id,
                         "mode": body.mode,
-                        "offre": body.offre or "".replace("\x00", ""),
+                        "PromptSourcing": body.PromptSourcing or "".replace("\x00", ""),
                         "user_id": current_user_id,
                         "hour_start": prochaine_heure.replace(tzinfo=None).isoformat(),
                     }
