@@ -78,8 +78,18 @@ def run_chrome(
 
     options = uc.ChromeOptions()
     import glob
+    import shutil
 
     profil_path = os.path.abspath(f"cookies/profile_{uid}")
+    counter_file = os.path.join(profil_path, ".counter")
+
+    # Nettoyage auto tous les 15 lancements
+    count = int(open(counter_file).read()) + 1 if os.path.exists(counter_file) else 1
+    if count >= 3:
+        shutil.rmtree(profil_path, ignore_errors=True)
+        count = 1
+    os.makedirs(profil_path, exist_ok=True)
+    open(counter_file, "w").write(str(count))
 
     for singleton in glob.glob(os.path.join(profil_path, "Singleton*")):
         try:
