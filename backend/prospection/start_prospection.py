@@ -85,7 +85,7 @@ def run_chrome(
 
     # Nettoyage auto tous les 15 lancements
     count = int(open(counter_file).read()) + 1 if os.path.exists(counter_file) else 1
-    if count >= 3:
+    if count >= 10:
         shutil.rmtree(profil_path, ignore_errors=True)
         count = 1
     os.makedirs(profil_path, exist_ok=True)
