@@ -181,14 +181,15 @@ def send_message(
                     .execute()
                 )
 
-                print(check_mode)
+                print(f"check_mode result: {check_mode}")
 
-                origin_mode = (
-                    check_mode.data[0]["origin_mode"]  # type: ignore
-                    if (check_mode.data and len(check_mode.data) > 0)
-                    else mode
-                )
+                # Si pas de mode trouvé = personne pas en base = on skip
+                if not check_mode.data or len(check_mode.data) == 0:
+                    print(f"⏭️ Profil {url} pas trouvé en base, skip...")
+                    yield "⏭️ Profil non trouvé en base, passage au suivant..."
+                    continue
 
+                origin_mode = check_mode.data[0]["origin_mode"]  # type: ignore
                 print(f"origin mode: {origin_mode}")
 
                 if origin_mode == "prospection":
@@ -198,6 +199,7 @@ def send_message(
                 elif origin_mode == "sourcing":
                     instruction = prompt_message_sourcing(
                         job_title, details, telephone, full_name, candidatrecherche
+                    )
                     )
                 message = call_groq(instruction)
                 print(f"{message}")

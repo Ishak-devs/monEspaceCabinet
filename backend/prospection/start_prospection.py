@@ -87,7 +87,6 @@ def run_chrome(
     profil_path = os.path.abspath(f"cookies/profile_{uid}")
     counter_file = os.path.join(profil_path, ".counter")
 
-    # Lire le compteur AVANT de supprimer le dossier
     count = 0
     if os.path.exists(counter_file):
         try:
@@ -97,16 +96,13 @@ def run_chrome(
 
     count += 1
 
-    # Tous les 10 lancements, supprimer complètement le profil pour nettoyer les cookies
     if count >= 10:
         print(f"🧹 Nettoyage du profil Chrome (lancement #{count})")
         shutil.rmtree(profil_path, ignore_errors=True)
         count = 1
 
-    # Créer le dossier profil
     os.makedirs(profil_path, exist_ok=True)
 
-    # Sauvegarder le nouveau compteur
     try:
         with open(counter_file, "w") as f:
             f.write(str(count))
