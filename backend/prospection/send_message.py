@@ -2,15 +2,12 @@ import random
 import time
 import traceback
 
-from core.send_mail import send_mail
+# from core.send_mail import send_mail
 from data.prompt.prospection.prompt_message_prospection import (
     prompt_message_prospection,
 )
 from data.prompt.prospection.prompt_message_sourcing import (
     prompt_message_sourcing,
-)
-from data.prompt.prospection.prompt_sourcing import (
-    prompt_sourcing,
 )
 from database import supabase_client
 from prospection.script_js.bouton_close_discussion import close_discussion

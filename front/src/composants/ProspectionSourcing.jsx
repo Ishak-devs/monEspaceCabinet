@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
-import mammoth from "mammoth";
+// import mammoth from "mammoth";
 
 function ProspectionSourcing() {
   const [intitule, setIntitule] = useState("");
@@ -61,7 +61,7 @@ function ProspectionSourcing() {
       data: { session },
     } = await supabase.auth.getSession();
     return {
-      "Content-Type": "application/json",
+      // "Content-Type": "application/json",
       Authorization: `Bearer ${session?.access_token}`,
       // "ngrok-skip-browser-warning": "true",
     };
@@ -102,12 +102,14 @@ function ProspectionSourcing() {
         const { value, done } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value);
+        console.log("chunk reçu:", chunk);
 
         console.log("Value brute du reader :", value);
 
         setStatusLogs((prev) => {
           const newLogs = [...prev, chunk];
           localStorage.setItem("prospection_logs", JSON.stringify(newLogs));
+
           return newLogs;
         });
       }

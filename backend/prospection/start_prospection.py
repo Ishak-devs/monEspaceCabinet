@@ -548,6 +548,7 @@ def run_chrome(
             full_name,
             candidatrecherche,
         ):
+            print("yield reçu:", update)
             yield update
 
     except Exception as e:
