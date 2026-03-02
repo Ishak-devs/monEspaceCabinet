@@ -96,17 +96,27 @@ function ProspectionSourcing() {
       setStatusLogs([]);
       localStorage.removeItem("prospection_logs");
       while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
+        try {
+          const { value, done } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
 
-        console.log("Value brute du reader :", value);
+          console.log("Value brute du reader :", value);
 
-        setStatusLogs((prev) => {
-          const newLogs = [...prev, chunk];
-          localStorage.setItem("prospection_logs", JSON.stringify(newLogs));
-          return newLogs;
-        });
+          setStatusLogs((prev) => {
+            try {
+              const newLogs = [...prev, chunk];
+              localStorage.setItem("prospection_logs", JSON.stringify(newLogs));
+              return newLogs;
+            } catch (storageError) {
+              console.error("Erreur LocalStorage (saturé ?):", storageError);
+              return [...prev, chunk];
+            }
+          });
+        } catch (streamError) {
+          console.error("bug dans la lecture du stream :", streamError);
+          break;
+        }
       }
 
       if (response.ok) {
