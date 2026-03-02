@@ -32,8 +32,7 @@ def send_message(
     candidatrecherche,
 ):
     print("Début de l'envoi de messages directs...")
-    print(f"Mode dans send message : {mode}")
-    yield f"Démarrage envoi de messages pour {job_title}... en mode {mode}"
+    yield f"Démarrage envoi de messages pour {job_title}..."
     # links = driver.find_elements(
     #     By.XPATH,
     #     "//span[contains(@class, 'entity-result__title-line')]//a[contains(@href, '/in/')]",
@@ -180,7 +179,7 @@ def send_message(
                 print(check_mode)
 
                 origin_mode = (
-                    check_mode.data[0]["origin_mode"]
+                    check_mode.data[0]["origin_mode"]  # type: ignore
                     if (check_mode.data and len(check_mode.data) > 0)
                     else mode
                 )
