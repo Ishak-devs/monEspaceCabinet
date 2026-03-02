@@ -310,10 +310,16 @@ function ProspectionSourcing() {
                 </div>
                 <button
                   type="submit"
-                  disabled={isLoading || !intitule.trim()}
+                  disabled={
+                    isLoading ||
+                    !intitule.trim() ||
+                    prospection.some((p) => p.is_active)
+                  }
                   className={`w-full py-2 text-xs rounded transition-colors
                     ${
-                      isLoading || !intitule.trim()
+                      isLoading ||
+                      !intitule.trim() ||
+                      prospection.some((p) => p.is_active)
                         ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                         : "bg-black hover:bg-gray-800 text-white"
                     }`}

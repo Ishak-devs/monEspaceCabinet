@@ -39,11 +39,13 @@ def send_message(
         # driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
         yield "⏳ Chargement de la page des acceptations..."
         time.sleep(random.uniform(5, 7))
+        yield "📡 Recherche des profils acceptés..."
         # links = driver.find_elements(
         #     By.XPATH,
         #     "//a[contains(@href, '/in/') and not(contains(@class, 'scale-down'))]",
         # )
         links = driver.find_elements(By.CSS_SELECTOR, "a[href*='/in/']")
+        yield "✅ Profils trouvés dans le DOM"
         time.sleep(2)
         urls = []
         for link in links:
