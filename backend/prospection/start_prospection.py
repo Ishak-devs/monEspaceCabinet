@@ -528,20 +528,6 @@ def run_chrome(
             # except Exception as e:
             #     print(f"Erreur passage messages : {e}")
 
-    finally:
-        config_id = config_db.get("id")
-        if config_id:
-            try:
-                supabase_client.table("prospection_settings").update(
-                    {"is_active": False}
-                ).eq("id", config_id).execute()
-
-            except Exception as e:
-                if "204" not in str(e) and "Missing response" not in str(e):
-                    print(f"Erreur DB: {e}")
-                else:
-                    print(f"Log technique: {e}")
-
     yield "--- Invitations terminées... ---"
 
     yield "--- Vérification des nouvelles acceptations ---"
@@ -575,3 +561,17 @@ def run_chrome(
             print("✅ Driver fermé avec succès")
         except Exception as e:
             print(f"⚠️ Erreur fermeture driver: {e}")
+
+        # Mettre is_active à False à la fin de TOUT
+        config_id = config_db.get("id")
+        if config_id:
+            try:
+                supabase_client.table("prospection_settings").update(
+                    {"is_active": False}
+                ).eq("id", config_id).execute()
+
+            except Exception as e:
+                if "204" not in str(e) and "Missing response" not in str(e):
+                    print(f"Erreur DB: {e}")
+                else:
+                    print(f"Log technique: {e}")
