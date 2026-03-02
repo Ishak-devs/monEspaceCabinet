@@ -335,6 +335,7 @@ def send_message(
                 # time.sleep(random.uniform(5, 10))
                 #
                 try:
+                    time.sleep(5)
                     result = close_discussion(driver)
                     print(f"resultat close discussion {result}")
                 except Exception as e:
