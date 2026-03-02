@@ -77,15 +77,15 @@ def run_chrome(
     )
 
     options = uc.ChromeOptions()
-    profil_path = os.path.abspath(f"cookies/profile_{uid}")
-    lock_file = os.path.join(profil_path, "SingletonLock")
+    import glob
 
-    if os.path.exists(lock_file):
+    profil_path = os.path.abspath(f"cookies/profile_{uid}")
+
+    for singleton in glob.glob(os.path.join(profil_path, "Singleton*")):
         try:
-            os.remove(lock_file)
-            print("lock supprimé avec succès")
+            os.remove(singleton)
         except Exception as e:
-            print(f"Erreur lors de la suppression du fichier de verrouillage : {e}")
+            print(f"erreur {e}")
 
     print(f"[DEBUG] Path profil: {profil_path}")
     options.add_argument(f"--user-data-dir={profil_path}")
