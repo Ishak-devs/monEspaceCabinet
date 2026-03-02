@@ -13,7 +13,7 @@ def close_discussion(driver):
         );
     }
     let target = findCloseButton();
-    if (target) { target.click(); return true; }
+    if (target) { target.dispatchEvent(new MouseEvent('click', {bubbles: true})); return true; }
     return false;
     """
     return driver.execute_script(close_chat_script)
