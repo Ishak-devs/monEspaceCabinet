@@ -171,6 +171,7 @@ function ProspectionSourcing() {
                           value={val}
                           className="w-3 h-3 accent-blue-600"
                           onChange={(e) => setSegment(e.target.value)}
+                          disabled={isLoading}
                         />
                         {val}
                       </label>
