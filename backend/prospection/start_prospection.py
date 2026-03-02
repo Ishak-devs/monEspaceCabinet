@@ -351,7 +351,7 @@ def run_chrome(
             time.sleep(random.uniform(8, 12))
             human_mouse_move(driver)
             print("accès a la recherche... ")
-            yield (f"Début de recherche, à la page {page}")
+            yield ("Début de recherche...")
             time.sleep(random.uniform(2, 4))
 
             try:

@@ -328,7 +328,12 @@ def send_message(
 
                 # driver.execute_script("arguments[0].click();", close_btn)
                 # time.sleep(random.uniform(5, 10))
-                close_discussion(driver)
+                #
+                try:
+                    result = close_discussion(driver)
+                    print(f"resultat close discussion {result}")
+                except Exception as e:
+                    print(f"erreur {e}")
                 time.sleep(6)
                 print("la fenêtre de discussion a été fermée.")
                 yield "Fenêtre fermée... On passe au profil suivant"

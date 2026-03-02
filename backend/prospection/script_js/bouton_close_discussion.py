@@ -12,8 +12,12 @@ def close_discussion(driver):
             (b.getAttribute('aria-label') && b.getAttribute('aria-label').includes('Fermer'))
         );
     }
-    let target = findCloseButton();
-    if (target) { target.dispatchEvent(new MouseEvent('click', {bubbles: true})); return true; }
-    return false;
+    try {
+        let target = findCloseButton();
+        if (target) { target.click(); return "OK"; }
+        return "Bouton non trouvé";
+    } catch (e) {
+        return "Erreur JS : " + e.message;
+    }
     """
     return driver.execute_script(close_chat_script)
