@@ -19,6 +19,6 @@ def insert_db(container, mode, config_db):
                 "profile_url": profile_url,
                 "full_name": full_name,
                 "origin_mode": mode,
-                "status": "en attente",
+                "status": "pending",
             }
         ).execute()
