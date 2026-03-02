@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
-// import mammoth from "mammoth";
-
 function ProspectionSourcing() {
   const [intitule, setIntitule] = useState("");
 
@@ -27,7 +25,7 @@ function ProspectionSourcing() {
       setStatusLogs([]);
       localStorage.removeItem("prospection_logs");
     }
-  }, [prospection]); // ceci pour raffraichir a chaque fois que la liste change
+  }, [prospection]);
 
   const FetchProspection = async () => {
     try {
@@ -61,9 +59,8 @@ function ProspectionSourcing() {
       data: { session },
     } = await supabase.auth.getSession();
     return {
-      // "Content-Type": "application/json",
+      "Content-Type": "application/json",
       Authorization: `Bearer ${session?.access_token}`,
-      // "ngrok-skip-browser-warning": "true",
     };
   };
 
@@ -102,14 +99,12 @@ function ProspectionSourcing() {
         const { value, done } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value);
-        console.log("chunk reçu:", chunk);
 
         console.log("Value brute du reader :", value);
 
         setStatusLogs((prev) => {
           const newLogs = [...prev, chunk];
           localStorage.setItem("prospection_logs", JSON.stringify(newLogs));
-
           return newLogs;
         });
       }
@@ -200,8 +195,6 @@ function ProspectionSourcing() {
                         // required
                       />
                     </div>
-                    {/* Input Métier */}
-                    {/* {mode === "sourcing" && (*/}
                     <div>
                       <label
                         htmlFor="intitule"
@@ -279,23 +272,6 @@ function ProspectionSourcing() {
                     </div>
                     {mode === "sourcing" && (
                       <div>
-                        {/* <div>
-                          <label
-                            htmlFor="offre"
-                            className="block text-xs font-normal text-gray-600 mb-1.5"
-                          >
-                            Uploader l'offre pour facilier la recherche
-                          </label>
-                          <input
-                            id="offre"
-                            type="file"
-                            onChange={handleFileChange}
-                            disabled={isLoading}
-                            accept=".pdf, .doc, .docx"
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-400 disabled:bg-gray-50" // required
-                          />
-                        </div>*/}
-
                         <div className="space-y-4">
                           <div>
                             <label
@@ -386,19 +362,6 @@ function ProspectionSourcing() {
                       strokeWidth={2}
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
-                    {/* {statusLogs.length > 0 && (
-                      <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded text-[10px] font-mono max-h-40 overflow-y-auto">
-                        <p className="text-gray-400 mb-1">Logs en direct :</p>
-                        {statusLogs.map((log, index) => (
-                          <div
-                            key={index}
-                            className="text-blue-600 border-l-2 border-blue-200 pl-2 mb-1"
-                          >
-                            {log}
-                          </div>
-                        ))}
-                      </div>
-                    )}*/}
                   </div>
                 </div>
               </div>
@@ -426,12 +389,7 @@ function ProspectionSourcing() {
                   </div>
                 ) : (
                   filteredProspection.map((p) => (
-                    <div
-                      key={p.id}
-                      // className={`p-3 hover:bg-gray-50 transition-colors ${
-                      //   expandedProspection === p.id ? "bg-gray-50" : ""
-                      // }`}
-                    >
+                    <div key={p.id}>
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1.5">
@@ -457,21 +415,6 @@ function ProspectionSourcing() {
                               ))}
                             </div>
                           )}
-                          {/* {statusLogs.length > 0 && (
-                            <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded text-[10px] font-mono max-h-40 overflow-y-auto">
-                              <p className="text-gray-400 mb-1">
-                                Logs en direct :
-                              </p>
-                              {statusLogs.map((log, index) => (
-                                <div
-                                  key={index}
-                                  className="text-blue-600 border-l-2 border-blue-200 pl-2 mb-1"
-                                >
-                                  {log}
-                                </div>
-                              ))}
-                            </div>
-                          )}*/}
 
                           <div className="flex flex-wrap items-center gap-2">
                             <div className="flex items-center gap-1.5 px-2 py-1 bg-gray-100 rounded-md text-gray-700 text-xs">
