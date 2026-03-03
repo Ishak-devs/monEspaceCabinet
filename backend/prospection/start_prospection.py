@@ -67,6 +67,7 @@ def run_chrome(
     print(f"[DEBUG] User ID: {uid}")
 
     target_url = ""
+    current_user_id = None
 
     if not uid:
         print(
@@ -220,17 +221,22 @@ def run_chrome(
     )
     # time.sleep(random.randint(10, 30))
     # print("temps choisi : ", random.randint(10, 30))
-    driver = uc.Chrome(
-        options=options,
-        # service=chrome_service,
-        use_subprocess=True,
-        version_main=v_chrome,
-    )
+    if "drivers" not in globals():
+        global drivers
+        drivers = {}
 
-    # ✅ FIX BUG #2: Ajout timeouts explicites pour éviter les blocages indéfinis
-    driver.set_page_load_timeout(30)  # Timeout chargement de page: 30 secondes
-    driver.set_script_timeout(30)  # Timeout exécution script JS: 30 secondes
-    driver.implicitly_wait(15)  # Timeout recherche élément implicite: 15 secondes
+    if current_user_id not in drivers:
+        drivers[current_user_id] = uc.Chrome(
+            options=options,
+            # service=chrome_service,
+            use_subprocess=True,
+            version_main=v_chrome,
+        )
+    driver = drivers[current_user_id]
+
+    driver.set_page_load_timeout(30)
+    driver.set_script_timeout(30)
+    driver.implicitly_wait(15)
     print("[DEBUG] ✅ Timeouts configurés: page=30s, script=30s, implicit=15s")
 
     try:
@@ -381,7 +387,7 @@ def run_chrome(
 
         yield "🔍 Recherche..."
         segment_final = filtre_map.get(config_db.get("segment"), "people")
-        for page in range(1):
+        for page in range(10):
             time.sleep(random.uniform(8, 12))
             human_mouse_move(driver)
             print("accès a la recherche... ")
@@ -597,7 +603,11 @@ def run_chrome(
         yield "Fin de programme..."
         time.sleep(3)
         try:
-            driver.quit()
-            print("✅ Driver fermé avec succès")
+            if current_user_id in drivers:
+                drivers[current_user_id].quit()
+                del drivers[current_user_id]
+                print(
+                    f"✅ Driver fermé avec succès pour l'utilisateur {current_user_id}"
+                )
         except Exception as e:
             print(f"⚠️ Erreur fermeture driver: {e}")
