@@ -338,6 +338,7 @@ def run_chrome(
                 print("Email manquant dans config_db")
                 yield "Email linkedin non trouvé dans vos infos..."
                 time.sleep(7)
+                drivers.pop(current_user_id, None)
                 driver.quit()
                 return
 
@@ -356,6 +357,7 @@ def run_chrome(
                 print("Mot de passe linkedin vide ")
                 yield "Mot de passe linkedin vide ou incorrect."
                 time.sleep(7)
+                drivers.pop(current_user_id, None)
                 driver.quit()
                 return
 
