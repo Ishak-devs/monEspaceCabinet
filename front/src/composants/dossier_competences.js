@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_URL = "http://127.0.0.1:8001";
+const API_URL = "http://127.0.0.1:8002";
 // const API_URL = "https://filltemplate.onrender.com/";
 function CVUploadForm() {
   const [selectedFile, setSelectedFile] = useState(null);

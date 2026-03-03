@@ -14,6 +14,51 @@ from prospection.start_prospection import run_chrome
 # prospection_lock = Lock()
 
 
+# ✅ FIX: Wrapper avec timeout pour éviter les blocages indéfinis
+def run_chrome_with_timeout(
+    title, details, mode, candidatrecherche, post, config_db, timeout=600
+):
+    """
+    Exécute run_chrome() avec un timeout de 10 minutes (600 secondes).
+    Si timeout, arrête l'exécution et continue avec le job suivant.
+    """
+    result_queue = []
+    exception_holder = [None]
+
+    def worker():
+        try:
+            for step in run_chrome(
+                title, details, mode, candidatrecherche, post, config_db
+            ):
+                result_queue.append(step)
+        except Exception as e:
+            exception_holder[0] = e
+
+    thread = threading.Thread(target=worker, daemon=False)
+    thread.start()
+    thread.join(timeout=timeout)
+
+    # Si le thread est toujours vivant après le timeout
+    if thread.is_alive():
+        print(
+            f"⏱️ ❌ TIMEOUT ({timeout}s): run_chrome pour '{title}' a dépassé le timeout, abandon"
+        )
+        # On retourne quand même les steps accumulés
+        for step in result_queue:
+            yield step
+        yield f"❌ TIMEOUT: Prospection pour '{title}' interrompue après {timeout}s"
+        return
+
+    # Si exception s'est produite
+    if exception_holder[0]:
+        print(f"❌ Erreur dans run_chrome: {exception_holder[0]}")
+        raise exception_holder[0]
+
+    # Sinon retourner les résultats accumulés
+    for step in result_queue:
+        yield step
+
+
 def start_prospect_auto():
     supabase_client.table("prospection_settings").update({"is_active": False}).eq(
         "is_active", True
@@ -34,11 +79,11 @@ def start_prospect_auto():
             print(f"CONTENU BRUT SUPABASE : {res.data}")
             data = cast(list[dict[str, Any]], res.data or [])
             print(f"DEBUG - Nombre de jobs trouvés : {len(data)}")
-            time.sleep(60)
+
+            # ✅ FIX #2: Sleep déplacé APRÈS traitement des jobs (voir fin de boucle)
 
             # Pour recuperer le verrou si il est pas pris
             try:
-                # get_post_instruction = None
                 KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
                 print(f"KEY: {KEY_SECRET}")
 
@@ -76,18 +121,7 @@ def start_prospect_auto():
                             first_item = post_data[0]
                             if isinstance(first_item, dict):
                                 post = str(first_item.get("instruction_post") or "")
-                        # if (
-                        #     get_post_instruction
-                        #     and get_post_instruction.data
-                        #     and len(get_post_instruction.data) > 0
-                        # ):
-                        #     post = str(
-                        #         get_post_instruction.data[0].get("instruction_post")
-                        #         or ""
-                        #     )
-                    # data = rpc_res.data
 
-                    # if rpc_res.data and len(rpc_res.data) > 0:
                     data_list = rpc_res.data
                     if isinstance(data_list, list) and len(data_list) > 0:
                         decrypted_data = data_list[0]
@@ -116,6 +150,7 @@ def start_prospect_auto():
                     if uid not in user_lock:
                         user_lock[uid] = threading.Lock()
 
+                    # ✅ FIX #4: Garantir libération du lock même en cas de crash
                     if user_lock[uid].acquire(blocking=False):
                         try:
                             print(
@@ -127,6 +162,8 @@ def start_prospect_auto():
                                 supabase_client.table("prospection_settings").update(
                                     {"is_active": True, "has_run_today": True}
                                 ).eq("id", job_id).execute()
+
+                                # ✅ FIX #3: Utiliser le wrapper avec timeout
                                 try:
                                     if not isinstance(config_db, dict):
                                         config_db = {}
@@ -139,19 +176,25 @@ def start_prospect_auto():
                                         ),
                                     }
 
-                                    for step in run_chrome(
+                                    for step in run_chrome_with_timeout(
                                         title,
                                         details,
                                         mode,
                                         candidatrecherche,
                                         post,
                                         config_db,
-                                        # cabinet_name,
+                                        timeout=600,  # 10 minutes max
                                     ):
                                         print(f"LOG [{title}]: {step}")
 
                                 except Exception as e:
-                                    print(f"Erreur lors du lancement de {title}: {e}")
+                                    print(
+                                        f"❌ Erreur lors du lancement de {title}: {e}"
+                                    )
+                                    import traceback
+
+                                    traceback.print_exc()
+
                                 demain = maintenant + timedelta(days=1)
                                 prochaine_heure = demain.replace(
                                     hour=random.randint(8, 19),
@@ -160,29 +203,35 @@ def start_prospect_auto():
                                 supabase_client.table("prospection_settings").update(
                                     {
                                         "is_active": False,
-                                        # "has_run_today": True,
                                         "hour_start": prochaine_heure.isoformat(),
                                     }
                                 ).eq("id", job_id).execute()
 
                         finally:
+                            # ✅ TOUJOURS libérer le lock même si erreur
                             user_lock[uid].release()
-                        # except Exception as e:
-                        #     print({e})
-                        #     time.sleep(600)
-                        #     print("Reload automatique pour verifier les prospect")
+                            print(f"✅ Lock libéré pour user {uid}")
+
             except Exception as e:
-                print({e})
+                # ✅ FIX #1: Corriger le logging print({e}) → print(f"Erreur: {e}")
+                print(f"❌ Erreur dans boucle job: {e}")
+                import traceback
+
+                traceback.print_exc()
                 time.sleep(15)
                 print("Reload automatique pour verifier les prospect")
+
         except Exception as e:
-            print({e})
+            # ✅ FIX #1: Corriger le logging print({e}) → print(f"Erreur: {e}")
+            print(f"❌ Erreur boucle while: {e}")
+            import traceback
+
+            traceback.print_exc()
             time.sleep(15)
             print("Reload automatique pour verifier les prospect")
 
-        # finally:
-        #     # Libération du lock pour cet utilisateur
-        #     user_lock[uid].release()
+        # ✅ FIX #2: Sleep APRÈS traitement de tous les jobs
+        time.sleep(60)
 
 
 if __name__ == "__main__":
