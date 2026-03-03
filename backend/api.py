@@ -364,25 +364,36 @@ async def start_prospection(
             f"Password récupéré: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
         )
 
-    def stream_generator():
-        try:
-            print(f"Lancement Chrome pour {body.intitule}")
-            for step in run_chrome(
-                body.intitule,
-                body.details,
-                body.mode,
-                body.candidatrecherche or "",
-                body.post or "",
-                config_db,
-            ):
-                try:
-                    yield f"{step}\n"
-                except Exception as e:
-                    print(f"❌ Erreur yield: {e}")
-                    import traceback
 
-                    traceback.print_exc()
-                    break
+
+
+
+
+
+
+    def stream_generator():
+
+        q = queue.Queue() #init queue
+
+        def run_in_thread():
+            print('thread lancement')
+            try:
+                for step in run_chrome(
+                    body.intitule,
+                    body.details,
+                    body.mode,
+                    body.candidatrecherche or "",
+                    body.post or "",
+                    config_db,
+                ):
+                    q.put(step)
+            finally:
+                q.put(None)
+
+
+        try:
+            t = threading.Thread(target=run_in_thread, daemon=True)
+            t.start()
         except Exception as e:
             import traceback
 
@@ -392,18 +403,11 @@ async def start_prospection(
                 print(f"❌ Erreur: {str(e)[:100]}\n")
             except:
                 pass
-
-        finally:
-            try:
-                supabase_client.table("prospection_settings").update(
-                    {"is_active": False}
-                ).eq("user_id", current_user_id).execute()
-            except Exception as e:
-                print(f"⚠️ Erreur nettoyage prospection_settings: {e}")
-
-            if user_lock[current_user_id].locked():
-                user_lock[current_user_id].release()
-            print("Session terminée")
+        while True:
+                item = q.get()
+                if item is None:
+                    break
+                yield f"{item}\n"
 
     return StreamingResponse(
         stream_generator(),
