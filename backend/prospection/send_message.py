@@ -35,6 +35,27 @@ def send_message(
     button = None
     current_user_id = config_db.get("user_id")
 
+    # Autoriser uniquement les profils presents en base linkedin_contacts
+    db_profiles_map = {}
+    try:
+        contacts_res = (
+            supabase_client.table("linkedin_contacts")
+            .select("profile_url, origin_mode")
+            .eq("user_id", current_user_id)
+            .execute()
+        )
+        if contacts_res.data:
+            for item in contacts_res.data:
+                profile_url = str(item.get("profile_url") or "").split("?")[0]
+                origin_mode = str(item.get("origin_mode") or "")
+                if profile_url:
+                    db_profiles_map[profile_url] = origin_mode
+        print(
+            f"[DEBUG] {len(db_profiles_map)} URLs autorisees depuis linkedin_contacts"
+        )
+    except Exception as e:
+        print(f"[WARN] Erreur récupération linkedin_contacts: {e}")
+
     # ✅ FIX OPTIMISATION: Récupérer les URLs contactées UNE SEULE FOIS
     contacted_urls = set()
     try:
@@ -46,7 +67,9 @@ def send_message(
         )
         if res.data:
             contacted_urls = set(
-                item.get("url") for item in res.data if item.get("url")
+                str(item.get("url") or "").split("?")[0]
+                for item in res.data
+                if item.get("url")
             )
         print(f"[DEBUG] {len(contacted_urls)} URLs déjà contactées en cache")
     except Exception as e:
@@ -67,7 +90,7 @@ def send_message(
         time.sleep(2)
         for link in links:
             url = link.get_attribute("href").split("?")[0]
-            if url not in urls and url not in contacted_urls:  # ✅ FIX: Filtrer ici
+            if url not in urls and url in db_profiles_map and url not in contacted_urls:
                 urls.append(url)
 
         if len(urls) == 0:
@@ -77,7 +100,7 @@ def send_message(
 
         yield f"✅ {len(urls)} profils trouvés (après filtre)..."
         print(
-            f"{len(urls)} profils à traiter (après filtre des {len(contacted_urls)} déjà contactés)"
+            f"{len(urls)} profils à traiter (base={len(db_profiles_map)}, déjà contactés={len(contacted_urls)})"
         )
 
     except Exception as e:
@@ -207,23 +230,11 @@ def send_message(
                     #     # continue
                     #     #
 
-                check_mode = (
-                    supabase_client.table("linkedin_contacts")
-                    .select("origin_mode")
-                    .eq("profile_url", url)
-                    .eq("user_id", current_user_id)
-                    .execute()
-                )
-
-                print(f"check_mode result: {check_mode}")
-
-                # Si pas de mode trouvé = personne pas en base = on skip
-                if not check_mode.data or len(check_mode.data) == 0:
+                origin_mode = db_profiles_map.get(url, "")
+                if not origin_mode:
                     print(f"⏭️ Profil {url} pas trouvé en base, skip...")
                     yield "⏭️ Profil non trouvé en base, passage au suivant..."
                     continue
-
-                origin_mode = check_mode.data[0]["origin_mode"]  # type: ignore
                 print(f"origin mode: {origin_mode}")
 
                 time.sleep(4)
