@@ -1,11 +1,13 @@
 import os
+import queue
 import random
 import threading
 import unicodedata
+from collections import defaultdict
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, cast
-import queue
+
 import uvicorn
 from core.generate_dossier import generate_dossier_api
 from database import supabase_client
@@ -20,11 +22,11 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
-# from locks import user_lock
 from postgrest.base_request_builder import APIResponse
 from prospection.start_prospect_auto import start_prospect_auto
 from prospection.start_prospection import run_chrome
 from pydantic import BaseModel
+from typing_extensions import DefaultDict
 
 
 @asynccontextmanager
@@ -178,9 +180,7 @@ async def get_prospection(request: Request):
             .eq("user_id", current_user_id)
             .order("created_at", desc=True)
             .execute()
-        )(
-
-            )
+        )()
 
         return res.data if res.data else []
 
@@ -219,15 +219,9 @@ async def start_prospection(
         print(f"Erreur Supabase User: {e}")
         return {"status": "error", "message": "Erreur lors de l'authentification"}
 
+    user_lock = defaultdict(threading.Lock)
     if current_user_id not in user_lock:
         user_lock[current_user_id] = threading.Lock()
-
-
-
-
-
-            ,
-
 
     supabase_client.table("prospection_settings").update({"is_active": False}).eq(
         "user_id", current_user_id
@@ -364,19 +358,12 @@ async def start_prospection(
             f"Password récupéré: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
         )
 
-
-
-
-
-
-
-
     def stream_generator():
 
-        q = queue.Queue() #init queue
+        q = queue.Queue()  # init queue
 
         def run_in_thread():
-            print('thread lancement')
+            print("thread lancement")
             try:
                 for step in run_chrome(
                     body.intitule,
@@ -389,7 +376,6 @@ async def start_prospection(
                     q.put(step)
             finally:
                 q.put(None)
-
 
         try:
             t = threading.Thread(target=run_in_thread, daemon=True)
@@ -404,14 +390,12 @@ async def start_prospection(
             except:
                 pass
         while True:
-                item = q.get()
-                if item is None:
-                    break
-                yield f"{item}\n"
+            item = q.get()
+            if item is None:
+                break
+            yield f"{item}\n"
 
-    return StreamingResponse(
-        stream_generator(),
-        media_type="text/plain")
+    return StreamingResponse(stream_generator(), media_type="text/plain")
 
 
 if __name__ == "__main__":
