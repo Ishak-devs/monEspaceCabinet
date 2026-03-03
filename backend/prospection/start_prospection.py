@@ -14,6 +14,7 @@ from typing import Optional
 import undetected_chromedriver as uc
 from data.prompt.prospection.prompt_sourcing import prompt_sourcing
 from database import supabase_client
+from locks import user_lock
 
 # from prospection.post_message import post_message
 from pydantic import BaseModel
@@ -51,7 +52,6 @@ def run_chrome(
     config_db,
 ):
     print("[DEBUG-STEP] Lancement chrome")
-    print("suppression des processus")
 
     if not post or post == "":
         post = config_db.get("post")
@@ -69,11 +69,12 @@ def run_chrome(
     import threading
 
     target_url = ""
-    drivers = {}
+    drivers = {}  # Dictionnaire global pour stocker les WebDrivers par utilisateur
+    print("[DEBUG] Initialisation du dictionnaire global des drivers")
     drivers_lock = threading.Lock()
     print("driver initialisé...")
     current_user_id = uid
-    port = random.randint(9000, 9999)
+    # port = random.randint(9000, 9999)
     error_type = ""
 
     if not uid:
@@ -88,6 +89,9 @@ def run_chrome(
     print(
         f"🔍 [RUN_CHROME] Password présent: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
     )
+    print(
+        f"[DIAG] run_chrome lancé pour uid={uid}, thread={threading.current_thread().name}"
+    )
 
     options = uc.ChromeOptions()
     import glob
@@ -95,7 +99,7 @@ def run_chrome(
 
     profil_path = os.path.abspath(f"cookies/profile_{uid}")
     counter_file = os.path.join(profil_path, ".counter")
-    print(f"profil path : {profil_path}")
+    print(f"[DEBUG] Chemin du profil utilisateur : {profil_path}")
 
     count = 0
     if os.path.exists(counter_file):
@@ -136,7 +140,7 @@ def run_chrome(
     options.add_argument("--disable-software-rasterizer")
     options.add_argument("--disk-cache-size=1")
     options.add_argument("--media-cache-size=1")
-    options.add_argument(f"--remote-debugging-port={port}")
+    # options.add_argument(f"--remote-debugging-port={port}")
 
     # job_title = config_db.get("query")
     # if job_title:
@@ -249,6 +253,7 @@ def run_chrome(
                 version_main=v_chrome,
             )
         driver = drivers[current_user_id]
+        print(f"[DEBUG] WebDriver récupéré pour l'utilisateur {current_user_id}")
 
     driver.set_page_load_timeout(30)
     driver.set_script_timeout(30)
@@ -464,7 +469,7 @@ def run_chrome(
 
                     infos_profil = container.text.lower().replace("\n", "").strip()
 
-                    current_user_id = config_db.get("user_id")
+                    # current_user_id = config_db.get("user_id")
                     res = (
                         supabase_client.table("profiles")
                         .select("*, cabinets(nom)")
@@ -629,7 +634,15 @@ def run_chrome(
         try:
             with drivers_lock:
                 if current_user_id in drivers:
+                    print(
+                        f"[DEBUG] Fermeture du WebDriver pour l'utilisateur {current_user_id}"
+                    )
                     drivers[current_user_id].quit()
                     del drivers[current_user_id]
+                    print(
+                        f"[DEBUG] WebDriver fermé et supprimé pour l'utilisateur {current_user_id}"
+                    )
         except Exception as e:
-            print(f"⚠️ Erreur fermeture driver: {e}")
+            print(
+                f"⚠️ Erreur lors de la fermeture du WebDriver pour l'utilisateur {current_user_id}: {e}"
+            )

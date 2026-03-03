@@ -5,7 +5,7 @@ import unicodedata
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, cast
-
+import queue
 import uvicorn
 from core.generate_dossier import generate_dossier_api
 from database import supabase_client
@@ -20,7 +20,7 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
-from locks import user_lock
+# from locks import user_lock
 from postgrest.base_request_builder import APIResponse
 from prospection.start_prospect_auto import start_prospect_auto
 from prospection.start_prospection import run_chrome
@@ -29,13 +29,6 @@ from pydantic import BaseModel
 
 @asynccontextmanager
 async def thread_(app: FastAPI):
-    # try:
-    #     supabase_client.table("prospection_settings").update(
-    #         {"is_active": False}
-    #     ).execute()
-    #     print("Supabase : Tous les statuts ont été réinitialisés.")
-    # except Exception as e:
-    #     print(f"⚠️ Erreur reset démarrage: {e}")
     thread = threading.Thread(target=start_prospect_auto, daemon=True)
     thread.start()
     print("Lancement de thread...")
@@ -185,7 +178,9 @@ async def get_prospection(request: Request):
             .eq("user_id", current_user_id)
             .order("created_at", desc=True)
             .execute()
-        )
+        )(
+
+            )
 
         return res.data if res.data else []
 
@@ -226,6 +221,13 @@ async def start_prospection(
 
     if current_user_id not in user_lock:
         user_lock[current_user_id] = threading.Lock()
+
+
+
+
+
+            ,
+
 
     supabase_client.table("prospection_settings").update({"is_active": False}).eq(
         "user_id", current_user_id
@@ -403,7 +405,9 @@ async def start_prospection(
                 user_lock[current_user_id].release()
             print("Session terminée")
 
-    return StreamingResponse(stream_generator(), media_type="text/plain")
+    return StreamingResponse(
+        stream_generator(),
+        media_type="text/plain")
 
 
 if __name__ == "__main__":
