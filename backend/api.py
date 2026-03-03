@@ -392,9 +392,12 @@ async def start_prospection(
                 pass
 
         finally:
-            supabase_client.table("prospection_settings").update(
-                {"is_active": False}
-            ).not_.is_("id", "null").execute()
+            try:
+                supabase_client.table("prospection_settings").update(
+                    {"is_active": False}
+                ).eq("user_id", current_user_id).execute()
+            except Exception as e:
+                print(f"⚠️ Erreur nettoyage prospection_settings: {e}")
 
             if user_lock[current_user_id].locked():
                 user_lock[current_user_id].release()
