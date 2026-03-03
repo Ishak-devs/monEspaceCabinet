@@ -88,7 +88,7 @@ def send_message(
                     print(
                         f"[DEBUG] ❌ Timeout/Erreur chargement page profil: {load_error}"
                     )
-                    yield f"⚠️ Page profil n'a pas pu charger. Passage au suivant..."
+                    yield "⚠️ Page profil n'a pas pu charger. Passage au suivant..."
                     time.sleep(random.uniform(3, 5))
                     continue
                 finally:
