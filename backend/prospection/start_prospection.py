@@ -407,7 +407,6 @@ def run_chrome(
                 driver.execute_script(
                     "window.scrollTo(0, document.body.scrollHeight/2);"
                 )
-                yield "Recherches..."
             except Exception as e:
                 import traceback
 
@@ -595,6 +594,8 @@ def run_chrome(
 
     finally:
         print("🛑 Fermeture du driver Chrome...")
+        yield "Fin de programme..."
+        time.sleep(3)
         try:
             driver.quit()
             print("✅ Driver fermé avec succès")

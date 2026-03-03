@@ -51,8 +51,10 @@ def send_message(
                 if profile_url:
                     db_profiles_map[profile_url] = origin_mode
         print(
-            f"[DEBUG] {len(db_profiles_map)} URLs autorisees depuis linkedin_contacts"
+            f"[DEBUG] {len(db_profiles_map)} Profils trouvé depuis notre base de données"
         )
+        yield f"[DEBUG] {len(db_profiles_map)} Profils trouvé depuis notre base de données..."
+        time.sleep(3)
     except Exception as e:
         print(f"[WARN] Erreur récupération linkedin_contacts: {e}")
 
@@ -72,6 +74,8 @@ def send_message(
                 if item.get("url")
             )
         print(f"[DEBUG] {len(contacted_urls)} URLs déjà contactées en cache")
+        yield (f"[DEBUG] {len(contacted_urls)} Profils ont déjà été contactées...")
+        time.sleep(3)
     except Exception as e:
         print(f"[WARN] Erreur récupération URLs contactées: {e}")
 
