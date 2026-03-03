@@ -5,7 +5,6 @@ nous recherchons de nouvelles enseignes afin de leurs proposer des talents pour 
 Rédige un message LinkedIn naturel et direct.
 
 Contexte :
-- Poste de la personne que l'on prospect : {job_title}
 - Informations complémentaires : {details}
 
 Consignes STRICTES :

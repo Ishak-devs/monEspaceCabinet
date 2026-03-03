@@ -74,7 +74,27 @@ def send_message(
 
                 # url = "https://www.linkedin.com/in/jouna%C3%AFd-ben-salah-601b77222/"
                 # search_url = f"https://www.linkedin.com/search/results/people/?keywords={job_title}&origin=GLOBAL_SEARCH_CARD"
-                driver.get(url)
+
+                # ✅ CORRECTION BUG: Ajout timeout pour éviter blocage indéfini
+                print(f"[DEBUG] Accès au profil: {url}")
+                driver.set_page_load_timeout(
+                    20
+                )  # Timeout de 20 secondes max pour charger la page
+                try:
+                    driver.get(url)
+                    print("[DEBUG] ✅ Page du profil chargée avec succès")
+                except Exception as load_error:
+                    print(
+                        f"[DEBUG] ❌ Timeout/Erreur chargement page profil: {load_error}"
+                    )
+                    yield f"⚠️ Page profil n'a pas pu charger. Passage au suivant..."
+                    time.sleep(random.uniform(3, 5))
+                    continue
+                finally:
+                    driver.set_page_load_timeout(
+                        30
+                    )  # Réinitialiser au timeout par défaut
+
                 current_user_id = config_db.get("user_id")
                 print(f"current_user_id: {current_user_id}")
 
@@ -97,12 +117,28 @@ def send_message(
                     continue
                 yield "Pas encore contacté..."
 
-                profile_main_content = driver.find_element(
-                    By.TAG_NAME, "main"
-                ).text.lower()
-                content_lower = profile_main_content
+                # ✅ CORRECTION BUG: Gestion du cas où <main> n'existe pas
+                try:
+                    print("[DEBUG] Recherche de l'élément <main>...")
+                    profile_main_content = driver.find_element(
+                        By.TAG_NAME, "main"
+                    ).text.lower()
+                    content_lower = profile_main_content
+                    print(f"[DEBUG] ✅ Élément <main> trouvé")
+                except Exception as main_error:
+                    print(f"[DEBUG] ⚠️ Élément <main> introuvable: {main_error}")
+                    print("[DEBUG] Utilisation du body entier comme fallback")
+                    try:
+                        content_lower = driver.find_element(
+                            By.TAG_NAME, "body"
+                        ).text.lower()
+                    except:
+                        print("[DEBUG] ❌ Impossible de récupérer le contenu du profil")
+                        yield "⚠️ Impossible de lire le contenu du profil. Passage au suivant..."
+                        time.sleep(random.uniform(3, 5))
+                        continue
 
-                print(f"Contenu pour checker les candidats : {content_lower}")
+                print(f"Contenu pour checker les candidats : {content_lower[:200]}...")
 
                 current_user_id = config_db.get("user_id")
                 res = (
@@ -200,7 +236,7 @@ def send_message(
                     instruction = prompt_message_sourcing(
                         job_title, details, telephone, full_name, candidatrecherche
                     )
-                    )
+
                 message = call_groq(instruction)
                 print(f"{message}")
                 yield "Message reçu..."
@@ -230,21 +266,59 @@ def send_message(
             # yield "bouton de message trouvé..."
             # driver.execute_script("arguments[0].click();", button)
 
-            button = WebDriverWait(driver, 5).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//*[contains(@href, 'messaging/compose')]//*[contains(text(), 'Message')] | //button[contains(., 'Message')]",
-                    )
-                )
-            )
+            # ✅ CORRECTION BUG: Ajout try-except pour éviter le blocage silencieux
+            try:
+                print("[DEBUG] Recherche du bouton 'Message' sur le profil...")
+                yield "🔍 Recherche du bouton de message..."
 
-            driver.execute_script(
-                "arguments[0].scrollIntoView({block: 'center'});", button
-            )
-            # button.click()
-            driver.execute_script("arguments[0].click();", button)
-            time.sleep(random.uniform(6, 8))
+                try:
+                    button = WebDriverWait(driver, 5).until(
+                        EC.presence_of_element_located(
+                            (
+                                By.XPATH,
+                                "//*[contains(@href, 'messaging/compose')]//*[contains(text(), 'Message')] | //button[contains(., 'Message')]",
+                            )
+                        )
+                    )
+                    print("[DEBUG] ✅ Bouton 'Message' trouvé après attente")
+                except Exception as timeout_error:
+                    print(
+                        f"[DEBUG] ⚠️ Timeout attente bouton 'Message': {timeout_error}"
+                    )
+                    print(f"[DEBUG] URL actuelle: {driver.current_url}")
+
+                    # Stratégie alternative: chercher le bouton directement
+                    try:
+                        print("[DEBUG] Tentative de recherche directe du bouton...")
+                        button = driver.find_element(
+                            By.XPATH,
+                            "//*[contains(@href, 'messaging/compose')]//*[contains(text(), 'Message')] | //button[contains(., 'Message')]",
+                        )
+                        print("[DEBUG] ✅ Bouton trouvé via find_element")
+                    except Exception as find_error:
+                        print(
+                            f"[DEBUG] ❌ Impossible de trouver le bouton Message: {find_error}"
+                        )
+                        yield f"❌ Bouton 'Message' non trouvé. Passage au profil suivant..."
+                        time.sleep(random.uniform(3, 5))
+                        continue
+
+                driver.execute_script(
+                    "arguments[0].scrollIntoView({block: 'center'});", button
+                )
+                print("[DEBUG] Clic sur le bouton 'Message'...")
+                driver.execute_script("arguments[0].click();", button)
+                yield "✅ Bouton 'Message' cliqué"
+                time.sleep(random.uniform(6, 8))
+
+            except Exception as e:
+                print(
+                    f"[DEBUG] ❌ Erreur lors de la gestion du bouton Message: {type(e).__name__}: {e}"
+                )
+                traceback.print_exc()
+                yield f"❌ Erreur lors du clic sur Message: {str(e)[:80]}"
+                time.sleep(random.uniform(3, 5))
+                continue
 
             # on cherche le champs de saisie et on tente le click
             try:
