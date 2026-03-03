@@ -66,8 +66,11 @@ def run_chrome(
     uid = config_db.get("user_id")
     print(f"[DEBUG] User ID: {uid}")
 
+    import threading
+
     target_url = ""
     drivers = {}
+    drivers_lock = threading.Lock()
     print("driver initialisé...")
     current_user_id = uid
     port = random.randint(9000, 9999)
@@ -228,14 +231,24 @@ def run_chrome(
     # time.sleep(random.randint(10, 30))
     # print("temps choisi : ", random.randint(10, 30))
 
-    if current_user_id not in drivers:
-        drivers[current_user_id] = uc.Chrome(
-            options=options,
-            # service=chrome_service,
-            use_subprocess=True,
-            version_main=v_chrome,
-        )
-    driver = drivers[current_user_id]
+    # if current_user_id not in drivers:
+    #     drivers[current_user_id] = uc.Chrome(
+    #         options=options,
+    #         # service=chrome_service,
+    #         use_subprocess=True,
+    #         version_main=v_chrome,
+    #     )
+    # driver = drivers[current_user_id]
+
+    with drivers_lock:
+        if current_user_id not in drivers:
+            drivers[current_user_id] = uc.Chrome(
+                options=options,
+                # service=chrome_service,
+                use_subprocess=True,
+                version_main=v_chrome,
+            )
+        driver = drivers[current_user_id]
 
     driver.set_page_load_timeout(30)
     driver.set_script_timeout(30)
@@ -614,11 +627,9 @@ def run_chrome(
         yield "Fin de programme..."
         time.sleep(3)
         try:
-            if current_user_id in drivers:
-                drivers[current_user_id].quit()
-                del drivers[current_user_id]
-                print(
-                    f"✅ Driver fermé avec succès pour l'utilisateur {current_user_id}"
-                )
+            with drivers_lock:
+                if current_user_id in drivers:
+                    drivers[current_user_id].quit()
+                    del drivers[current_user_id]
         except Exception as e:
             print(f"⚠️ Erreur fermeture driver: {e}")
