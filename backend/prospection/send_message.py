@@ -420,10 +420,17 @@ def send_message(
                 # time.sleep(random.uniform(5, 10))
                 #
                 try:
+                    print('tentative close discussion')
                     time.sleep(5)
-                    result = close_discussion(driver)
-                    print(f"resultat close discussion {result}")
+                    from selenium.webdriver.common.action_chains import ActionChains
+                    # result = close_discussion(driver)
+                    ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+                    time.sleep(5)
+                    print('fenetre fermée...')
+                    # print(f"resultat close discussion {result}")
                 except Exception as e:
+                    from selenium.webdriver.common.keys import Keys
+                    driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.ESCAPE)
                     print(f"erreur {e}")
                 time.sleep(6)
                 print("la fenêtre de discussion a été fermée.")
