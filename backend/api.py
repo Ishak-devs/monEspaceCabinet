@@ -9,6 +9,8 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, cast
 
 import uvicorn
+
+# from collaborateurs.ajouter_collaborateur import router as collaborateurs_router
 from core.generate_dossier import generate_dossier_api
 from database import supabase_client
 from fastapi import (
@@ -39,7 +41,12 @@ async def thread_(app: FastAPI):
 
 app = FastAPI(title="API local", version="1.0.0", lifespan=thread_)
 KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
-print(f"KEY: {KEY_SECRET}")
+
+# Inclure le routeur pour les collaborateurs
+# app.include_router(
+#     collaborateurs_router, prefix="/backend/collaborateurs", tags=["Collaborateurs"]
+# )
+# print(f"KEY: {KEY_SECRET}")
 
 
 # Configuration CORS pour autoriser le front React
