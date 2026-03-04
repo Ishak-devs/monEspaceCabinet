@@ -264,6 +264,14 @@ def run_chrome(
                 print(f"URL : {driver.current_url}")
                 time.sleep(random.uniform(3, 6))
 
+                try:
+                    print('On vérifie si on est dans une autre page que le login...')
+                    other_account_btn = driver.find_element(By.XPATH, "//a[contains(text(), 'autre compte') or contains(text(), 'another account')]")
+                    other_account_btn.click()
+                    time.sleep(random.uniform(2, 4))
+                except:
+                    pass
+
                 print("DEBUG: Recherche du champ email (username)...")
                 yield "Identification des champs..."
 
