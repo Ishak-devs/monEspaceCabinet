@@ -9,7 +9,7 @@ def close_discussion(driver):
 
         return Array.from(document.querySelectorAll('button')).find(b =>
             b.innerText.includes('Fermer votre conversation') ||
-            (b.getAttribute('aria-label') && b.getAttribute('aria-label').includes('Fermer votre conversation'))
+            (b.getAttribute('aria-label') && b.getAttribute('aria-label').includes('Fermer'))
         );
     }
     try {

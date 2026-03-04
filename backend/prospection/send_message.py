@@ -1,7 +1,7 @@
 import random
 import time
 import traceback
-
+from selenium.webdriver.common.keys import Keys
 # from core.send_mail import send_mail
 from data.prompt.prospection.prompt_message_prospection import (
     prompt_message_prospection,
@@ -14,7 +14,7 @@ from prospection.script_js.bouton_close_discussion import close_discussion
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
+from selenium.webdriver.common.action_chains import ActionChains
 from data.call_groq import call_groq
 
 
@@ -422,15 +422,16 @@ def send_message(
                 try:
                     print('tentative close discussion')
                     time.sleep(5)
-                    from selenium.webdriver.common.action_chains import ActionChains
+
                     # result = close_discussion(driver)
-                    ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+                    driver.switch_to.active_element.send_keys(Keys.ESCAPE)
+
                     time.sleep(5)
                     print('fenetre fermée...')
                     # print(f"resultat close discussion {result}")
                 except Exception as e:
-                    from selenium.webdriver.common.keys import Keys
-                    driver.find_element(By.TAG_NAME, 'body').send_keys(Keys.ESCAPE)
+
+                    # driver.find_element(By.CSS_SELECTOR, "button[data-control-name='close_messaging_shell']").click()
                     print(f"erreur {e}")
                 time.sleep(6)
                 print("la fenêtre de discussion a été fermée.")
@@ -448,4 +449,4 @@ def send_message(
 
         finally:
             print("bloc finally")
-            print("[CERTITUDE] Fin de la boucle principale dans send_message. Tous les profils ont été traités.")
+            print("Fin de la boucle principale dans send_message. Tous les profils ont été traités.")
