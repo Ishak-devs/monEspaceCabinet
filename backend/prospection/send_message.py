@@ -263,6 +263,7 @@ def send_message(
                     )
 
                 message = call_groq(instruction)
+                previous_message.append(message)
                 print(f"{message}")
                 yield "Message reçu..."
 
