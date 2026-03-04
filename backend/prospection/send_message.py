@@ -118,7 +118,8 @@ def send_message(
         pass
 
     for u, url in enumerate(urls, start=1):
-        message = ""
+        previous_message = []
+
         try:
             try:
                 print(f"Traitement du profil {u}/{len(urls)}...")
