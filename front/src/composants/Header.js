@@ -78,6 +78,13 @@ function Header({ cabinetName }) {
               </Link>
 
               <Link
+                to="/Disscussion"
+                className="text-xs text-gray-600 hover:text-gray-900"
+              >
+                Dépôt fichiers
+              </Link>
+
+              <Link
                 to="EmailAuto"
                 className="text-xs text-gray-600 hover:text-gray-900"
               >

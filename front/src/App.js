@@ -13,6 +13,7 @@ import RechercheCandidat from "./composants/RechercheCandidat";
 import EmailAuto from "./composants/EmailAuto";
 import AjouterPersonne from "./composants/AjouterPersonne";
 // import SignupUser from "./composants/SignupUser";
+import Discussion from "./composants/Discussion";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -60,6 +61,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AjouterPersonne />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Disscussion"
+          element={
+            <ProtectedRoute>
+              <Discussion />
             </ProtectedRoute>
           }
         />

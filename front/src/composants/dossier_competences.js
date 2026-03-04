@@ -1,13 +1,14 @@
 import { useState } from "react";
-
-const API_URL = "http://127.0.0.1:8001";
-// const API_URL = "https://filltemplate.onrender.com/";
+const API_URL = "http://localhost:8003";
+// const API_URL = "https://filltemplate.onrender.com";
 function CVUploadForm() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [addSkills, setAddSkills] = useState(null);
   const [englishCV, setEnglishCV] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [status, setStatus] = useState({ message: "", type: "" });
+  const [extraInstructions, setExtraInstructions] = useState("");
+  const [wasGenerated, setWasGenerated] = useState(false);
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -28,11 +29,12 @@ function CVUploadForm() {
 
       setSelectedFile(file);
       setAddSkills(null);
+      // setModelusing(null);
       setEnglishCV(false);
     }
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (model = "openai/gpt-oss-120b") => {
     if (!selectedFile || addSkills === null) {
       setStatus({
         message: "Veuillez sélectionner un fichier et choisir une option",
@@ -40,15 +42,18 @@ function CVUploadForm() {
       });
       return;
     }
-
-    setIsGenerating(true);
-    setStatus({ message: "", type: "" });
-
     try {
+      setIsGenerating(true);
+      setStatus({ message: "", type: "" });
+
       const formData = new FormData();
       formData.append("cv", selectedFile);
       formData.append("add_skills", addSkills === "yes");
       formData.append("english_cv", englishCV);
+      formData.append("extra_instructions", extraInstructions);
+      formData.append("model", model);
+
+      console.log(extraInstructions);
 
       const response = await fetch(`${API_URL}/api/generate-dossier`, {
         method: "POST",
@@ -74,8 +79,7 @@ function CVUploadForm() {
         message: "Dossier généré et téléchargé avec succès.",
         type: "success",
       });
-      setSelectedFile(null);
-      setAddSkills(null);
+      setWasGenerated(model !== "hermes-405b");
       setEnglishCV(false);
     } catch (error) {
       console.error("Erreur lors de la génération:", error);
@@ -89,13 +93,14 @@ function CVUploadForm() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-md border border-gray-200 p-6">
+    <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4 font-sans">
+      <div className="w-full max-w-md border border-black-200 p-6 bg-slate-50 rounded-[2rem]">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-base font-normal text-gray-900 mb-1">
-            Génération de dossier
+          <h1 className="text-base font-normal text-black-900 mb-1">
+            Dossier de compétences
           </h1>
+
           <p className="text-xs text-gray-500">
             Téléchargez votre CV pour générer automatiquement votre dossier
           </p>
@@ -113,6 +118,7 @@ function CVUploadForm() {
               accept=".pdf,.docx"
               onChange={handleFileSelect}
               className="hidden"
+              disabled={isGenerating}
             />
             <label
               htmlFor="cv-file"
@@ -133,9 +139,9 @@ function CVUploadForm() {
           <label className="block text-xs font-normal text-gray-700">
             Ajouter des compétences supplémentaires
           </label>
-          <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-800 border border-green-200 rounded font-semibold uppercase tracking-wider">
+          {/* <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-800 border border-green-200 rounded font-semibold uppercase tracking-wider">
             Opérationnel
-          </span>
+          </span>*/}
           <div className="flex gap-4">
             <div className="flex items-center">
               <input
@@ -143,7 +149,7 @@ function CVUploadForm() {
                 id="skills-yes"
                 checked={addSkills === "yes"}
                 onChange={() => setAddSkills("yes")}
-                disabled={!selectedFile}
+                disabled={isGenerating}
                 className="w-3 h-3 text-gray-900 border-gray-300 focus:ring-0 disabled:opacity-30"
               />
               <label
@@ -159,7 +165,7 @@ function CVUploadForm() {
                 id="skills-no"
                 checked={addSkills === "no"}
                 onChange={() => setAddSkills("no")}
-                disabled={!selectedFile}
+                disabled={isGenerating}
                 className="w-3 h-3 text-gray-900 border-gray-300 focus:ring-0 disabled:opacity-30"
               />
               <label
@@ -180,7 +186,7 @@ function CVUploadForm() {
               id="english"
               checked={englishCV}
               onChange={(e) => setEnglishCV(e.target.checked)}
-              disabled={!selectedFile}
+              disabled={isGenerating}
               className="w-3 h-3 text-gray-900 border-gray-300 rounded focus:ring-0 disabled:opacity-30"
             />
             <label htmlFor="english" className="ml-1.5 text-xs text-gray-700">
@@ -205,46 +211,63 @@ function CVUploadForm() {
             </p>
           </div>
         )}
+        {wasGenerated && (
+          <button
+            disabled={isGenerating}
+            onClick={() => handleGenerate("hermes-405b")}
+            className="w-full py-2 text-xs font-normal border border-black text-black rounded hover:bg-gray-100 transition-colors mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Mauvais résultat ? Regénérer avec le modèle llama 450b
+          </button>
+        )}
+
+        {isGenerating && (
+          <div className="w-full max-w-xs mx-auto py-8 flex flex-col items-center gap-3">
+            {/* La barre de scan ultra fine */}
+            <div className="relative w-full h-[2px] bg-gray-100 overflow-hidden">
+              <div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-900 to-transparent animate-shimmer"
+                style={{ width: "50%", backgroundSize: "200% 100%" }}
+              />
+            </div>
+            {/* Texte minimaliste */}
+            <span className="text-[10px] uppercase tracking-[0.3em] font-medium text-gray-500 animate-pulse">
+              Chargement...
+            </span>
+            <style>{`
+              @keyframes shimmer {
+                0% { transform: translateX(-150%); }
+                100% { transform: translateX(250%); }
+              }
+              .animate-shimmer { animation: shimmer 1.5s infinite linear; }
+            `}</style>
+          </div>
+        )}
+        <div classname="mb-5">
+          <label className="block text-xs font-normal text-gray-700 mb-2">
+            Instructions complémentaires (optionnel)
+          </label>
+          <textarea
+            value={extraInstructions}
+            onChange={(e) => setExtraInstructions(e.target.value)}
+            disabled={isGenerating}
+            placeholder="Exemple : Ajoute une expériences en plus qui n'est pas
+          mentionnée..."
+            className="w-full px-3 py-2 text-xs border
+          border-gray-300 rounded resize-none focus:outline-none
+            focus:border-gray-400 disabled:opacity-30"
+            rows={3}
+          />
+        </div>
 
         {/* Generate Button */}
         <button
-          onClick={handleGenerate}
+          onClick={() => handleGenerate()}
           disabled={!selectedFile || addSkills === null || isGenerating}
           className="w-full py-2 text-xs font-normal bg-black text-white rounded hover:bg-gray-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed mb-4"
         >
-          {isGenerating ? (
-            <span className="flex items-center justify-center">
-              <svg
-                className="animate-spin mr-2 h-3 w-3 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-              Génération...
-            </span>
-          ) : (
-            "Générer le dossier"
-          )}
+          Générer le dossier
         </button>
-
-        {/* Notice */}
-        <div className="text-[10px] text-gray-500 border-t border-gray-100 pt-3">
-          Le système peut commettre des erreurs. Vérifiez le dossier généré
-          avant utilisation.
-        </div>
       </div>
     </div>
   );
