@@ -3,7 +3,7 @@ import time
 import traceback
 from datetime import datetime, timezone
 
-from data.prompt.post_prompt import post_prompt
+from data.prompt.prospection.post_prompt import post_prompt
 from database import supabase_client
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -16,7 +16,7 @@ from typing_extensions import Any
 from data.call_groq import call_groq
 
 
-def post_message(driver, post, config_db):
+def post_message(driver, post, config_db, message_ia=None):
 
     yield "On va checker la derniere fois qu'on a posté..."
     print("On va checker la derniere fois qu'on a posté...")
@@ -84,20 +84,20 @@ def post_message(driver, post, config_db):
                 )
 
                 js_find_editor = """
-                        function findDeep(sel, root = document) {
-                            let n = root.querySelector(sel);
-                            if (n) return n;
-                            let all = root.querySelectorAll('*');
-                            for (let e of all) {
-                                if (e.shadowRoot) {
-                                    let res = findDeep(sel, e.shadowRoot);
-                                    if (res) return res;
-                                }
-                            }
-                            return null;
-                        }
-                        return findDeep("div[contenteditable='true'], div[role='textbox'], .ql-editor");
-                        """
+                                        function findDeep(sel, root = document) {
+                                            let n = root.querySelector(sel);
+                                            if (n) return n;
+                                            let all = root.querySelectorAll('*');
+                                            for (let e of all) {
+                                                if (e.shadowRoot) {
+                                                    let res = findDeep(sel, e.shadowRoot);
+                                                    if (res) return res;
+                                                }
+                                            }
+                                            return null;
+                                        }
+                                        return findDeep("div[contenteditable='true'], div[role='textbox'], .ql-editor");
+                                        """
 
                 editor = driver.execute_script(js_find_editor)
                 print("Editor found")
@@ -127,10 +127,7 @@ def post_message(driver, post, config_db):
 
                     try:
                         time.sleep(random.uniform(5, 10))
-                        from script_element_xpath.post_button import post_button
 
-                        driver.execute_script(post_button())
-                        # if resultat == "BOUTON_CLIQUE":
                         print("✅ Message publié !")
                         yield "✅ Post publié..."
                         time.sleep(random.uniform(5, 10))

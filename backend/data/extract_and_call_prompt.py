@@ -5,7 +5,7 @@ from data.extract_data.extract_infos import extract_infos_from_cv
 from data.extract_data.extract_skills_tools import extract_skills_tools_from_cv
 
 
-def extract_and_call_prompt_api(
+def extract_and_call_prompt(
     cv_file_path, add_skills, english_cv=False, progress_callback=None
 ):
     print(f"DEBUG BACKEND: add_skills vaut {add_skills} (type: {type(add_skills)})")

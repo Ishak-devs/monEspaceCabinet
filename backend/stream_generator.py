@@ -1,5 +1,5 @@
 from fastapi.responses import StreamingResponse
-from linkedin.run_chrome import run_chrome
+from backend.core.chrome.run_chrome import run_chrome
 from query.linkedin.update_state_of_elements import update_state_of_elements
 
 

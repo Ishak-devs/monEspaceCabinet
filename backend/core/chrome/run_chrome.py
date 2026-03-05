@@ -5,11 +5,11 @@ import time
 from typing import Optional
 
 from database import supabase_client
-from linkedin.configurations.config_chrome import config_chrome
-from linkedin.login_linkedin import login_linkedin
-from linkedin.post_message import post_message
-from linkedin.request_connexion import request_connexion
-from linkedin.send_message import send_message
+from core.linkedin.configurations.config_chrome import config_chrome
+from core.linkedin.login_linkedin import login_linkedin
+from core.linkedin.post_message import post_message
+from core.linkedin.request_connexion import request_connexion
+from core.linkedin.send_message import send_message
 from pydantic import BaseModel
 from selenium.webdriver.common.by import By
 

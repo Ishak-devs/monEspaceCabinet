@@ -1,4 +1,4 @@
-from database import supabase_client
+from backend.database import supabase_client
 from selenium.webdriver.common.by import By
 
 

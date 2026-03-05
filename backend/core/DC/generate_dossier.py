@@ -1,8 +1,8 @@
 import traceback
 from pathlib import Path
 
-from data.extract_and_call_prompt_api import (
-    extract_and_call_prompt_api,
+from data.extract_and_call_prompt import (
+    extract_and_call_prompt,
 )
 from docxtpl import DocxTemplate
 from treatment.jinja2.create_jinra_env import create_jinra_env
@@ -15,7 +15,7 @@ from treatment.path_ressources import ressources_path
 from core.fix_logiciels_outils import fix_logiciels_outils
 
 
-def generate_dossier_api(
+def generate_dossier(
     selected_file: str,
     output_path: str,
     add_skills: bool,
@@ -26,7 +26,7 @@ def generate_dossier_api(
     try:
         # Appeler la version API de extract_and_call_prompt
         all_data, data_skills_tools, data_infos, data_diplomes, data_experiences = (
-            extract_and_call_prompt_api(
+            extract_and_call_prompt(
                 cv_file_path=selected_file,
                 add_skills=add_skills,
                 english_cv=english_cv,
@@ -45,16 +45,12 @@ def generate_dossier_api(
         if not data:
             raise ValueError("Les données du CV n'ont pas pu être extraites.")
 
-        log_progress("Chargement du template...")
-
         # Charger le template Word
         template_path = ressources_path("ressources/template_4.docx")
         doc = DocxTemplate(template_path)
 
         # Créer l'environnement Jinja
         create_jinra_env(doc)
-
-        log_progress("Traitement des données...")
 
         # Appliquer les transformations
         data = replace_ampersand(data)
@@ -63,16 +59,12 @@ def generate_dossier_api(
         if not isinstance(data, dict):
             raise ValueError(f"Erreur: data n'est pas un dict (type={type(data)})")
 
-        log_progress("Génération du document...")
-
         # Rendre le template avec les données
         fix_logiciels_outils(data)
         doc.render(data)
 
         # Sauvegarder
         doc.save(output_path)
-
-        log_progress("✅ Dossier généré avec succès!")
 
         return {
             "success": True,

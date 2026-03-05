@@ -1,7 +1,7 @@
 from database import supabase_client
 
 
-def get_prospection_list(current_user_id):
+def get_listes(current_user_id):
     try:
         print(
             f"DEBUG: get_prospection_list a reçu : '{current_user_id}' (type: {type(current_user_id)})"
