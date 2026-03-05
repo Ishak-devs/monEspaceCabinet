@@ -270,7 +270,10 @@ def start_prospect_auto():
             print(f"CONTENU BRUT SUPABASE : {res.data}")
             data = cast(list[dict[str, Any]], res.data or [])
             print(f"DEBUG - Nombre de jobs trouvés : {len(data)}")
-            time.sleep(60)
+            if any (lock.locked() for lock in user_lock.values()):
+                print('lock libéré on vérifie les prospections...')
+                time.sleep(60)
+                continue
 
             # Pour recuperer le verrou si il est pas pris
             try:
@@ -408,11 +411,11 @@ def start_prospect_auto():
                         #     time.sleep(600)
                         #     print("Reload automatique pour verifier les prospect")
             except Exception as e:
-                print({e})
+                print(f"{e}")
                 time.sleep(15)
                 print("Reload automatique pour verifier les prospect")
         except Exception as e:
-            print({e})
+            print(f"{e}")
             time.sleep(15)
             print("Reload automatique pour verifier les prospect")
 

@@ -417,7 +417,7 @@ function ProspectionSourcing() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1.5">
-                            <h3 className="text-xs font-normal text-gray-900 truncate">
+                            <h3 className="text-xs font-medium text-gray-700 truncate capitalize">
                               {p.job_title}
                             </h3>
 
@@ -442,7 +442,7 @@ function ProspectionSourcing() {
                           )}
 
                           <div className="flex flex-wrap items-center gap-2">
-                            <div className="flex items-center gap-1.5 px-2 py-1 bg-gray-100 rounded-md text-gray-700 text-xs">
+                            {/* <div className="flex items-center gap-1.5 px-2 py-1 bg-gray-100 rounded-md text-gray-700 text-xs">
                               <svg
                                 className="w-3.5 h-3.5 text-gray-500"
                                 fill="none"
@@ -476,7 +476,7 @@ function ProspectionSourcing() {
                                   },
                                 )}
                               </span>
-                            </div>
+                            </div>*/}
 
                             {p.hour_start && (
                               <div className="flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 rounded-md text-xs border border-indigo-100">
