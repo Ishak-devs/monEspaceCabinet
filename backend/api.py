@@ -1,7 +1,9 @@
 import os
+import queue
 import random
 import threading
 import unicodedata
+from collections import defaultdict
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, cast
@@ -22,22 +24,15 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
-from locks import user_lock
 from postgrest.base_request_builder import APIResponse
 from prospection.start_prospect_auto import start_prospect_auto
 from prospection.start_prospection import run_chrome
 from pydantic import BaseModel
+from typing_extensions import DefaultDict
 
 
 @asynccontextmanager
 async def thread_(app: FastAPI):
-    # try:
-    #     supabase_client.table("prospection_settings").update(
-    #         {"is_active": False}
-    #     ).execute()
-    #     print("Supabase : Tous les statuts ont été réinitialisés.")
-    # except Exception as e:
-    #     print(f"⚠️ Erreur reset démarrage: {e}")
     thread = threading.Thread(target=start_prospect_auto, daemon=True)
     thread.start()
     print("Lancement de thread...")
@@ -192,7 +187,7 @@ async def get_prospection(request: Request):
             .eq("user_id", current_user_id)
             .order("created_at", desc=True)
             .execute()
-        )
+        )()
 
         try:
             total_connexions = supabase_client.table("linkedin_contacts").select("id", count="exact").eq("user_id", current_user_id).execute()
@@ -243,6 +238,7 @@ async def start_prospection(
         print(f"Erreur Supabase User: {e}")
         return {"status": "error", "message": "Erreur lors de l'authentification"}
 
+    user_lock = defaultdict(threading.Lock)
     if current_user_id not in user_lock:
         user_lock[current_user_id] = threading.Lock()
 
@@ -382,24 +378,27 @@ async def start_prospection(
         )
 
     def stream_generator():
-        try:
-            print(f"Lancement Chrome pour {body.intitule}")
-            for step in run_chrome(
-                body.intitule,
-                body.details,
-                body.mode,
-                body.candidatrecherche or "",
-                body.post or "",
-                config_db,
-            ):
-                try:
-                    yield f"{step}\n"
-                except Exception as e:
-                    print(f"❌ Erreur yield: {e}")
-                    import traceback
 
-                    traceback.print_exc()
-                    break
+        q = queue.Queue()  # init queue
+
+        def run_in_thread():
+            print("thread lancement")
+            try:
+                for step in run_chrome(
+                    body.intitule,
+                    body.details,
+                    body.mode,
+                    body.candidatrecherche or "",
+                    body.post or "",
+                    config_db,
+                ):
+                    q.put(step)
+            finally:
+                q.put(None)
+
+        try:
+            t = threading.Thread(target=run_in_thread, daemon=True)
+            t.start()
         except Exception as e:
             import traceback
 
@@ -409,18 +408,11 @@ async def start_prospection(
                 print(f"❌ Erreur: {str(e)[:100]}\n")
             except:
                 pass
-
-        finally:
-            try:
-                supabase_client.table("prospection_settings").update(
-                    {"is_active": False}
-                ).eq("user_id", current_user_id).execute()
-            except Exception as e:
-                print(f"⚠️ Erreur nettoyage prospection_settings: {e}")
-
-            if user_lock[current_user_id].locked():
-                user_lock[current_user_id].release()
-            print("Session terminée")
+        while True:
+            item = q.get()
+            if item is None:
+                break
+            yield f"{item}\n"
 
     return StreamingResponse(stream_generator(), media_type="text/plain")
 

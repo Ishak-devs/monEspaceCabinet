@@ -14,7 +14,9 @@ from typing import Optional
 import undetected_chromedriver as uc
 from data.prompt.prospection.prompt_sourcing import prompt_sourcing
 from database import supabase_client
-from prospection.post_message import post_message
+from locks import user_lock
+
+# from prospection.post_message import post_message
 from pydantic import BaseModel
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -50,7 +52,6 @@ def run_chrome(
     config_db,
 ):
     print("[DEBUG-STEP] Lancement chrome")
-    print("suppression des processus")
 
     if not post or post == "":
         post = config_db.get("post")
@@ -65,11 +66,16 @@ def run_chrome(
     uid = config_db.get("user_id")
     print(f"[DEBUG] User ID: {uid}")
 
+    import threading
+
     target_url = ""
-    drivers = {}
+    drivers = {}  # Dictionnaire global pour stocker les WebDrivers par utilisateur
+    print("[DEBUG] Initialisation du dictionnaire global des drivers")
+    drivers_lock = threading.Lock()
     print("driver initialisé...")
-    current_user_id = None
-    port = random.randint(9000, 9999)
+    current_user_id = uid
+    # port = random.randint(9000, 9999)
+    error_type = ""
 
     if not uid:
         print(
@@ -83,6 +89,9 @@ def run_chrome(
     print(
         f"🔍 [RUN_CHROME] Password présent: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
     )
+    print(
+        f"[DIAG] run_chrome lancé pour uid={uid}, thread={threading.current_thread().name}"
+    )
 
     options = uc.ChromeOptions()
     import glob
@@ -90,7 +99,7 @@ def run_chrome(
 
     profil_path = os.path.abspath(f"cookies/profile_{uid}")
     counter_file = os.path.join(profil_path, ".counter")
-    print(f"profil path : {profil_path}")
+    print(f"[DEBUG] Chemin du profil utilisateur : {profil_path}")
 
     count = 0
     if os.path.exists(counter_file):
@@ -131,7 +140,7 @@ def run_chrome(
     options.add_argument("--disable-software-rasterizer")
     options.add_argument("--disk-cache-size=1")
     options.add_argument("--media-cache-size=1")
-    options.add_argument(f"--remote-debugging-port={port}")
+    # options.add_argument(f"--remote-debugging-port={port}")
 
     # job_title = config_db.get("query")
     # if job_title:
@@ -226,14 +235,25 @@ def run_chrome(
     # time.sleep(random.randint(10, 30))
     # print("temps choisi : ", random.randint(10, 30))
 
-    if current_user_id not in drivers:
-        drivers[current_user_id] = uc.Chrome(
-            options=options,
-            # service=chrome_service,
-            use_subprocess=True,
-            version_main=v_chrome,
-        )
-    driver = drivers[current_user_id]
+    # if current_user_id not in drivers:
+    #     drivers[current_user_id] = uc.Chrome(
+    #         options=options,
+    #         # service=chrome_service,
+    #         use_subprocess=True,
+    #         version_main=v_chrome,
+    #     )
+    # driver = drivers[current_user_id]
+
+    with drivers_lock:
+        if current_user_id not in drivers:
+            drivers[current_user_id] = uc.Chrome(
+                options=options,
+                # service=chrome_service,
+                use_subprocess=True,
+                version_main=v_chrome,
+            )
+        driver = drivers[current_user_id]
+        print(f"[DEBUG] WebDriver récupéré pour l'utilisateur {current_user_id}")
 
     driver.set_page_load_timeout(30)
     driver.set_script_timeout(30)
@@ -438,7 +458,7 @@ def run_chrome(
 
                     infos_profil = container.text.lower().replace("\n", "").strip()
 
-                    current_user_id = config_db.get("user_id")
+                    # current_user_id = config_db.get("user_id")
                     res = (
                         supabase_client.table("profiles")
                         .select("*, cabinets(nom)")
@@ -529,9 +549,11 @@ def run_chrome(
 
                     except Exception as e:
                         error_type = type(e).__name__
-                        yield f"Erreur précise [{error_type}] : {str(e)[:100]}"
+                        print(f"Erreur précise [{error_type}] : {str(e)[:100]}")
+                        # yield f"Erreur précise [{error_type}] : {str(e)[:100]}"
                 except Exception as e:
-                    yield f"  ⚠ Erreur bouton Envoyer : {e}"
+                    print(f"Erreur précise [{error_type}] : {str(e)[:100]}")
+                    # yield f"  ⚠ Erreur bouton Envoyer : {e}"
 
             # try:
             #     from prospection.send_message import send_message
@@ -599,11 +621,17 @@ def run_chrome(
         yield "Fin de programme..."
         time.sleep(3)
         try:
-            if current_user_id in drivers:
-                drivers[current_user_id].quit()
-                del drivers[current_user_id]
-                print(
-                    f"✅ Driver fermé avec succès pour l'utilisateur {current_user_id}"
-                )
+            with drivers_lock:
+                if current_user_id in drivers:
+                    print(
+                        f"[DEBUG] Fermeture du WebDriver pour l'utilisateur {current_user_id}"
+                    )
+                    drivers[current_user_id].quit()
+                    del drivers[current_user_id]
+                    print(
+                        f"[DEBUG] WebDriver fermé et supprimé pour l'utilisateur {current_user_id}"
+                    )
         except Exception as e:
-            print(f"⚠️ Erreur fermeture driver: {e}")
+            print(
+                f"⚠️ Erreur lors de la fermeture du WebDriver pour l'utilisateur {current_user_id}: {e}"
+            )
