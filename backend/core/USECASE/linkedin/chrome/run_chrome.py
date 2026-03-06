@@ -3,6 +3,7 @@ import random
 import sys
 import time
 
+from core.USECASE.linkedin.request_connexion import request_connexion
 from data.database import supabase_client
 from core.configurations.config_chrome import config_chrome
 from core.USECASE.linkedin.login_linkedin import login_linkedin
@@ -41,6 +42,8 @@ def run_chrome(
             if "login" in driver.current_url:
                 yield "Connexion nécessaire..."
                 yield from login_linkedin(driver, user_data)
+
+            yield from request_connexion(driver, job_title)
 
         except Exception as e:
             print(f"Erreur réseau : {e}")
