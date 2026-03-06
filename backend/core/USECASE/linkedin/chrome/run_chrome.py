@@ -38,11 +38,13 @@ def run_chrome(
             current_url = driver.current_url
             print("Current URL:", current_url)
 
+            if "login" in driver.current_url:
+                yield "Connexion nécessaire..."
+                yield from login_linkedin(driver, job_title)
+
         except Exception as e:
             print(f"Erreur réseau : {e}")
 
-        if any(keyword in driver.current_url for keyword in ["login", "uas", "checkpoint", "redirect"]):
-            login_linkedin(driver, job_title)
 
 
         yield "--- Invitations terminées, Nous avons envoyé {count} invitations ---"

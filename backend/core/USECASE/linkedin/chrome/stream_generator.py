@@ -22,5 +22,5 @@ def stream_generator(body, user_data):
 
     finally:
 
-        update_is_active_false(body)
+        update_is_active_false(user_data)
         print("🔓 Session terminée")

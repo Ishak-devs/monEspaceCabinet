@@ -15,6 +15,7 @@ from core.USECASE.linkedin.components.slow_type import slow_type
 def login_linkedin(driver, job_title):
     KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
     try:
+        print('page de connexion...')
         yield "Nous avons été redirigé vers la page de connexion..."
         print(f"URL : {driver.current_url}")
         time.sleep(random.uniform(3, 6))
