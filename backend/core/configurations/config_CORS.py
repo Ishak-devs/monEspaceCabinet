@@ -1,10 +1,8 @@
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from core.USECASE.linkedin.app import app
 
-
-def config_CORS():
-
+def config_CORS(app: FastAPI):
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -12,3 +10,6 @@ def config_CORS():
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+app = FastAPI()
+config_CORS(app)

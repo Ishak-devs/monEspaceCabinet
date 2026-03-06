@@ -7,3 +7,4 @@ def get_job_and_email_password(user_data, job):
                                             else {}
                                         ),
                                     }
+        return user_data

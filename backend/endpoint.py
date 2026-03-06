@@ -1,11 +1,12 @@
-from core.USECASE.linkedin.app import app
+from fastapi import FastAPI
 
 from core.configurations.config_CORS import config_CORS
 from routes.root_generate_dossier import router_start_generate_dossier
 from routes.root_start_chrome import router_start_chrome
 from routes.root_listes import router_listes
 
-config_CORS()
+app = FastAPI()
+config_CORS(app)
 
 @app.get("/")
 async def root():

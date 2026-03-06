@@ -1,4 +1,5 @@
-def object_user_data(data, current_user_id, body):
+def object_user_data(data, body, current_user_id):
+
     user_data = {
         "id": data.get("id"),
         "user_id": current_user_id,
