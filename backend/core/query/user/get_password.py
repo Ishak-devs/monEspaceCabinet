@@ -1,7 +1,10 @@
+import os
+
 from data.database import supabase_client
 
+KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
 
-def get_password(job_title, KEY_SECRET):
+def get_password(job_title):
     try:
         rpc_res = supabase_client.rpc(
             "get_decrypted_settings",

@@ -1,16 +1,16 @@
-def get_user_informations(job, decrypted_data):
-        if isinstance(decrypted_data, dict):
-            print("DEBUG - Settings linkedin successfully")
-            job["linkedin_email"] = decrypted_data.get("linkedin_email")
-            job["linkedin_password"] = decrypted_data.get(
-                "linkedin_password"
-            )
-            job["full_name"] = decrypted_data.get("full_name")
-            job["telephone"] = decrypted_data.get("telephone")
+from core.query.rpc_query import rpc_query
 
-            print(f"linkedin_email: {job['linkedin_email']}")
-            print(f"linkedin_password: {job['linkedin_password']}")
-            print(f"full_name: {job['full_name']}")
-            print(f"telephone: {job['telephone']}")
-        else:
-            print("DEBUG - Invalid settings format")
+
+def get_user_informations(user_data):
+
+    rpc_res = rpc_query(user_data)
+
+    if rpc_res.data and len(rpc_res.data) > 0:
+        decrypted = rpc_res.data[0]
+        user_data["linkedin_email"] = decrypted.get("linkedin_email")
+        user_data["linkedin_password"] = decrypted.get("linkedin_password")
+        user_data["full_name"] = decrypted.get("full_name")
+        user_data["telephone"] = decrypted.get("telephone")
+
+    print(f"linkedin_email: {user_data['linkedin_email']}")
+    return user_data

@@ -29,7 +29,7 @@ def run_chrome(
     print(f"[DEBUG] Entrée dans run_chrome pour: {job_title}")
     print(f"[DEBUG] Détails de la prospection : {details}")
     print(f"[DEBUG] Mode : {mode}")
-    print(f"CONFIG DB: {user_data}")
+    print(f"user data: {user_data}")
 
     if driver is not None:
         try:

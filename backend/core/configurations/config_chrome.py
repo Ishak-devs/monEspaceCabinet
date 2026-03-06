@@ -6,9 +6,9 @@ import traceback
 import undetected_chromedriver as uc
 
 
-def config_chrome(config_db):
+def config_chrome(user_data):
 
-    uid = config_db.get("user_id")
+    uid = user_data.get("user_id")
     print(f"[DEBUG] User ID: {uid}")
 
     if not uid:
@@ -17,9 +17,9 @@ def config_chrome(config_db):
         )
         return
 
-    print(f"🔍 [CONFIG] Email: {config_db.get('linkedin_email')}")
+    print(f"🔍 [CONFIG] Email: {user_data.get('linkedin_email')}")
     print(
-        f"🔍 [CONFIG] Password présent: {'OUI' if config_db.get('linkedin_password') else 'NON'}"
+        f"🔍 [CONFIG] Password présent: {'OUI' if user_data.get('linkedin_password') else 'NON'}"
     )
 
     options = uc.ChromeOptions()
@@ -45,16 +45,16 @@ def config_chrome(config_db):
     options.add_argument("--disk-cache-size=1")
     options.add_argument("--media-cache-size=1")
 
-    job_title = config_db.get("query")
+    job_title = user_data.get("query")
     if job_title:
         print(f"Titre du poste: {job_title}")
 
     if not job_title:
-        job_title = config_db.get("job_title")
+        job_title = user_data.get("job_title")
         print(f"Titre du poste: {job_title}")
 
-    full_name = config_db.get("full_name")
-    telephone = config_db.get("telephone")
+    full_name = user_data.get("full_name")
+    telephone = user_data.get("telephone")
 
     print(f"Nom complet: {full_name}")
     print(f"Numéro de téléphone: {telephone}")
