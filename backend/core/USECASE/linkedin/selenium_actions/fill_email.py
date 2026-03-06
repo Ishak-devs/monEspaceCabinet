@@ -1,5 +1,5 @@
-def fill_email(find_email_input, slow_type):
-    email_user = config_db.get("linkedin_email")
+def fill_email(find_email_input, user_data):
+    email_user = user_data.get("linkedin_email")
     if email_user:
         print(f"DEBUG: Saisie de l'email: {email_user}")
         find_email_input.click()

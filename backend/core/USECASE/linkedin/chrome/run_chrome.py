@@ -40,7 +40,7 @@ def run_chrome(
 
             if "login" in driver.current_url:
                 yield "Connexion nécessaire..."
-                yield from login_linkedin(driver, job_title)
+                yield from login_linkedin(driver, user_data)
 
         except Exception as e:
             print(f"Erreur réseau : {e}")

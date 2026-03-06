@@ -1,4 +1,4 @@
-from telnetlib import EC
+from selenium.webdriver.support import expected_conditions as EC
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -21,3 +21,5 @@ def find_email_input(driver):
             f"❌ Erreur: Impossible de trouver le champ email. URL: {driver.current_url}"
         )
         raise e
+
+    return email_input

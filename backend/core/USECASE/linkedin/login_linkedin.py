@@ -12,35 +12,54 @@ from core.USECASE.linkedin.selenium_actions.fill_password import fill_password
 from core.USECASE.linkedin.components.slow_type import slow_type
 
 
-def login_linkedin(driver, job_title):
-    KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
+def login_linkedin(driver, user_data):
+
     try:
-        print('page de connexion...')
-        yield "Nous avons été redirigé vers la page de connexion..."
-        print(f"URL : {driver.current_url}")
-        time.sleep(random.uniform(3, 6))
+        # print('page de connexion...')
+        # yield "Nous avons été redirigé vers la page de connexion..."
+        # print(f"URL : {driver.current_url}")
+        # time.sleep(random.uniform(3, 6))
+        #
+        # print("DEBUG: Recherche du champ email (username)...")
+        # yield "Identification des champs..."
+        #
+        # find_email_input(driver)
+        # find_password_input(driver)
+        #
+        # email_el = find_email_input(driver)
+        # pass_el = find_password_input(driver)
+        #
+        # email_el.clear()
+        # pass_el.clear()
+        #
+        # slow_type(email_el, email_user)
+        # time.sleep(random.uniform(3, 6))
+        # fill_password(job_title, find_password_input)
+        #
+        # time.sleep(random.uniform(2, 4))
+        #
+        # print("DEBUG: Tentative de validation..")
+        # find_password_input.send_keys(Keys.ENTER)
+        # wait.until(EC.url_contains("feed"))
+        #
+        # yield "Vérification de la connexion..."
+        # time.sleep(5)
 
-        print("DEBUG: Recherche du champ email (username)...")
-        yield "Identification des champs..."
+        email_user = user_data.get("linkedin_email")
+        pass_user = user_data.get("linkedin_password")
 
-        find_email_input(driver)
-        find_password_input(driver)
+        email_el = find_email_input(driver)
+        pass_el = find_password_input(driver)
 
-        find_email_input.clear()
-        find_password_input.clear()
+        email_el.clear()
+        pass_el.clear()
 
-        fill_email(find_email_input, slow_type)
-        time.sleep(random.uniform(3, 6))
-        fill_password(job_title, KEY_SECRET, find_password_input)
-
+        slow_type(email_el, email_user)
+        time.sleep(random.uniform(2, 4))
+        slow_type(pass_el, pass_user)
         time.sleep(random.uniform(2, 4))
 
-        print("DEBUG: Tentative de validation..")
-        find_password_input.send_keys(Keys.ENTER)
-        wait.until(EC.url_contains("feed"))
-
-        yield "Vérification de la connexion..."
-        time.sleep(5)
+        pass_el.send_keys(Keys.ENTER)
 
         if "feed" in driver.current_url:
             print("Connexion réussie, redirection vers feed OK")

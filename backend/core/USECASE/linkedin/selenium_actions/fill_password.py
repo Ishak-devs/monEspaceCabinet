@@ -2,8 +2,8 @@ from datetime import time
 from core.USECASE.linkedin.components.slow_type import slow_type
 from core.query.user.get_password import get_password
 
-def fill_password(job_title, KEY_SECRET, find_password_input):
-    get_password(job_title, KEY_SECRET)
+def fill_password(job_title, find_password_input):
+    get_password(job_title)
 
     if find_password_input:
         print(f"DEBUG: Saisie du mot de passe {get_password}...")
