@@ -59,12 +59,20 @@ def send_message(
                 infos_profil = driver.find_element(By.TAG_NAME, "body").text.lower()
                 print(f"infos_profil: {infos_profil}")
 
-                cabinet_name, exclusions = get_cabinet_name(user_data)
+                result = get_cabinet_name(user_data)
+
+                if result and len(result) == 2:
+                    cabinet_name, exclusions = result
+                else:
+                    cabinet_name, exclusions = "Inconnu", []
+                    print(f"[WARN] Données cabinet vides pour {user_data}")
+
                 if any(excl in infos_profil for excl in exclusions):
                     yield f"Candidat de chez {cabinet_name}, skip..."
                     print(f"Interne ({cabinet_name}), on zappe.")
                     time.sleep(random.uniform(3, 5))
                     continue
+
                 else:
                     print(
                         f"Pas de spécifications au cabinet {cabinet_name} dans son profil..."
