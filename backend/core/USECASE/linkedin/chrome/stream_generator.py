@@ -1,4 +1,3 @@
-from fastapi.responses import StreamingResponse
 from core.USECASE.linkedin.chrome.run_chrome import run_chrome
 from core.query.linkedin.update_is_active_false import update_is_active_false
 
@@ -22,5 +21,6 @@ def stream_generator(body, user_data):
         print(f"Erreur lors de la prospection : {str(e)}")
 
     finally:
-        update_is_active_false()
+
+        update_is_active_false(body)
         print("🔓 Session terminée")

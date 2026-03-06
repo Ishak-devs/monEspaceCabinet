@@ -1,9 +1,9 @@
 from data.database import supabase_client
 from core.USECASE.linkedin.classes.object_user_data import object_user_data
 
-def update_is_active_false(data, current_user_id, body):
+def update_is_active_false(body):
 
-    user_data = object_user_data(data, current_user_id, body)
+    user_data = object_user_data(body)
     user_id = user_data.get("id")
 
     if user_id:

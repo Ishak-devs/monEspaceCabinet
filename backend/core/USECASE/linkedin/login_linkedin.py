@@ -12,7 +12,7 @@ from core.USECASE.linkedin.selenium_actions.fill_password import fill_password
 from core.USECASE.linkedin.components.slow_type import slow_type
 
 
-def login_linkedin(driver, uid, job_title, supabase_client, config_db):
+def login_linkedin(driver, job_title):
     KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
     try:
         yield "Nous avons été redirigé vers la page de connexion..."

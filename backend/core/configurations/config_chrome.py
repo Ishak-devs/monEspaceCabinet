@@ -7,7 +7,6 @@ import undetected_chromedriver as uc
 
 
 def config_chrome(user_data):
-
     uid = user_data.get("user_id")
     print(f"[DEBUG] User ID: {uid}")
 
