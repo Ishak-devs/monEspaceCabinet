@@ -9,6 +9,5 @@ def for_job_in_data(data):
                     post = str(job.get("post") or "")
                     telephone = str(job.get("telephone") or "")
                     full_name = str(job.get("full_name") or "")
-                    config_db = job.get("config_db") or {}
                     cabinet_name = str(job.get("cabinet_name") or "")
 

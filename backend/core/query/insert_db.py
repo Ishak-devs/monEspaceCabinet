@@ -2,7 +2,7 @@ from data.database import supabase_client
 from selenium.webdriver.common.by import By
 
 
-def insert_db(container, mode, config_db):
+def insert_db(container, mode, user_data):
     profile_url = next(
         (
             h.split("?")[0]
@@ -15,7 +15,7 @@ def insert_db(container, mode, config_db):
     if profile_url:
         supabase_client.table("linkedin_contacts").insert(
             {
-                "user_id": config_db.get("user_id"),
+                "user_id": user_data.get("user_id"),
                 "profile_url": profile_url,
                 "full_name": full_name,
                 "origin_mode": mode,

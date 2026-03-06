@@ -7,7 +7,7 @@ from core.query.cabinets.get_cabinets_name import get_cabinets_name
 from selenium.webdriver.common.by import By
 
 
-def request_connexion(driver, job_title):
+def request_connexion(driver, job_title, user_data):
 
     for page in range(1, 10):
         try:
@@ -38,7 +38,7 @@ def request_connexion(driver, job_title):
 
                 infos_profil = container.text.lower().replace("\n", "").strip()
 
-                cabinet_name = get_cabinets_name()
+                cabinet_name = get_cabinets_name(user_data)
 
                 yield f"On va vérifier si {cabinet_name} est mentionné dans son profil..."
                 print(f"On va vérifier si la personne est chez nous {cabinet_name}...")

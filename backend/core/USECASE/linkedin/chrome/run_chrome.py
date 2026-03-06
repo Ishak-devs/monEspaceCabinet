@@ -43,7 +43,7 @@ def run_chrome(
                 yield "Connexion nécessaire..."
                 yield from login_linkedin(driver, user_data)
 
-            yield from request_connexion(driver, job_title)
+            yield from request_connexion(driver, job_title, user_data)
 
         except Exception as e:
             print(f"Erreur réseau : {e}")
