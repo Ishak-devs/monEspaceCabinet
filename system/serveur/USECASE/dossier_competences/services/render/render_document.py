@@ -12,4 +12,4 @@ def render_document(data, output_path):
     create_jinra_env(doc)
 
     doc.render({"data": data})
-    doc.save(output_path)
+    doc.save(output_path)µ
