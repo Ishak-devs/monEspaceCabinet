@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1e8cbafc-4d6b-4c01-8bee-35904c57f173" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/documents/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/documents/read_docx.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/documents/read_pdf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/cv/read_cv.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/cv/read_cv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/data/extract_data_from_cv/extract_and_read_cv.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/data/extract_data_from_cv/extract_and_read_cv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/cv/read_cv.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/documents/read_cv.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,11 +60,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Rcom\monEspaceCabinet\system\serveur\USECASE\dossier_competences\services\documents" />
+      <recent name="C:\Users\Rcom\monEspaceCabinet\system\serveur\USECASE\dossier_competences\services" />
       <recent name="C:\Users\Rcom\monEspaceCabinet\system\serveur\USECASE\dossier_competences\services\cv" />
       <recent name="C:\Users\Rcom\monEspaceCabinet\system\serveur\USECASE\dossier_competences\services\prompt" />
       <recent name="C:\Users\Rcom\monEspaceCabinet\system\serveur\USECASE\linkedin\services" />
-      <recent name="C:\Users\Rcom\monEspaceCabinet\system\serveur" />
-      <recent name="C:\Users\Rcom\monEspaceCabinet" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -78,7 +82,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1772883585553</updated>
-      <workItem from="1772883587975" duration="7954000" />
+      <workItem from="1772883587975" duration="8125000" />
     </task>
     <servers />
   </component>

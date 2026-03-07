@@ -47,7 +47,7 @@ function CVUploadForm() {
       setStatus({ message: "", type: "" });
 
       const formData = new FormData();
-      formData.append("cv", selectedFile);
+      formData.append("build", selectedFile);
       formData.append("add_skills", addSkills === "yes");
       formData.append("english_cv", englishCV);
       formData.append("extra_instructions", extraInstructions);
