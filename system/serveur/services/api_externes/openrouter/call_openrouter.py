@@ -2,7 +2,7 @@ import os
 from openai import OpenAI
 
 
-def call_openrouter(prompt):
+def call_openrouter(prompt, model):
     try:
         print("Calling OpenRouter API...")
         client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=os.environ.get("OPENROUTERAPI"))
