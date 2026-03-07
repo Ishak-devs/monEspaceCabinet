@@ -3,17 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1e8cbafc-4d6b-4c01-8bee-35904c57f173" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/client/src/composants/dossier_competences.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/client/src/composants/dossier_competences.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/client/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/system/client/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/APIRouter/root_generate_dossier.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/APIRouter/root_generate_dossier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/data/extract_and_call_prompt.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/data/extract_and_call_prompt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/data/extract_data_from_cv/extract_and_read_cv.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/data/extract_data_from_cv/extract_and_read_cv.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/data/extract_data_from_cv/extract_skills_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/data/extract_data_from_cv/extract_skills_tools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/fonctionnalites/generate_dossier.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/fonctionnalites/generate_dossier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/cv/process_cv_to_dossier.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/cv/process_cv_to_dossier.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/cv/read_cv.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/cv/read_cv.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/render_Document.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/USECASE/dossier_competences/services/render_document.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/services/api_externes/groq.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/services/api_externes/groq.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +78,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1772883585553</updated>
-      <workItem from="1772883587975" duration="7797000" />
+      <workItem from="1772883587975" duration="7954000" />
     </task>
     <servers />
   </component>
