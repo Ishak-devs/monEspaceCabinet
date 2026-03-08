@@ -2,7 +2,7 @@ import io
 
 from docx import Document
 
-from usecase.dossier_competences.services.library.python_docx.build_dossier.header.header_doc import header_doc
+from usecase.dossier_competences.services.library.python_docx.build_dossier.header.main.header_doc import header_doc
 from cloud.S3.get_logo import get_logo
 
 

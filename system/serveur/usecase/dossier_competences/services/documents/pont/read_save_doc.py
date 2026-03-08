@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from usecase.dossier_competences.traitement.dossier_competences.generate_dossier import generate_dossier
+from usecase.dossier_competences.traitement.generate_dossier import generate_dossier
 
 async def read_save_doc(cv_content: bytes, filename: str):
     temp_path = Path(f"temp_{filename}")
