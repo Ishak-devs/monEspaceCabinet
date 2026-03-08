@@ -9,7 +9,7 @@ def generate_dossier(
 ) -> dict:
 
     try:
-        logo_path = "templates/logo_entreprise.png
+        logo_path = "ressources/logo.ico
 
         #EXTRACT
         all_data = analyse_data(file_path=selected_file)
