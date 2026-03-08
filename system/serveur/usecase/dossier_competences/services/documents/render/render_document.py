@@ -15,6 +15,7 @@ def render_document(data):
     header_doc(doc, data, logo_path)
     body_doc(doc, data)
 
+
     file_stream = io.BytesIO()
 
     doc.save(file_stream)

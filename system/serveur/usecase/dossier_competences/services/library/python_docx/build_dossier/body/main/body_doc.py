@@ -1,7 +1,9 @@
-from usecase.dossier_competences.services.library.python_docx.build_dossier.body.section_competences import \
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.competences.build_competences import \
     section_competences
-from usecase.dossier_competences.services.library.python_docx.build_dossier.body.section_outils import section_outils
-from usecase.dossier_competences.services.library.python_docx.build_dossier.body.section_secteurs_activites import \
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.build_experiences import \
+    section_experiences
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.outils.build_outils import section_outils
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.secteurs_activites.build_secteurs_activites import \
     section_secteurs_activites
 
 def body_doc(doc, data):
@@ -9,3 +11,4 @@ def body_doc(doc, data):
     section_competences(doc, data)
     section_outils(doc, data)
     section_secteurs_activites(doc, data)
+    section_experiences(doc, data)
