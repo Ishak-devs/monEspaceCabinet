@@ -4,7 +4,6 @@ from usecase.dossier_competences.traitement.dossier_competences.generate_dossier
 
 async def process_cv_to_dossier(cv_content: bytes, filename: str):
     temp_path = Path(f"temp_{filename}")
-    output_path = Path(f"dossier_{filename}.docx")
 
     with open(temp_path, "wb") as f:
         f.write(cv_content)

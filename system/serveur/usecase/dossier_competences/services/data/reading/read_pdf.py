@@ -1,7 +1,7 @@
 import fitz
 
-from usecase.dossier_competences.services.data.loops.extract_data import extract_ocr_text
-from usecase.dossier_competences.services.data.loops.extract_data import extract_native_text
+from usecase.dossier_competences.services.data.loops.extract_data.extract_ocr_text import extract_ocr_text
+from usecase.dossier_competences.services.data.loops.extract_data.extract_native_text import extract_native_text
 
 def read_pdf(file_path):
     with fitz.open(file_path) as doc:

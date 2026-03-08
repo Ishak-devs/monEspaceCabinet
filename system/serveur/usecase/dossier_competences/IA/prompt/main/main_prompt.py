@@ -1,3 +1,6 @@
+from usecase.dossier_competences.text.json.json_template import json_template
+
+
 def main_prompt(cv_text):
     template = json_template()
 

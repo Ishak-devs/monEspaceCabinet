@@ -57,7 +57,7 @@ function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Dossier de compétences */}
           <div
-            onClick={() => navigate("/dossier_competences")}
+            onClick={() => navigate("/documents")}
             className="border border-gray-200 rounded p-4 cursor-pointer hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-start mb-3">

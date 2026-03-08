@@ -86,7 +86,7 @@ function App() {
             }
           />
         }
-        {/* <Route path="/dossier_competences" element={<CVUploadForm />} />*/}
+        {/* <Route path="/documents" element={<CVUploadForm />} />*/}
         <Route
           path="/dossier_competences"
           element={

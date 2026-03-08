@@ -13,8 +13,7 @@ def render_document(data):
     header_doc(doc, data, logo_path)
 
     file_stream = io.BytesIO()
-    file_stream.seek(0)
 
     doc.save(file_stream)
-
+    file_stream.seek(0)
     return file_stream

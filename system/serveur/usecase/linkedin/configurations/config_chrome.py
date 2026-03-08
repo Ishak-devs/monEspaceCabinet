@@ -12,7 +12,7 @@ def config_chrome(user_data):
 
     if not uid:
         print(
-            "❌ ERREUR : Pas d'ID utilisateur, Chrome ne sait pas quel dossier_competences ouvrir !"
+            "❌ ERREUR : Pas d'ID utilisateur, Chrome ne sait pas quel documents ouvrir !"
         )
         return
 

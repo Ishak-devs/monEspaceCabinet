@@ -13,6 +13,9 @@ def get_logo():
         aws_access_key_id=os.getenv('S3_ACCESS_KEY'),
         aws_secret_access_key=os.getenv('S3_SECRET_KEY')
     )
+    print(f"DEBUG KEY: {os.getenv('S3_ACCESS_KEY')}")
+    print(f"DEBUG KEY: {os.getenv('S3_SECRET_KEY')}")
+    print(f"DEBUG KEY: {os.getenv('S3_ENDPOINT')}")
 
     response = s3_client.get_object(Bucket='mybuckets', Key='logo.jpg')
     return BytesIO(response['Body'].read())

@@ -1,6 +1,6 @@
 def find_editor():
     js_find_editor = """
-                                            function findDeep(sel, APIRouter = dossier_competences) {
+                                            function findDeep(sel, APIRouter = documents) {
                                                 let n = APIRouter.querySelector(sel);
                                                 if (n) return n;
                                                 let all = APIRouter.querySelectorAll('*');

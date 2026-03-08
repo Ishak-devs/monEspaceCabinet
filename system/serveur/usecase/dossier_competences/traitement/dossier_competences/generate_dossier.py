@@ -1,7 +1,7 @@
 import traceback
 
 from usecase.dossier_competences.IA.analyse.analyse_data import analyse_data
-from usecase.dossier_competences.services.dossier_competences.render.render_document import render_document
+from usecase.dossier_competences.services.documents.render.render_document import render_document
 
 def generate_dossier(
     selected_file: str,
@@ -11,11 +11,11 @@ def generate_dossier(
 
         #EXTRACT
         all_data = analyse_data(file_path=selected_file)
+        print(f"--- DEBUG ALL_DATA ---\n{all_data}\n----------------------")
         #BUILD
         data = all_data
-        #RENDER
-        render_document(data)
 
+        # RENDER
         file_stream = render_document(data)
 
         return {
