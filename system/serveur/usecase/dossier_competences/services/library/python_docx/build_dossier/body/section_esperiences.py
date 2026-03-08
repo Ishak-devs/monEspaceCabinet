@@ -21,3 +21,12 @@ def section_competences(doc, data):
         table.columns[0].width = Cm(7)
         table.columns[1].width = Cm(4)
         table.columns[2].width = Cm(6)
+
+        cell_gauche = table.cell(0, 0)
+        p_gauche = cell_gauche.paragraphs[0]
+        p_gauche.alignement = WD_ALIGN_PARAGRAPH.LEFT
+        run = p_gauche.add_run(exp.get('Nom_Entreprise', ''))
+        run.font.name = POLICE
+        run.font.bold = True
+        run.font.size = Pt(11)
+        run.font.color.rgb = COULEUR_PRINCIPALE
