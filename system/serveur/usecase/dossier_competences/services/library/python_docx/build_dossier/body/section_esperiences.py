@@ -3,6 +3,9 @@ from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls
 from docx.shared import RGBColor, Pt, Cm
 
+COULEUR_PRINCIPALE = RGBColor(0x1B, 0x4A, 0x8A)
+POLICE = "Arial"
+
 def section_competences(doc, data):
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -13,7 +16,8 @@ def section_competences(doc, data):
     shd = parse_xml(f'<w:shd {nsdecls("w")} w:fill="002060"/>')
     p._element.get_or_add_pPr().append(shd)
 
-    for comp in data.get('Expériences', []):
-        p = doc.add_paragraph(comp, style='List Bullet')
-        p.paragraph_format.space_after = Pt(2)
-        p.paragraph_format.left_indent = Pt(20)
+    for exp in data.get('Expériences', []):
+        table = doc.add_table(rows=1, cols=3)
+        table.columns[0].width = Cm(7)
+        table.columns[1].width = Cm(4)
+        table.columns[2].width = Cm(6)
