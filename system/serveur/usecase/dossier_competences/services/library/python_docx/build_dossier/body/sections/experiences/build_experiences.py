@@ -2,18 +2,12 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls
 from docx.shared import RGBColor, Cm
-
-from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.blue_line import \
-    blue_line
-from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.cellule_gauche import \
-    cellule_gauche
-from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.celluledroite import \
-    cellule_droite
-from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.cellulemilieu import \
-    cellule_milieu
-
-COULEUR_PRINCIPALE = RGBColor(0x1B, 0x4A, 0x8A)
-POLICE = "Arial"
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.blue_line import blue_line
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.cellule_gauche import cellule_gauche
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.celluledroite import cellule_droite
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.cellulemilieu import cellule_milieu
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.display_mission import display_mission
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.display_tasks import display_tasks
 
 def section_experiences(doc, data):
     p = doc.add_paragraph()
@@ -34,5 +28,9 @@ def section_experiences(doc, data):
         cellule_gauche(table, exp)
         cellule_milieu(table, exp)
         cellule_droite(table, exp)
-
         blue_line(table)
+
+        if exp.get('Mission'):
+            display_mission(doc, exp)
+
+        display_tasks(doc, exp)
