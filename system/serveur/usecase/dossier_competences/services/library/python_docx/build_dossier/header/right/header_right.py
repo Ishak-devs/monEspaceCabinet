@@ -1,7 +1,6 @@
 from docx.enum.table import WD_ALIGN_VERTICAL
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt, RGBColor
-from docx.shared import Pt, RGBColor
 
 POLICE = "Arial"
 COULEUR_PRINCIPALE = RGBColor(0x1B, 0x4A, 0x8A)
@@ -31,5 +30,3 @@ def header_right(data, cell_droite):
     run3.font.name = POLICE
     run3.font.size = Pt(10)
     run3.font.color.rgb = COULEUR_GRIS
-
-    return header_right(data)
