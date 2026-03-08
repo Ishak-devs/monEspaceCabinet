@@ -19,10 +19,4 @@ def analyse_data(file_path):
     output = call_openrouter(prompt_main, model="nousresearch/hermes-3-llama-3.1-405b")
     output_clean = output.strip().removeprefix("```json").removesuffix("```").strip()
     print(output_clean)
-
-    if output:
-        print(" CV ordonné et nettoyé avec succès.")
-        print(output)
-        return output
-
     return json.loads(output_clean)

@@ -12,7 +12,7 @@ def header_right(data, cell_droite):
 
     p1 = cell_droite.paragraphs[0]
     p1.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    run1 = p1.add_run(data.get('nom', 'NOM PRENOM'))
+    run1 = p1.add_run(data.get('Initial', ''))
     run1.font.name = POLICE
     run1.font.bold = True
     run1.font.size = Pt(14)
@@ -20,13 +20,13 @@ def header_right(data, cell_droite):
 
     p2 = cell_droite.add_paragraph()
     p2.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    run2 = p2.add_run(data.get('poste', 'Consultant IT'))
+    run2 = p2.add_run(data.get('Poste', 'Consultant IT'))
     run2.font.name = POLICE
     run2.font.size = Pt(11)
 
     p3 = cell_droite.add_paragraph()
     p3.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    run3 = p3.add_run(f"{data.get('annees_xp', '0')} ans d'expérience")
+    run3 = p3.add_run(f"{data.get('Experience_totale', '0')} ans d'expérience")
     run3.font.name = POLICE
     run3.font.size = Pt(10)
     run3.font.color.rgb = COULEUR_GRIS
