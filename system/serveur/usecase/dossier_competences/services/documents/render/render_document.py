@@ -10,6 +10,7 @@ def render_document(data):
 
     logo_path = get_logo()
     doc = Document()
+    print(data)
     header_doc(doc, data, logo_path)
 
     file_stream = io.BytesIO()
