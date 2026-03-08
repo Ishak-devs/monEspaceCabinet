@@ -39,3 +39,10 @@ def section_competences(doc, data):
         run2.font.size = Pt(10)
         run2.font.color.rgb = RGBColor(0x77, 0x77, 0x77)
 
+        cell_droite = table.cell(0, 2)
+        p_droite = cell_droite.paragraphs[0]
+        p_droite.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        run3 = p_droite.add_run(exp.get('Dates', ''))
+        run3.font.name = POLICE
+        run3.font.size = Pt(10)
+        run3.font.color.rgb = RGBColor(0x77, 0x77, 0x77)
