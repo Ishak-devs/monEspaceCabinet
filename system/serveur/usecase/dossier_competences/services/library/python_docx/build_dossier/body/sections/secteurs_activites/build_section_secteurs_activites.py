@@ -14,7 +14,7 @@ def build_section_secteurs_activites(doc, data):
     p._element.get_or_add_pPr().append(shd)
     p.paragraph_format.keep_with_next = True
 
-    for secteur in data.get('Secteurs_activités', []):
+    for secteur in data.get('Secteurs_Activités', []):
         p_item = doc.add_paragraph(secteur, style='List Bullet')
         p_item.paragraph_format.keep_with_next = True
         p_item.paragraph_format.space_after = Pt(2)

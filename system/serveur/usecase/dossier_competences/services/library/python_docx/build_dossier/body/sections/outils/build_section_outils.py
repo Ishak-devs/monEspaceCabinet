@@ -15,10 +15,10 @@ def build_section_outils(doc, data):
     p._element.get_or_add_pPr().append(shd)
     p.paragraph_format.keep_with_next = True
 
-    for categorie in data.get('Logiciels_par_titre', []):
+    for categorie in data.get('Logiciels_Et_Outils', []):
         print(categorie)
-        titre = categorie.get('titre', '')
-        logiciels_outils = categorie.get('logiciels_outils', [])
+        titre = categorie.get('Catégorie', '')
+        logiciels_outils = categorie.get('Liste_Logiciels', [])
 
         if titre and logiciels_outils:
             p = doc.add_paragraph()
@@ -29,4 +29,3 @@ def build_section_outils(doc, data):
             p.add_run(", ".join(logiciels_outils))
 
             p.paragraph_format.space_after = Pt(4)
-            p.paragraph_format.keep_with_next = True

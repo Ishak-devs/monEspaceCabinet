@@ -1,21 +1,20 @@
 def json_template():
     return {
-        "Nom_prénom": "",
-        "Initial": "",
-        "Poste": "",
-        "Secteurs_activités": [],
-        "Langues": [{"langue": "", "niveau": ""}],
-        "Experience_totale": "",
-        "competences": [],
-        "Logiciels_par_titre": [{"titre": "", "logiciels_outils": []}],
-        "Diplômes": [{"Diplôme": "", "École": "", "Année": "", "Lieu": ""}],
-        "Expériences": [{
-            "Poste": "",
+        "Nom_Prénom": "",
+        "Poste_Actuel": "",
+        "Secteurs_Activités": [],
+        "Langues_Étrangères": [{"Langue": "", "Niveau": ""}],
+        "Expérience_Totale_Années": "",
+        "Compétences_Clefs": [],
+        "Logiciels_Et_Outils": [{"Catégorie": "", "Liste_Logiciels": []}],
+        "Diplômes_Et_Formations": [{"Diplôme": "", "École": "", "Année": "", "Lieu": ""}],
+        "Expériences_Professionnelles": [{
+            "Poste_Occupé": "",
             "Nom_Entreprise": "",
-            "Dates": "",
-            "Durée_expérience": "",
-            "Mission": "",
-            "Tâches": [],
-            "Logiciels_outils": []
+            "Dates_Période": "",
+            "Durée_Mission": "",
+            "Description_Mission": "",
+            "Liste_Tâches": [],
+            "Environnement_Technique": []
         }]
     }

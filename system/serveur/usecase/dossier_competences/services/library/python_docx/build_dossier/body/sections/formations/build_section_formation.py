@@ -20,15 +20,19 @@ def build_section_formation(doc, data):
     p._element.get_or_add_pPr().append(parse_xml(f'<w:shd {nsdecls("w")} w:fill="002060"/>'))
     p.paragraph_format.keep_with_next = True
 
-    for diplome in data.get('Diplômes', []):
+    for diplome in data.get('Diplômes_Et_Formations', []):
         table = doc.add_table(rows=1, cols=2)
+
         table.style = None
         cells = table.rows[0].cells
         table.columns[0].width = Cm(14)
         table.columns[1].width = Cm(3)
 
+        for row in table.rows:
+            row._tr.get_or_add_trPr().append(parse_xml(f'<w:cantSplit {nsdecls("w")} w:val="1"/>'))
+
         if diplome.get('Diplôme'):
             left_cells(cells, diplome)
 
-        if diplome.get('Dates'):
+        if diplome.get('Année'):
             right_cells(cells, diplome)

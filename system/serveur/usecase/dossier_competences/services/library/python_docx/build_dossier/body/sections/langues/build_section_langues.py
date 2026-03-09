@@ -14,9 +14,9 @@ def build_section_langues(doc, data):
     p_titre._element.get_or_add_pPr().append(shd)
     p_titre.paragraph_format.keep_with_next = True
 
-    for langue in data.get('Langues', []):
+    for langue in data.get('Langues_Étrangères', []):
         p = doc.add_paragraph(style='List Bullet')
-        run_l = p.add_run(f"{langue.get('langue')} : ")
+        run_l = p.add_run(f"{langue.get('Langue')} : ")
         run_l.bold = True
-        p.add_run(langue.get('niveau'))
+        p.add_run(langue.get('Niveau'))
         p.paragraph_format.space_after = Pt(2)
