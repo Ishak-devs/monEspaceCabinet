@@ -4,16 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e8cbafc-4d6b-4c01-8bee-35904c57f173" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/experiences/build/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/tables/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/tables/shadow_cells.py" afterDir="false" />
+    <list default="true" id="1e8cbafc-4d6b-4c01-8bee-35904c57f173" name="Changes" comment="import">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/main/body_doc.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/main/body_doc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/competences/build_section_competences.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/competences/build_section_competences.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/experiences/build_section_experiences.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/experiences/build/build_section_experiences.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/header/left/header_left.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/header/left/header_left.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/serveur/temp_CV_Pierre.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/experiences/build/build_section_experiences.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/experiences/build/build_section_experiences.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/formations/build_section_formation.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/formations/build_section_formation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/tables/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/body/sections/tables/shadow_cells.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/header/main/header_doc.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/header/main/header_doc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/header/right/header_right.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/serveur/usecase/dossier_competences/services/library/python_docx/build_dossier/header/right/header_right.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,9 +90,22 @@
       <workItem from="1772902017892" duration="1503000" />
       <workItem from="1772963232692" duration="23726000" />
     </task>
+    <task id="LOCAL-00001" summary="import">
+      <option name="closed" value="true" />
+      <created>1773047026895</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1773047026895</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="import" />
+    <option name="LAST_COMMIT_MESSAGE" value="import" />
   </component>
 </project>

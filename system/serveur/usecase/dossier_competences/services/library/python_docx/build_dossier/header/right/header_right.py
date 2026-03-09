@@ -24,7 +24,7 @@ def header_right(data, cell_droite):
     p2.paragraph_format.space_after = Pt(0)
     run2 = p2.add_run(data.get('Poste', ''))
     run2.font.name = POLICE
-    run2.font.size = Pt(20)
+    run2.font.size = Pt(14)
     run2.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
     run2.font.bold = True
 

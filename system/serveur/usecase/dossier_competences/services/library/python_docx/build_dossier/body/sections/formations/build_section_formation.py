@@ -1,20 +1,18 @@
-from docx.oxml import parse_xml
-from docx.oxml.ns import nsdecls
-from docx.shared import Pt, RGBColor
+from docx.shared import RGBColor
 
 
 def build_section_formation(doc, data):
-    p_titre = doc.add_paragraph()
-    p_titre.alignment = 1  # Centré
-    run_titre = p_titre.add_run("FORMATIONS")
-    run_titre.font.bold = True
-    run_titre.font.color.rgb = RGBColor(255, 255, 255)
-    p_titre._element.get_or_add_pPr().append(parse_xml(f'<w:shd {nsdecls("w")} w:fill="002060"/>'))
+    table = doc.add_table(rows=1, cols=2)
+    table.style = None
+    cells = table.rows[0].cells
 
     for diplome in data.get('Diplômes', []):
-        p = doc.add_paragraph()
-        run = p.add_run(f"{diplome.get('Année')} : {diplome.get('Diplôme')}")
-        run.bold = False
-        p.add_run(f"\n{diplome.get('École')} - {diplome.get('Lieu')}")
-        p.paragraph_format.space_after = Pt(8)
-        p.paragraph_format.keep_together = True
+        p_left = cells[0].paragraphs[0]
+        run_dip = p_left.add_run(diplome.get('Diplôme', ''))
+        run_dip.bold = True
+        run_dip.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
+
+        p_right = cells[1].paragraphs[0]
+        p_right.alignment = 2
+        run_date = p_right.add_run(str(diplome.get('Année', '')))
+        run_date.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
