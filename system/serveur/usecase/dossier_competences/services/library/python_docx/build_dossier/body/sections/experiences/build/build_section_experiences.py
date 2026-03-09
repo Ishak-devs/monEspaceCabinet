@@ -6,8 +6,11 @@ from usecase.dossier_competences.services.library.python_docx.build_dossier.body
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.cellule_gauche import cellule_gauche
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.celluledroite import cellule_droite
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.cellulemilieu import cellule_milieu
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.display_logiciels_outils import \
+    display_logiciels_outils
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.display_mission import display_mission
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.display_tasks import display_tasks
+
 
 def build_section_experiences(doc, data):
     p = doc.add_paragraph()
@@ -36,3 +39,6 @@ def build_section_experiences(doc, data):
             display_mission(doc, exp)
 
         display_tasks(doc, exp)
+
+        if exp.get("logiciels_outils"):
+            display_logiciels_outils(doc, exp)
