@@ -27,5 +27,8 @@ def build_section_formation(doc, data):
         table.columns[0].width = Cm(14)
         table.columns[1].width = Cm(3)
 
-        left_cells(cells, diplome)
-        right_cells(cells, diplome)
+        if diplome.get('Diplôme'):
+            left_cells(cells, diplome)
+
+        if diplome.get('Dates'):
+            right_cells(cells, diplome)

@@ -9,10 +9,9 @@ def left_cells(cells, diplome):
     run_dip.bold = True
     run_dip.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
 
-
-    p_info = cells[0].add_paragraph()
-    p_info.paragraph_format.left_indent = Cm(1.25)
     if diplome.get("École"):
+        p_info = cells[0].add_paragraph()
+        p_info.paragraph_format.left_indent = Cm(1.25)
         texte = diplome.get("École")
         if diplome.get("Lieu"):
             texte += f" - {diplome.get('Lieu')}"

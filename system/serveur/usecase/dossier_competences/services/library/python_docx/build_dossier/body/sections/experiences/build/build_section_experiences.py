@@ -1,6 +1,6 @@
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import parse_xml, OxmlElement
-from docx.oxml.ns import nsdecls
+from docx.oxml.ns import nsdecls, qn
 from docx.shared import RGBColor, Cm
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.blue_line import blue_line
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.cellule_gauche import cellule_gauche
@@ -32,6 +32,11 @@ def build_section_experiences(doc, data):
         cellule_droite(table, exp)
         blue_line(table)
 
+        for row in table.rows:
+            for cell in row.cells:
+                for p in cell.paragraphs:
+                    p.paragraph_format.keep_with_next = True
+
         if exp.get('Mission'):
             display_mission(doc, exp)
 
@@ -40,3 +45,9 @@ def build_section_experiences(doc, data):
 
         if exp.get("Logiciels_outils"):
             display_logiciels_outils(doc, exp)
+
+        for row in table.rows:
+            trPr = row._tr.get_or_add_trPr()
+            cantSplit = OxmlElement('w:cantSplit')
+            cantSplit.set(qn('w:val'), '1')
+            trPr.append(cantSplit)
