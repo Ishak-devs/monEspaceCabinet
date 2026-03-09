@@ -1,5 +1,5 @@
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.oxml import parse_xml
+from docx.oxml import parse_xml, OxmlElement
 from docx.oxml.ns import nsdecls
 from docx.shared import RGBColor, Cm
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.blue_line import blue_line
@@ -29,6 +29,12 @@ def build_section_experiences(doc, data):
         table.columns[1].width = Cm(4)
         table.columns[2].width = Cm(6)
         table.style = None
+
+        for row in table.rows:
+            tr = row._tr
+            trPr = tr.get_or_add_trPr()
+            tblHeader = OxmlElement('w:cantSplit')
+            trPr.append(tblHeader)
 
         cellule_gauche(table, exp)
         cellule_milieu(table, exp)
