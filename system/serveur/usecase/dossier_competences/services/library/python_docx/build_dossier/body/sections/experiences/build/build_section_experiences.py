@@ -45,7 +45,7 @@ def build_section_experiences(doc, data):
         if exp.get('Description_Mission'):
             display_mission(doc, exp)
 
-        if exp.get('Tâches'):
+        if exp.get('Liste_Tâches'):
             display_tasks(doc, exp)
 
         if exp.get("Environnement_Technique"):

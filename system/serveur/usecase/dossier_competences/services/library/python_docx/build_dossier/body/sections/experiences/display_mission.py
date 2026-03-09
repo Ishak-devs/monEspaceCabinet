@@ -4,10 +4,13 @@ from docx.shared import Pt, RGBColor
 def display_mission(doc, exp):
     p_mission = doc.add_paragraph()
 
-    p_mission.add_run("MISSION : ").bold = True
-    p_mission.add_run(str(exp.get('Description_Mission', '')))
+    run_label = p_mission.add_run("MISSION : ")
+    run_label.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
+    run_label.bold = True
+
+    run_desc = p_mission.add_run(str(exp.get('Description_Mission', '')))
+    run_desc.font.color.rgb = RGBColor(255, 255, 255)
 
     p_mission.paragraph_format.space_before = Pt(10)
     p_mission.paragraph_format.space_after = Pt(10)
-
     p_mission.paragraph_format.keep_with_next = True
