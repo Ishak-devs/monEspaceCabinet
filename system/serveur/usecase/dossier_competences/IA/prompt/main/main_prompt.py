@@ -4,7 +4,7 @@ from usecase.dossier_competences.json.json_template import json_template
 def main_prompt(cv_text):
     template = json_template()
 
-    return f"""Extrais les informations du CV suivant et retourne un JSON valide.
+    return f"""Extrais les informations du CV suivant et retourne un JSON valide SANS AUCUN COMMENTAIRE JUSTE LE JSON.
 
 CV :
 {cv_text}
