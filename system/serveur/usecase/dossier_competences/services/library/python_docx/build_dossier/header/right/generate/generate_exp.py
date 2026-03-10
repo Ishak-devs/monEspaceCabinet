@@ -1,6 +1,12 @@
 def generate_exp(data):
-    exp_val = str(data.get('Expérience_Totale_Années', ''))
-    if exp_val and "exp" not in exp_val.lower():
-        exp_val += " ans d'expérience"
+    exp_val = str(data.get('Expérience_Totale_Années', '')).strip()
+    if not exp_val:
+        return ""
+
+    if "an" not in exp_val.lower():
+        exp_val += " ans"
+
+    if "exp" not in exp_val.lower():
+        exp_val += " d'expérience"
 
     return exp_val
