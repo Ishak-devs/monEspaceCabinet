@@ -17,3 +17,4 @@ setuptools
 gunicorn
 json_repair
 openai
+cv2
