@@ -43,7 +43,7 @@ def build_section_experiences(doc, data):
         if exp.get("Poste_Occupé"):
             display_poste(doc, exp)
 
-        if exp.get('Résumé_concis_des_missions'):
+        if exp.get('Résumé_concis_tâches'):
             display_mission(doc, exp)
 
         if exp.get('Liste_Tâches'):

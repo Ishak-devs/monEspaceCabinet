@@ -4,6 +4,10 @@ from docx.oxml.ns import nsdecls
 from docx.shared import RGBColor, Pt, Cm
 
 def build_section_outils(doc, data):
+    outils_data = data.get('Logiciels_Et_Outils', [])
+    if not outils_data:
+        return
+
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run("OUTILS")
@@ -18,7 +22,7 @@ def build_section_outils(doc, data):
     for categorie in data.get('Logiciels_Et_Outils', []):
         print(categorie)
         titre = categorie.get('Catégorie', '')
-        logiciels_outils = categorie.get('Liste_Logiciels', [])
+        logiciels_outils = list(dict.fromkeys(categorie.get('Liste_Logiciels', [])))
 
 
         if titre and logiciels_outils:
