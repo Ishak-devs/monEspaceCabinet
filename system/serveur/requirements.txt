@@ -18,6 +18,7 @@ deprecation
 distro
 docstring_parser
 docxtpl
+json_repair
 fastapi
 fsspec
 groq
