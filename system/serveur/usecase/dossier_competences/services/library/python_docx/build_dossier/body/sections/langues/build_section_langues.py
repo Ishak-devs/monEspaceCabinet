@@ -5,7 +5,7 @@ from docx.shared import Pt, RGBColor
 def build_section_langues(doc, data):
     langues = data.get('Langues_Étrangères', [])
 
-    if not langues:
+    if not langues or not langues[0].get('Langue'):
         return
 
     p_titre = doc.add_paragraph()

@@ -14,3 +14,4 @@ PyMuPDF
 docxtpl
 undetected_chromedriver
 setuptools
+gunicorn

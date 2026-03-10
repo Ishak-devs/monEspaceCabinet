@@ -5,7 +5,12 @@ from docx.shared import RGBColor, Pt, Cm
 
 def build_section_secteurs_activites(doc, data):
 
+    secteurs = data.get('Secteurs_Activités') or []
+    if not secteurs:
+        return
+
     p = doc.add_paragraph()
+
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run("SECTEURS ACTIVITES")
     run.font.color.rgb = RGBColor(255, 255, 255)

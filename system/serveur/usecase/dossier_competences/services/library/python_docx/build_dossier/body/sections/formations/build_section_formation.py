@@ -10,7 +10,14 @@ from usecase.dossier_competences.services.library.python_docx.build_dossier.body
 
 
 def build_section_formation(doc, data):
+
+    formations = data.get('Diplômes_Et_Formations') or []
+
+    if not formations or not formations[0].get('Diplôme'):
+        return
+
     p = doc.add_paragraph()
+
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
     run = p.add_run("FORMATIONS")

@@ -5,7 +5,7 @@ from docx.shared import RGBColor, Pt, Cm
 
 def build_section_outils(doc, data):
     outils_data = data.get('Logiciels_Et_Outils', [])
-    if not outils_data:
+    if outils_data and outils_data[0].get('Liste_Logiciels'):
         return
 
     p = doc.add_paragraph()
@@ -23,7 +23,6 @@ def build_section_outils(doc, data):
         print(categorie)
         titre = categorie.get('Catégorie', '')
         logiciels_outils = list(dict.fromkeys(categorie.get('Liste_Logiciels', [])))
-
 
         if titre and logiciels_outils:
             p = doc.add_paragraph()
