@@ -9,6 +9,7 @@ def display_logiciels_outils(doc, exp):
     run_label = p_outils.add_run("LOGICIELS ET OUTILS : ")
     run_label.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
     run_label.bold = True
+    run_label.underline = True
 
     run_liste = p_outils.add_run(texte_outils)
     run_liste.font.color.rgb = RGBColor(0, 0, 0)

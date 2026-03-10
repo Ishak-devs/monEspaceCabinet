@@ -7,6 +7,7 @@ def display_mission(doc, exp):
     run_label = p_mission.add_run("MISSION : ")
     run_label.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
     run_label.bold = True
+    run_label.underline = True
 
     run_desc = p_mission.add_run(str(exp.get('Résumé_concis_tâches', '')))
     run_desc.font.color.rgb = RGBColor(0, 0, 0)
