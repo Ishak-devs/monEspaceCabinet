@@ -3,6 +3,11 @@ from docx.oxml.ns import nsdecls
 from docx.shared import Pt, RGBColor
 
 def build_section_langues(doc, data):
+    langues = data.get('Langues_Étrangères', [])
+
+    if not langues:
+        return
+
     p_titre = doc.add_paragraph()
     p_titre.alignment = 1  # Centre le titre
     run = p_titre.add_run("LANGUES")

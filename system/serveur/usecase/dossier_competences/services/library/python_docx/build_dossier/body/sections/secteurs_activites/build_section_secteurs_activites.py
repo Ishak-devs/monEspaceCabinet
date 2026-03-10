@@ -4,6 +4,7 @@ from docx.oxml.ns import nsdecls
 from docx.shared import RGBColor, Pt, Cm
 
 def build_section_secteurs_activites(doc, data):
+
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run("SECTEURS ACTIVITES")
