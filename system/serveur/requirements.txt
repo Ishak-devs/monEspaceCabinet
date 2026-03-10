@@ -16,3 +16,4 @@ undetected_chromedriver
 setuptools
 gunicorn
 json_repair
+openai

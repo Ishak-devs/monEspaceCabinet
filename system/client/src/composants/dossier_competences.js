@@ -1,227 +1,85 @@
 import { useState } from "react";
-//const API_URL = "http://127.0.0.1:8000";
- const API_URL = "https://filltemplate.onrender.com";
-function CVUploadForm() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [addSkills, setAddSkills] = useState(null);
-  const [englishCV, setEnglishCV] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [status, setStatus] = useState({ message: "", type: "" });
-  const [extraInstructions, setExtraInstructions] = useState("");
-  const [wasGenerated, setWasGenerated] = useState(false);
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const validTypes = [
-        "application/pdf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.documents",
-      ];
+const API_URL = "https://filltemplate.onrender.com";;
 
-      if (!validTypes.includes(file.type)) {
-        return;
-      }
+export default function CVUploadForm() {
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
 
-      const maxSize = 10 * 1024 * 1024;
-      if (file.size > maxSize) {
-        return;
-      }
-
-      setSelectedFile(file);
-      setAddSkills(null);
-      setEnglishCV(false);
-    }
-  };
-
-  const handleGenerate = async (model = "openai/gpt-oss-120b") => {
-    if (!selectedFile) {
-      setStatus({
-        message: "Veuillez sélectionner un fichier et choisir une option",
-        type: "error",
-      });
-      return;
-    }
+  const handleGenerate = async () => {
+    if (!file) return;
+    setLoading(true);
     try {
-      setIsGenerating(true);
-      setStatus({ message: "", type: "" });
-
       const formData = new FormData();
-      formData.append("cv", selectedFile);
-
-      console.log(extraInstructions);
-
-      const response = await fetch(`${API_URL}/endpoint/generate_dossier`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || "Erreur lors de la génération");
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      formData.append("cv", file);
+      const res = await fetch(`${API_URL}/endpoint/generate_dossier`, { method: "POST", body: formData });
+      if (!res.ok) throw new Error("Erreur génération");
+      const blob = await res.blob();
       const a = document.createElement("a");
-      a.href = url;
-      a.download = `dossier_${selectedFile.name.replace(/\.(pdf|docx)$/i, "")}.docx`;
-      document.body.appendChild(a);
+      a.href = URL.createObjectURL(blob);
+      a.download = `dossier_${file.name}.docx`;
       a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      setStatus({
-        message: "Dossier généré et téléchargé avec succès.",
-        type: "success",
-      });
-      setWasGenerated(model !== "hermes-405b");
-      setEnglishCV(false);
-    } catch (error) {
-      console.error("Erreur lors de la génération:", error);
-      setStatus({
-        message: error.message || "Erreur lors de la génération",
-        type: "error",
-      });
+      setStatus("success");
+    } catch (e) {
+      setStatus("error");
     } finally {
-      setIsGenerating(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-md border border-black-200 p-6 bg-slate-50 rounded-[2rem]">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-base font-normal text-black-900 mb-1">
-            Dossier de compétences
-          </h1>
+    <div style={s.page}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=DM+Sans:wght@300;400&display=swap');
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+        .upload-label:hover { background: #1a1a1a !important; color: white !important; }
+        .gen-btn:hover:not(:disabled) { background: #333 !important; }
+      `}</style>
 
-          <p className="text-xs text-gray-500">
-            Téléchargez votre CV pour générer automatiquement votre dossier
-          </p>
+      {loading && (
+        <div style={s.overlay}>
+          <div style={s.spinner} />
+          <p style={s.loadingText}>Analyse en cours...</p>
         </div>
+      )}
 
-        {/* File Upload */}
-        <div className="mb-5">
-          <label className="block text-xs font-normal text-gray-700 mb-2">
-            Fichier CV
-          </label>
-          <div className="relative">
-            <input
-              type="file"
-              id="cv-file"
-              accept=".pdf,.docx"
-              onChange={handleFileSelect}
-              className="hidden"
-              disabled={isGenerating}
-            />
-            <label
-              htmlFor="cv-file"
-              className="block w-full px-3 py-2 text-xs border border-gray-300 rounded cursor-pointer hover:border-gray-400 transition-colors"
-            >
-              {selectedFile ? selectedFile.name : "Sélectionner un fichier"}
-            </label>
-            {selectedFile && (
-              <p className="text-xs text-gray-500 mt-1">
-                {(selectedFile.size / 1024).toFixed(0)} Ko
-              </p>
-            )}
-          </div>
-        </div>
+      <div style={s.card}>
+        <div style={s.eyebrow}>DOSSIER DE COMPÉTENCES</div>
+        <h1 style={s.title}>Transformez<br/>votre CV</h1>
+        <p style={s.sub}>Déposez votre fichier et laissez l'IA structurer votre dossier en quelques secondes.</p>
 
-        {/* English Option */}
-        <div className="mb-6">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="english"
-              checked={englishCV}
-              onChange={(e) => setEnglishCV(e.target.checked)}
-              disabled={isGenerating}
-              className="w-3 h-3 text-gray-900 border-gray-300 rounded focus:ring-0 disabled:opacity-30"
-            />
-            <label htmlFor="english" className="ml-1.5 text-xs text-gray-700">
-              CV anglais
-            </label>
-          </div>
-        </div>
+        <label className="upload-label" style={{ ...s.uploadBtn, opacity: loading ? 0.4 : 1, pointerEvents: loading ? "none" : "auto" }}>
+          {file ? `📄 ${file.name}` : "Importer un CV"}
+          <input type="file" accept=".pdf,.docx" disabled={loading} onChange={e => setFile(e.target.files[0])} style={{ display: "none" }} />
+        </label>
 
-        {/* Status Message */}
-        {status.message && (
-          <div className="mb-4 p-3 text-xs border rounded">
-            <p
-              className={
-                status.type === "error"
-                  ? "text-red-700"
-                  : status.type === "success"
-                    ? "text-green-700"
-                    : "text-gray-700"
-              }
-            >
-              {status.message}
-            </p>
-          </div>
-        )}
-        {wasGenerated && (
-          <button
-            disabled={isGenerating}
-            onClick={() => handleGenerate("hermes-405b")}
-            className="w-full py-2 text-xs font-normal border border-black text-black rounded hover:bg-gray-100 transition-colors mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Mauvais résultat ? Regénérer avec le modèle llama 450b
-          </button>
-        )}
-
-        {isGenerating && (
-          <div className="w-full max-w-xs mx-auto py-8 flex flex-col items-center gap-3">
-            {/* La barre de scan ultra fine */}
-            <div className="relative w-full h-[2px] bg-gray-100 overflow-hidden">
-              <div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-900 to-transparent animate-shimmer"
-                style={{ width: "50%", backgroundSize: "200% 100%" }}
-              />
-            </div>
-            {/* Texte minimaliste */}
-            <span className="text-[10px] uppercase tracking-[0.3em] font-medium text-gray-500 animate-pulse">
-              Chargement...
-            </span>
-            <style>{`
-              @keyframes shimmer {
-                0% { transform: translateX(-150%); }
-                100% { transform: translateX(250%); }
-              }
-              .animate-shimmer { animation: shimmer 1.5s infinite linear; }
-            `}</style>
-          </div>
-        )}
-        <div classname="mb-5">
-          <label className="block text-xs font-normal text-gray-700 mb-2">
-            Instructions complémentaires (optionnel)
-          </label>
-          <textarea
-            value={extraInstructions}
-            onChange={(e) => setExtraInstructions(e.target.value)}
-            disabled={isGenerating}
-            placeholder="Exemple : Ajoute une expériences en plus qui n'est pas
-          mentionnée..."
-            className="w-full px-3 py-2 text-xs border
-          border-gray-300 rounded resize-none focus:outline-none
-            focus:border-gray-400 disabled:opacity-30"
-            rows={3}
-          />
-        </div>
-
-        {/* Generate Button */}
-        <button
-          onClick={() => handleGenerate()}
-          disabled={!selectedFile || isGenerating}
-          className="w-full py-2 text-xs font-normal bg-black text-white rounded hover:bg-gray-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed mb-4"
-        >
-          Générer le dossier
+        <button className="gen-btn" onClick={handleGenerate} disabled={!file || loading} style={{ ...s.genBtn, opacity: (!file || loading) ? 0.3 : 1 }}>
+          Générer le dossier →
         </button>
+
+        {status && (
+          <p style={{ ...s.status, color: status === "success" ? "#2d6a4f" : "#c62828", animation: "fadeIn 0.3s ease" }}>
+            {status === "success" ? "✓ Dossier téléchargé avec succès" : "✗ Erreur lors de la génération"}
+          </p>
+        )}
       </div>
     </div>
   );
 }
 
-export default CVUploadForm;
+const s = {
+  page: { minHeight: "100vh", background: "#f5f0e8", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" },
+  overlay: { position: "fixed", inset: 0, background: "rgba(245,240,232,0.92)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 99, gap: "16px" },
+  spinner: { width: "40px", height: "40px", border: "2px solid #ddd", borderTop: "2px solid #111", borderRadius: "50%", animation: "spin 0.8s linear infinite" },
+  loadingText: { fontFamily: "'Syne', sans-serif", fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase", color: "#666", animation: "pulse 2s ease infinite" },
+  card: { background: "white", borderRadius: "24px", padding: "48px", width: "380px", boxShadow: "0 4px 40px rgba(0,0,0,0.08)", animation: "fadeIn 0.5s ease" },
+  eyebrow: { fontFamily: "'Syne', sans-serif", fontSize: "9px", letterSpacing: "0.25em", color: "#aaa", marginBottom: "12px" },
+  title: { fontFamily: "'Syne', sans-serif", fontSize: "36px", fontWeight: "700", lineHeight: 1.1, color: "#111", margin: "0 0 12px" },
+  sub: { fontSize: "13px", color: "#888", lineHeight: 1.6, margin: "0 0 32px", fontWeight: "300" },
+  uploadBtn: { display: "block", width: "100%", padding: "12px", fontSize: "12px", border: "1px solid #ddd", borderRadius: "10px", cursor: "pointer", textAlign: "center", background: "white", color: "#444", transition: "all 0.2s", marginBottom: "10px", boxSizing: "border-box" },
+  genBtn: { width: "100%", padding: "14px", fontSize: "13px", background: "#111", color: "white", border: "none", borderRadius: "10px", cursor: "pointer", transition: "background 0.2s", fontFamily: "'Syne', sans-serif", letterSpacing: "0.05em" },
+  status: { marginTop: "16px", fontSize: "12px", textAlign: "center" },
+};
