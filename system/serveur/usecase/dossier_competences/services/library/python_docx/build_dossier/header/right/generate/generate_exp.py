@@ -1,12 +1,13 @@
 def generate_exp(data):
-    exp_val = str(data.get('Expérience_Totale_Années', '')).strip()
-    if not exp_val:
-        return ""
+    try:
+        val = float(str(data.get('Expérience_Totale_Années', '')).split('an')[0].strip())
+        ans = int(val)
+        mois = round((val - ans) * 12)
 
-    if "an" not in exp_val.lower():
-        exp_val += " ans"
+        parts = []
+        if ans > 0: parts.append(f"{ans} an{'s' if ans > 1 else ''}")
+        if mois > 0: parts.append(f"{ans} an{'s' if ans > 1 else ''}")
 
-    if "exp" not in exp_val.lower():
-        exp_val += " d'expérience"
-
-    return exp_val
+        return " et ".join(parts) + " d'expérience" if parts else "Moins d'un an d'expérience"
+    except:
+        return f"{data.get('Expérience_Totale_Années', '')} d'expérience"
