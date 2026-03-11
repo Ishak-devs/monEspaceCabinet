@@ -97,5 +97,3 @@ uvicorn
 websocket-client
 websockets
 wsproto
-yarl
-zipp

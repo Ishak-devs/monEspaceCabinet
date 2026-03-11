@@ -4,9 +4,9 @@ def experiences_template():
             "Poste_Occupé": "",
             "Nom_Entreprise": "",
             "Dates_Période": "",
-            "Durée_Mission_à_définir": "",
+            "Durée_Mission": "",
             "Liste_Tâches": [],
-            "Résumé_concis_tâches_à_définir": "",
+            "Résumé_mission": "",
             "Environnement_Technique": [],
         }]
     }
