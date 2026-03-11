@@ -1,7 +1,7 @@
 from datetime import time
 from typing import cast, Any
-from loop.for_job_in_data import for_job_in_data
-from services.locks import user_lock
+from usecase.linkedin.loop.for_job_in_data import for_job_in_data
+from usecase.linkedin.services.locks import user_lock
 from query_check_job import query_check_job
 
 
