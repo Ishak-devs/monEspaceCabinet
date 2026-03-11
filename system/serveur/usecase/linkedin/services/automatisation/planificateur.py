@@ -21,11 +21,13 @@ async def run():
         for p in jobs:
             try:
                 async with httpx.AsyncClient(timeout=None) as client:
-                    await client.post(
+                    response = await client.post(
                         "http://127.0.0.1:8001/backend/linkedin/start_chrome",
                         json={**p, "intitule": p.get("job_title", "")}
                     )
                 logging.info(p)
+                print(f"Status: {response.status_code}")
+                print(f"Réponse: {response.text}")
             except Exception as e:
                 print(e)
 
