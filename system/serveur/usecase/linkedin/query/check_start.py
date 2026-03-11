@@ -2,7 +2,7 @@ from datetime import time
 from typing import cast, Any
 from loop.for_job_in_data import for_job_in_data
 from services.locks import user_lock
-from query.query_check_job import query_check_job
+from query_check_job import query_check_job
 
 
 def check_start():
