@@ -17,10 +17,12 @@ async def root_start_auto():
     try:
         result = subprocess.run(["crontab", "-l"], capture_output=True, text=True)
         current = result.stdout if result.returncode == 0 else ""
-        if CRON_TAG in current:
-            print("Cron déja enregistré")
-            return
-        subprocess.run(["crontab", "-"], input=current + f"\n{CRON_JOB}\n", text=True, check=True)
+
+        filtered = "\n".join(line for line in current.splitlines() if CRON_TAG not in line)
+
+        new_crontab = filtered + f"\n{CRON_JOB}\n"
+
+        subprocess.run(["crontab", "-"], input=new_crontab, text=True, check=True)
         print("Cron enregistré")
     except Exception as e:
         print(e)
