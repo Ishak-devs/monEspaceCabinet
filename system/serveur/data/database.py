@@ -20,3 +20,4 @@ def supabase_client():
     print(f"url: {url}, key: {key}")
     supabase_client = create_client(url, key)
     supabase_client.postgrest.timeout = 60
+    return supabase_client
