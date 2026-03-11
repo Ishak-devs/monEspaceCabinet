@@ -1,7 +1,7 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from system.serveur.data.database import supabase_client
+from data.database import supabase_client
 
 
 def query_check_job():

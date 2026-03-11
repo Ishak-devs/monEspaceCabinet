@@ -1,17 +1,20 @@
 import httpx
 import asyncio
-from supabase import create_client
 import os
-
 import logging
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)).replace("/usecase/linkedin/services/automatisation", ""))
+
+
+from data.database import supabase_client
 
 from usecase.linkedin.classes.UserRequest import UserRequest
 from usecase.linkedin.query.check_start import check_start
 
-logging.basicConfig(filename="planificateur.log", level=logging.info,
+logging.basicConfig(filename="planificateur.log", level=logging.INFO,
                     format='%(asctime)s %(levelname)s %(message)s')
 
-supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_ANON_KEY"))
+supabase = supabase_client()
 
 async def run():
     res = check_start()

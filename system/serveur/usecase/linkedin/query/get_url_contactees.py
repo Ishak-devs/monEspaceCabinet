@@ -8,7 +8,7 @@ def get_url_contactees(user_data):
     contacted_urls = set()
     try:
         res = (
-            supabase_client.table("url_contactees")
+            supabase_client().table("url_contactees")
             .select("url")
             .eq("user_id", current_user_id)
             .execute()

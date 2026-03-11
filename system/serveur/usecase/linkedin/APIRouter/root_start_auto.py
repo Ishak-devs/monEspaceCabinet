@@ -5,7 +5,12 @@ router_start_auto = APIRouter()
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__)).replace("/usecase/linkedin/APIRouter", "")
 CRON_TAG = "# lancement-automatique"
-CRON_JOB = f"*/10 * * * * cd {PROJECT_DIR} && /usr/bin/python3 usecase/linkedin/services/automatisation/planificateur.py 2>> planificateur.log {CRON_TAG}"
+
+CRON_JOB = (
+    f'*/10 * * * * cd "{PROJECT_DIR}" && '
+    f'/usr/bin/python3 usecase/linkedin/services/automatisation/planificateur.py '
+    f'2>> planificateur.log {CRON_TAG}'
+)
 
 @router_start_auto.on_event("startup")
 async def root_start_auto():

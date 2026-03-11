@@ -1,4 +1,4 @@
-from system.data import supabase_client
+from serveur.data.database import supabase_client
 from selenium.webdriver.common.by import By
 
 

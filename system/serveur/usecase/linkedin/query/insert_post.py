@@ -1,9 +1,9 @@
-from system.data import supabase_client
+from serveur.data.database import supabase_client
 
 
 def insert_post(current_user_id, body):
     try:
-        supabase_client.table("posts").upsert(
+        supabase_client().table("posts").upsert(
             {
                 "user_id": current_user_id,
                 "instruction_post": body.post,

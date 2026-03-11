@@ -1,19 +1,7 @@
-from datetime import time
-from typing import cast, Any
-from usecase.linkedin.loop.for_job_in_data import for_job_in_data
-from usecase.linkedin.services.locks import user_lock
-from query_check_job import query_check_job
-
+from usecase.linkedin.query.query_check_job import query_check_job
 
 def check_start():
-
     res = query_check_job()
-
-    print(f"CONTENU BRUT SUPABASE : {res.data}")
-    data = cast(list[dict[str, Any]], res.data or [])
-    print(f"DEBUG - Nombre de jobs trouvés : {len(data)}")
-    if any (lock.locked() for lock in user_lock.values()):
-                print('lock libéré on vérifie les prospections...')
-    time.sleep(60)
-
-    for_job_in_data(data)
+    data = res.data or []
+    print(f"DEBUG - {len(data)} job(s) trouvé(s)")
+    return data

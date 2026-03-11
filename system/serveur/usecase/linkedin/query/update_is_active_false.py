@@ -6,7 +6,7 @@ def update_is_active_false(user_data):
 
     if user_id:
         try:
-            supabase_client.table("prospection_settings").update(
+            supabase_client().table("prospection_settings").update(
                 {"is_active": False}
             ).eq("user_id", user_id).execute()
             print(f"✅ Statut désactivé pour l'user {user_id}")

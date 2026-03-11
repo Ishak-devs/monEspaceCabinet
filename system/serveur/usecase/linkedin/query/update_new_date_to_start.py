@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 from random import random
 from zoneinfo import ZoneInfo
 
-from system.data import supabase_client
+from serveur.data.database import supabase_client
 
 
 def update_new_date_to_start(job_id):
@@ -13,7 +13,7 @@ def update_new_date_to_start(job_id):
         hour=random.randint(8, 19),
         minute=random.randint(0, 59),
     )
-    supabase_client.table("prospection_settings").update(
+    supabase_client().table("prospection_settings").update(
         {
             "is_active": False,
             "hour_start": prochaine_heure.isoformat(),

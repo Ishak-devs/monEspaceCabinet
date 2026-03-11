@@ -11,7 +11,7 @@ def get_listes(current_user_id):
             return []
 
         res = (
-            supabase_client.table("prospection_settings")
+            supabase_client().table("prospection_settings")
             .select("id, job_title, created_at, is_active, hour_start")
             .eq("user_id", current_user_id)
             .order("created_at", desc=True)
