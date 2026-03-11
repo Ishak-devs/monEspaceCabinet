@@ -26,7 +26,7 @@ def build_section_experiences(doc, data):
     p._element.get_or_add_pPr().append(shd)
     p.paragraph_format.keep_with_next = True
 
-    for exp in data.get('Expériences_Professionnelles', []):
+    for exp in data.get('Expériences_Professionnelles_Antéchronologiques', []):
         table = doc.add_table(rows=1, cols=3)
         table.style = None
 
@@ -49,7 +49,7 @@ def build_section_experiences(doc, data):
         if exp.get('Liste_Tâches'):
             display_tasks(doc, exp)
 
-        if exp.get("Environnement_Technique"):
+        if exp.get("Logiciels_et_outils_utilisés"):
             display_logiciels_outils(doc, exp)
 
         for row in table.rows:
