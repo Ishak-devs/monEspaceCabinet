@@ -21,6 +21,5 @@ def stream_generator(body, user_data):
         print(f"Erreur lors de la prospection : {str(e)}")
 
     finally:
-
         update_is_active_false(user_data)
         print("🔓 Session terminée")

@@ -50,5 +50,7 @@ def run_chrome(
             print(f"Erreur réseau : {e}")
 
 
+        finally:
+            driver.quit()
 
         yield "--- Invitations terminées, Nous avons envoyé {count} invitations ---"
