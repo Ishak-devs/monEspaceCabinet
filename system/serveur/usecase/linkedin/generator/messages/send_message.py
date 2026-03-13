@@ -45,6 +45,7 @@ def send_message(
                 )
 
                 try:
+
                     driver.get(url)
                     print("[DEBUG] ✅ Page du profil chargée avec succès")
                 except Exception as load_error:
