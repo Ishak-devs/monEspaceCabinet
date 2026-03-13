@@ -68,7 +68,8 @@ def config_chrome(user_data):
             use_subprocess=True,
             version_main=v_chrome,
         )
-        driver.execute_cdp_cmd('Network.setUserAgentOverride', {"acceptLanguage": "fr-FR,fr"})
+        driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": driver.execute_script
+        ("return navigator.userAgent"), "acceptLanguage": "fr-FR,fr"})
 
 
     except Exception as e:
