@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter
 from starlette.responses import StreamingResponse
 
-from usecase.linkedin.chrome.stream_generator import stream_generator
+from usecase.linkedin.generator.streaming.stream_generator import stream_generator
 from usecase.linkedin.classes.UserRequest import  UserRequest
 from usecase.linkedin.classes.object_user_data import object_user_data
 from usecase.linkedin.services.python_functions.generate_hour import generate_hour
