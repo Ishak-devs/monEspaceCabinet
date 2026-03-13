@@ -17,7 +17,7 @@ dist/
 system/.env
 # Logs
 *.log
-
+serveur/chrome-profiles
 # Chrome / Selenium
 serveur/usecase/linkedin/cookies/
 serveur/outputs/
