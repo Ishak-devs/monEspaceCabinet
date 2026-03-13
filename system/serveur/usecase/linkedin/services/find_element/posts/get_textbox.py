@@ -1,5 +1,5 @@
 import time
-from random import random
+import random
 
 from selenium.webdriver.common.by import By
 

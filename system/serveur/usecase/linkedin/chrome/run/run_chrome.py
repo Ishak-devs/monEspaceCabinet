@@ -1,8 +1,10 @@
+import json
 import os
 import random
 import sys
 import time
 
+from usecase.linkedin.chrome.configurations.config_cookie import config_cookie
 from usecase.linkedin.generator.connexions.request_connexion import request_connexion
 from usecase.linkedin.generator.messages.send_message import send_message
 from usecase.linkedin.chrome.configurations.config_chrome import config_chrome
@@ -25,6 +27,7 @@ def run_chrome(
     uid = user_data.get("user_id")
     driver = config_chrome(user_data, uid)
 
+
     print(f"[DEBUG] User ID: {uid}")
     print(f"[DEBUG] Entrée dans run_chrome pour: {job_title}")
     print(f"[DEBUG] Détails du lancement : {details}")
@@ -36,6 +39,7 @@ def run_chrome(
             yield "Starting..."
             time.sleep(random.uniform(3, 6))
 
+            config_cookie(driver, uid)
             driver.get("https://www.linkedin.com/feed/")
             yield "Go LinkedIn..."
             time.sleep(random.uniform(3, 6))
