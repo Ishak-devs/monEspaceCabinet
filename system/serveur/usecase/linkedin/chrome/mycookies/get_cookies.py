@@ -1,7 +1,7 @@
 import json
 import os
 
-from usecase.linkedin.chrome.configurations.mycookies.configs.config_cookie import config_cookie
+from usecase.linkedin.chrome.mycookies.configs.config_cookie import config_cookie
 
 
 def get_cookies(driver, uid):

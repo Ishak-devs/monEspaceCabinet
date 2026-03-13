@@ -3,7 +3,7 @@ import random
 import sys
 import time
 
-from usecase.linkedin.chrome.configurations.mycookies.get_cookies import get_cookies
+from usecase.linkedin.chrome.mycookies.get_cookies import get_cookies
 from usecase.linkedin.generator.connexions.request_connexion import request_connexion
 from usecase.linkedin.generator.messages.send_message import send_message
 from usecase.linkedin.chrome.configurations.config_chrome import config_chrome
@@ -23,7 +23,7 @@ def run_chrome(
 ):
 
     uid = user_data.get("user_id")
-    driver = config_chrome(user_data, uid)
+    driver, vdisplay = config_chrome(user_data, uid)
 
 
     print(f"[DEBUG] User ID: {uid}")
@@ -39,8 +39,13 @@ def run_chrome(
 
             get_cookies(driver, uid)
             driver.get("https://www.linkedin.com/feed/")
-            driver.add_cookie({"name": "lang", "value": "v=2&lang=fr-fr", "domain": ".linkedin.com", "path": "/"})
+
             yield "Go LinkedIn..."
+            lang = driver.execute_script("return navigator.language")
+            langs = driver.execute_script("return navigator.languages")
+            print(f"[DEBUG] navigator.language: {lang}")
+            print(f"[DEBUG] navigator.languages: {langs}")
+
             time.sleep(random.uniform(3, 6))
             current_url = driver.current_url
             print("Current URL:", current_url)
@@ -56,3 +61,4 @@ def run_chrome(
 
         finally:
             driver.quit()
+            vdisplay.stop()

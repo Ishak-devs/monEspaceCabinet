@@ -6,7 +6,7 @@ import traceback
 import selenium
 from selenium.common.exceptions import WebDriverException
 import undetected_chromedriver as uc
-
+from xvfbwrapper import Xvfb
 
 def config_chrome(user_data, uid):
 
@@ -14,6 +14,9 @@ def config_chrome(user_data, uid):
     print(
         f"🔍 [CONFIG] Password présent: {'OUI' if user_data.get('linkedin_password') else 'NON'}"
     )
+
+    vdisplay = Xvfb(width=1920, height=1080, colordepth=24)
+    vdisplay.start()
 
     options = uc.ChromeOptions()
 
@@ -66,4 +69,4 @@ def config_chrome(user_data, uid):
         return None
     print('fin de lancement chrome')
 
-    return driver
+    return driver, vdisplay
