@@ -1,10 +1,9 @@
-import json
 import os
 import random
 import sys
 import time
 
-from usecase.linkedin.chrome.configurations.config_cookie import config_cookie
+from usecase.linkedin.chrome.configurations.mycookies.get_cookies import get_cookies
 from usecase.linkedin.generator.connexions.request_connexion import request_connexion
 from usecase.linkedin.generator.messages.send_message import send_message
 from usecase.linkedin.chrome.configurations.config_chrome import config_chrome
@@ -18,10 +17,9 @@ def run_chrome(
     details: str,
     mode: str,
     user_data,
-        telephone,
-        full_name,
-        candidatrecherche,
-        post
+    telephone,
+    full_name,
+    candidatrecherche,
 ):
 
     uid = user_data.get("user_id")
@@ -39,29 +37,22 @@ def run_chrome(
             yield "Starting..."
             time.sleep(random.uniform(3, 6))
 
-            config_cookie(driver, uid)
+            get_cookies(driver, uid)
             driver.get("https://www.linkedin.com/feed/")
+            driver.add_cookie({"name": "lang", "value": "v=2&lang=fr-fr", "domain": ".linkedin.com", "path": "/"})
             yield "Go LinkedIn..."
             time.sleep(random.uniform(3, 6))
             current_url = driver.current_url
             print("Current URL:", current_url)
 
             if "login" in driver.current_url:
-                yield "Connexion nécessaire..."
                 yield from login_linkedin(driver, user_data)
 
             yield from request_connexion(driver, job_title, user_data)
-            yield from send_message(    driver,
-    job_title,
-    user_data,
-    details,
-    telephone,
-    full_name,
-    candidatrecherche)
+            yield from send_message(driver, job_title, user_data, details, telephone, full_name, candidatrecherche)
 
         except Exception as e:
             print(f"Error : {e}")
-
 
         finally:
             driver.quit()

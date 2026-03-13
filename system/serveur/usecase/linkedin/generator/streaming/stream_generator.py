@@ -10,7 +10,6 @@ def stream_generator(body, user_data):
             job_title=body.intitule,
             details=body.details,
             mode=body.mode,
-            post=body.post or "",
             user_data=user_data,
             telephone=body.telephone,
             full_name=body.full_name,
