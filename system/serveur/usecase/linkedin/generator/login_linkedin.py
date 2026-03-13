@@ -4,7 +4,7 @@ import time
 from selenium.webdriver.common.keys import Keys
 from usecase.linkedin.services.find_element.find_email_input import find_email_input
 from usecase.linkedin.services.find_element.find_password_input import find_password_input
-from usecase.linkedin.services.slow_type import slow_type
+from usecase.linkedin.services.python_functions.slow_type import slow_type
 
 
 def login_linkedin(driver, user_data):

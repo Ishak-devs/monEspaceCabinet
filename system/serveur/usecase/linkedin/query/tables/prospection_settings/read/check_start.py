@@ -1,4 +1,4 @@
-from usecase.linkedin.query.query_check_job import query_check_job
+from usecase.linkedin.query.tables.jobs.read.query_check_job import query_check_job
 
 def check_start():
     res = query_check_job()

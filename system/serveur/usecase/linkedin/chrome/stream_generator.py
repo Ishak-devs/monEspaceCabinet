@@ -1,6 +1,6 @@
 from usecase.linkedin.chrome.run_chrome import run_chrome
-from usecase.linkedin.query.update_has_run_today_true import update_has_run_today_true
-from usecase.linkedin.query.update_is_active_false import update_is_active_false
+from usecase.linkedin.query.tables.prospection_settings.update.update_has_run_today_true import update_has_run_today_true
+from usecase.linkedin.query.tables.prospection_settings.update.update_is_active_false import update_is_active_false
 
 
 def stream_generator(body, user_data):

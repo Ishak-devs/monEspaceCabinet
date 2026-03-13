@@ -4,11 +4,11 @@ from starlette.responses import StreamingResponse
 from usecase.linkedin.chrome.stream_generator import stream_generator
 from usecase.linkedin.classes.UserRequest import  UserRequest
 from usecase.linkedin.classes.object_user_data import object_user_data
-from usecase.linkedin.services.generate_hour import generate_hour
-from usecase.linkedin.query.cabinets.get_cabinet_id import get_cabinet_id
-from usecase.linkedin.query.cabinets.insert_prospection_settings import insert_prospection_settings
-from usecase.linkedin.query.user.get_user_id import get_user_id
-from usecase.linkedin.query.user.get_user_informations import get_user_informations
+from usecase.linkedin.services.python_functions.generate_hour import generate_hour
+from usecase.linkedin.query.tables.cabinets.get.get_cabinet_id import get_cabinet_id
+from usecase.linkedin.query.tables.prospection_settings.insert.insert_prospection_settings import insert_prospection_settings
+from usecase.linkedin.query.tables.user.get.get_user_id import get_user_id
+from usecase.linkedin.query.tables.user.get.get_user_informations import get_user_informations
 
 router_start_chrome = APIRouter()
 

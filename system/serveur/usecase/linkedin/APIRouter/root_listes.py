@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter
-from query.get_job_listes import get_listes
-from query.user.get_user_id import get_user_id
+from usecase.linkedin.query.tables.jobs.get.get_job_listes import get_listes
+from usecase.linkedin.query.tables.user.get.get_user_id import get_user_id
 
 router_listes = APIRouter()
 

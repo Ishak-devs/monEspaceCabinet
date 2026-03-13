@@ -1,5 +1,5 @@
-from usecase.linkedin.services.prompt.linkedin.prompt_message_prospection import prompt_message_prospection
-from usecase.linkedin.services.prompt.linkedin import prompt_message_sourcing
+from usecase.linkedin.IA.prompt.prospection.prompt_message_prospection import prompt_message_prospection
+from usecase.linkedin.IA.prompt.sourcing import prompt_message_sourcing
 
 
 def check_mode_and_get_instruction(origin_mode,     driver,

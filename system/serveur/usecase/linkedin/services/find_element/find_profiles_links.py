@@ -4,7 +4,7 @@ import random
 from selenium.webdriver.common.by import By
 
 from usecase.linkedin.loop.check_profiles_in_db import check_profiles_in_db
-from usecase.linkedin.query.get_url_contactees import get_url_contactees
+from usecase.linkedin.query.tables.url_contactees.get.get_url_contactees import get_url_contactees
 
 
 def find_profiles_links(driver, user_data):

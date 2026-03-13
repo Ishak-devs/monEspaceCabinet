@@ -1,4 +1,4 @@
-from query.rpc_query import rpc_query
+from usecase.linkedin.query.functions.rpc.rpc_query import rpc_query
 
 
 def get_user_informations(user_data):

@@ -4,15 +4,16 @@ import traceback
 
 from selenium.webdriver.common.by import By
 
+from services.api_externes.groq.call_groq import call_groq
 from usecase.linkedin.services.check_mode_and_get_instruction import check_mode_and_get_instruction
 from usecase.linkedin.services.find_element.find_profiles_links import find_profiles_links
 from usecase.linkedin.services.find_element.find_send_btn import find_send_btn
 from usecase.linkedin.services.find_element.get_textbox import get_textbox
-from usecase.linkedin.services.selenium_actions.click_on_message import click_on_message
-from usecase.linkedin.services.slow_type import slow_type
-from usecase.linkedin.services.selenium_actions.write_and_send_message import write_and_send_message
-from usecase.linkedin.query.insert_url_contactees import insert_url_contactees
-from usecase.linkedin.query.cabinets.get_cabinets_name import get_cabinets_name as get_cabinet_name
+from usecase.linkedin.services.selenium.actions.click_on_message import click_on_message
+from usecase.linkedin.services.python_functions.slow_type import slow_type
+from usecase.linkedin.services.selenium.actions import write_and_send_message
+from usecase.linkedin.query.tables.url_contactees.insert.insert_url_contactees import insert_url_contactees
+from usecase.linkedin.query.tables.cabinets.get.get_cabinets_name import get_cabinets_name as get_cabinets_name
 
 
 def send_message(
@@ -59,7 +60,7 @@ def send_message(
                 infos_profil = driver.find_element(By.TAG_NAME, "body").text.lower()
                 print(f"infos_profil: {infos_profil}")
 
-                result = get_cabinet_name(user_data)
+                result = get_cabinets_name(user_data)
 
                 if result and len(result) == 2:
                     cabinet_name, exclusions = result
@@ -128,7 +129,7 @@ def send_message(
 
             try:
                 write_and_send_message(driver, btn_element)
-                insert_url_contactees(url)
+                insert_url_contactees(url, user_data)
 
             except Exception as e:
                 traceback.print_exc()

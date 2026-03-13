@@ -2,8 +2,9 @@ import random
 import time
 import urllib.parse
 
+from usecase.linkedin.query.tables.linkedin_contactees.insert.insert_linkedin_contacts import insert_linkedin_contacts
 from usecase.linkedin.script_JS.find_button_envoyer_sans_note import find_button_envoyer_sans_note
-from usecase.linkedin.query.cabinets.get_cabinets_name import get_cabinets_name
+from usecase.linkedin.query.tables.cabinets.get.get_cabinets_name import get_cabinets_name
 from selenium.webdriver.common.by import By
 
 
@@ -69,6 +70,7 @@ def request_connexion(driver, job_title, user_data):
                 success = find_button_envoyer_sans_note(driver)
                 if success:
                     yield "✅ Invitation envoyée !"
+                    insert_linkedin_contacts(user_data)
                 else:
                     yield "Bouton introuvable."
 

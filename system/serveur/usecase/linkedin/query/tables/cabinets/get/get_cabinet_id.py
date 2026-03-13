@@ -1,6 +1,6 @@
 from fastapi import Depends
 
-from usecase.linkedin.query.user.get_user_id import get_user_id
+from usecase.linkedin.query.tables.user.get.get_user_id import get_user_id
 from data.database import supabase_client
 
 

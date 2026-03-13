@@ -1,6 +1,6 @@
 import time
 
-from usecase.linkedin.query.get_linkedin_contacts import get_linkedin_contacts
+from usecase.linkedin.query.tables.linkedin_contactees.get.get_linkedin_contacts import get_linkedin_contacts
 
 
 def check_profiles_in_db(user_data):
