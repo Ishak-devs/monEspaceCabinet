@@ -2,12 +2,12 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-
 class UserRequest(BaseModel):  # contrat
+    id: Optional[int] = None
     intitule: str
     mode: str
     details: str
-    segment: str
+    segment: Optional[str] = ""
     candidatrecherche: str
     post: Optional[str]
     telephone: Optional[str] = ""

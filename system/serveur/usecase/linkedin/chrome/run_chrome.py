@@ -7,6 +7,8 @@ from usecase.linkedin.generator.request_connexion import request_connexion
 from usecase.linkedin.generator.send_message import send_message
 from usecase.linkedin.configurations.config_chrome import config_chrome
 from usecase.linkedin.generator.login_linkedin import login_linkedin
+from usecase.linkedin.query.update_has_run_today_true import update_has_run_today_true
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
@@ -16,11 +18,13 @@ def run_chrome(
     mode: str,
     post,
     user_data,
+
 ):
 
     uid = user_data.get("user_id")
+    id = user_data.get("id")
     driver = config_chrome(user_data)
-
+    print(f"[DEBUG] JOB ID: {id}")
     print(f"[DEBUG] User ID: {uid}")
     print(f"[DEBUG] Entrée dans run_chrome pour: {job_title}")
     print(f"[DEBUG] Détails de la prospection : {details}")

@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 
 def request_connexion(driver, job_title, user_data):
 
-    for page in range(1, 2):
+    for page in range(1, 10):
         try:
             time.sleep(random.uniform(8, 15))
             query_encoded = urllib.parse.quote(job_title)
@@ -40,8 +40,8 @@ def request_connexion(driver, job_title, user_data):
 
                 cabinet_name = get_cabinets_name(user_data)
 
-                yield f"On va vérifier si {cabinet_name} est mentionné dans son profil..."
-                print(f"On va vérifier si la personne est chez nous {cabinet_name}...")
+                yield f"On va vérifier si notre société est mentionné dans son profil..."
+                print(f"On va vérifier si la personne est chez nous ...")
 
                 time.sleep(6)
                 if cabinet_name:

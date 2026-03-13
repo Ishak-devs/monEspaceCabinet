@@ -14,3 +14,4 @@ def update_is_active_false(user_data):
         except Exception as e:
             if "204" not in str(e) and "Missing response" not in str(e):
                 print(f"Erreur DB: {e}")
+

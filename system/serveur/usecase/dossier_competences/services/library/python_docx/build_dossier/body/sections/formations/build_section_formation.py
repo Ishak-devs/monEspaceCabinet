@@ -11,7 +11,7 @@ from usecase.dossier_competences.services.library.python_docx.build_dossier.body
 
 def build_section_formation(doc, data):
 
-    formations = data.get('Diplômes_Et_Formations') or []
+    formations = data.get('Diplômes_Et_Formations_Antéchronologiques') or []
 
     if not formations or not formations[0].get('Diplôme'):
         return
@@ -27,7 +27,7 @@ def build_section_formation(doc, data):
     p._element.get_or_add_pPr().append(parse_xml(f'<w:shd {nsdecls("w")} w:fill="002060"/>'))
     p.paragraph_format.keep_with_next = True
 
-    for diplome in data.get('Diplômes_Et_Formations', []):
+    for diplome in data.get('Diplômes_Et_Formations_Antéchronologiques', []):
         table = doc.add_table(rows=1, cols=2)
 
         table.style = None
