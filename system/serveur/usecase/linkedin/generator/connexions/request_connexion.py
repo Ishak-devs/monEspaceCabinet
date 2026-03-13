@@ -68,9 +68,11 @@ def request_connexion(driver, job_title, user_data):
                 time.sleep(random.uniform(2, 4))
 
                 success = find_button_envoyer_sans_note(driver)
+                mode = user_data["mode"]
+                print(mode)
                 if success:
                     yield "✅ Invitation envoyée !"
-                    insert_linkedin_contacts(container, user_data)
+                    insert_linkedin_contacts(container, user_data, mode)
                 else:
                     yield "Bouton introuvable."
 
