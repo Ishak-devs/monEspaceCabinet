@@ -2,6 +2,7 @@ from data.database import supabase_client
 
 
 def get_linkedin_contacts(current_user_id):
+    contacts_res = ""
     try:
         contacts_res = (
             supabase_client().table("linkedin_contacts")
@@ -11,6 +12,6 @@ def get_linkedin_contacts(current_user_id):
         )
 
     except Exception as e:
-        print(f"[WARN] Erreur récupération linkedin_contacts: {e}")
+        print(f"[WARN] Error récupération linkedin_contacts: {e}")
 
     return contacts_res

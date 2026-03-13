@@ -5,10 +5,10 @@ import traceback
 from selenium.webdriver.common.by import By
 
 from services.api_externes.groq.call_groq import call_groq
-from usecase.linkedin.services.check_mode_and_get_instruction import check_mode_and_get_instruction
-from usecase.linkedin.services.find_element.find_profiles_links import find_profiles_links
-from usecase.linkedin.services.find_element.find_send_btn import find_send_btn
-from usecase.linkedin.services.find_element.get_textbox import get_textbox
+from usecase.linkedin.services.instructions.check_mode_and_get_instruction import check_mode_and_get_instruction
+from usecase.linkedin.services.find_element.messages.find_profiles_links import find_profiles_links
+from usecase.linkedin.services.find_element.messages.find_send_btn import find_send_btn
+from usecase.linkedin.services.find_element.posts.get_textbox import get_textbox
 from usecase.linkedin.services.selenium.actions.click_on_message import click_on_message
 from usecase.linkedin.services.python_functions.slow_type import slow_type
 from usecase.linkedin.services.selenium.actions import write_and_send_message
@@ -21,11 +21,10 @@ def send_message(
     job_title,
     user_data
 ):
-    print("Début de l'envoi de messages directs...")
-    yield f"Démarrage envoi de messages pour {job_title}..."
+    print("start messages directs...")
+    yield f"Start envoi de messages pour {job_title}..."
 
     message = None
-
     urls, db_profiles_map = find_profiles_links(driver, user_data)
 
     for u, url in enumerate(urls, start=1):

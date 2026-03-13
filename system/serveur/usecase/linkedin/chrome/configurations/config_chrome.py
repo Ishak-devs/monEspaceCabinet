@@ -3,18 +3,12 @@ import re
 import subprocess
 import traceback
 
+import selenium
+from selenium.common.exceptions import WebDriverException
 import undetected_chromedriver as uc
 
 
-def config_chrome(user_data):
-    uid = user_data.get("user_id")
-    print(f"[DEBUG] User ID: {uid}")
-
-    if not uid:
-        print(
-            "❌ ERREUR : Pas d'ID utilisateur, Chrome ne sait pas quel documents ouvrir !"
-        )
-        return
+def config_chrome(user_data, uid):
 
     print(f"🔍 [CONFIG] Email: {user_data.get('linkedin_email')}")
     print(
@@ -22,18 +16,7 @@ def config_chrome(user_data):
     )
 
     options = uc.ChromeOptions()
-    profil_path = os.path.abspath(f"usecase/linkedin/cookies/profile_{uid}")
-    lock_file = os.path.join(profil_path, "SingletonLock")
 
-    if os.path.exists(lock_file):
-        try:
-            os.remove(lock_file)
-            print("lock supprimé avec succès")
-        except Exception as e:
-            print(f"Erreur lors de la suppression du fichier de verrouillage : {e}")
-
-    print(f"[DEBUG] Path profil: {profil_path}")
-    options.add_argument(f"--user-data-dir={profil_path}")
     options.add_argument("--profile-directory=Default")
     # options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
@@ -58,8 +41,8 @@ def config_chrome(user_data):
     print(f"Nom complet: {full_name}")
     print(f"Numéro de téléphone: {telephone}")
 
-    KEY_SECRET = os.getenv("ENCRYPTION_SECRET")
-    print(f"KEY: {KEY_SECRET}")
+    key_secret = os.getenv("ENCRYPTION_SECRET")
+    print(f"KEY: {key_secret}")
 
     v_chrome = int(
         next(
@@ -77,8 +60,9 @@ def config_chrome(user_data):
             version_main=v_chrome,
         )
 
-    except Exception as e:
-        print(f"❌ Erreur lancement Chrome : {traceback.format_exc()}")  # Affiche toute la pile d'erreurs
+
+    except (selenium.common.exceptions.WebDriverException, RuntimeError) as e:
+        print(f"❌ Erreur lancement Chrome : {traceback.format_exc()}")
         return None
     print('fin de lancement chrome')
 

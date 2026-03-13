@@ -2,7 +2,7 @@ from data.database import supabase_client
 from selenium.webdriver.common.by import By
 
 
-def insert_linkedin_contacts(container, mode, user_data):
+def insert_linkedin_contacts(container, user_data):
     profile_url = next(
         (
             h.split("?")[0]

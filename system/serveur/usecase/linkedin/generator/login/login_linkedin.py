@@ -2,8 +2,8 @@ import random
 import time
 
 from selenium.webdriver.common.keys import Keys
-from usecase.linkedin.services.find_element.find_email_input import find_email_input
-from usecase.linkedin.services.find_element.find_password_input import find_password_input
+from usecase.linkedin.services.find_element.login.find_email_input import find_email_input
+from usecase.linkedin.services.find_element.login.find_password_input import find_password_input
 from usecase.linkedin.services.python_functions.slow_type import slow_type
 
 
@@ -27,13 +27,12 @@ def login_linkedin(driver, user_data):
         pass_el.send_keys(Keys.ENTER)
 
         if "feed" in driver.current_url:
-            print("Connexion réussie, redirection vers feed OK")
-            yield "Connexion réussie !"
+            print("Connexion success, redirection vers feed OK")
+            yield "Connexion success !"
         else:
             print(f"Redirection après login: {driver.current_url}")
-            yield "Connexion en cours (vérification challenge ou captcha...)..."
 
     except Exception as e:
         print(f"CRASH BLOC LOGIN: {str(e)}")
-        yield f"Erreur de connexion : {type(e).__name__}"
+        yield f"Error de connexion : {type(e).__name__}"
         raise e
