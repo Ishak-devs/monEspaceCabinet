@@ -15,7 +15,8 @@ Consignes STRICTES :
 3. Rédige autre chose que les messages précedent : {previous_message}
 4. Terminer par : {telephone} - {full_name} si indiqué sinon pas grave n'indique rien
 5. CRUCIAL : Le message doit être prêt à envoyer TEL QUEL
-6. INTERDIT : crochets [], accolades {{}}, placeholders, texte explicatif, formules génériques type [prénom]
+6. INTERDIT : crochets [], accolades {{}}, placeholders, texte explicatif, formules génériques type [prénom], ne montre
+pas quand tu réfléchie.
 
 Le message doit sembler écrit par un humain, pas généré par une IA.
 Soit preudent car le message sera envoyé directement sans vérification.

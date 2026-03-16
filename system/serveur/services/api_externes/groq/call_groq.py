@@ -8,8 +8,6 @@ def call_groq(prompt):
     models = [
         "openai/gpt-oss-20b",
         "openai/gpt-oss-120b",
-        "moonshotai/kimi-k2-instruct-0905",
-        "meta-llama/llama-4-scout-17b-16e-instruct",
         "openai/gpt-oss-safeguard-20b"
     ]
 
@@ -19,11 +17,7 @@ def call_groq(prompt):
         print('groq est appelé...')
         client = Groq(api_key=os.environ.get("GROQ_API"))
         completion = client.chat.completions.create(
-            messages=[
-                {"role": "system",
-                 "content": "Réponds uniquement avec le message final, sans préambule, sans explication, et sans bloc de réflexion."},
-                {"role": "user", "content": prompt}
-            ],
+            messages=[{"role": "user", "content": prompt}],
             model=selected_model,
             temperature=1,
         )

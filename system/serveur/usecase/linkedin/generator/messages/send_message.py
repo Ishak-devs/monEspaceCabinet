@@ -35,7 +35,7 @@ def send_message(
     for u, url in enumerate(urls, start=1):
         try:
             try:
-                print(f"Traitement du profil {u}/{len(db_profiles_map)}...")
+                print(f"Traitement du profil {u}/{len(url)}...")
                 yield f"lookig for profil {u}/{len(db_profiles_map)}..."
                 time.sleep(random.uniform(5, 8))
 

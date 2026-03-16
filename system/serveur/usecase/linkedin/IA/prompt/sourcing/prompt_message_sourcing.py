@@ -18,7 +18,8 @@ Consignes :
 4. Objectif : donner envie d'échanger sans être insistant.
 5. Terminer par les coordonnées : {telephone} - {full_name}
 6. CRUCIAL : Le message doit être prêt à envoyer TEL QUEL sans aucune modification
-7. INTERDIT : crochets [], accolades {{}}, placeholders type [nom]/[entreprise], texte explicatif, formules génériques
+7. INTERDIT : crochets [], accolades {{}}, placeholders type [nom]/[entreprise], texte explicatif, formules génériques, 
+ne montre pas quand tu réfléchie.
 
 Le message doit sembler rédigé spontanément par un recruteur humain, pas généré par une IA.
 Soit preudent car le message sera envoyé directement sans vérification.
