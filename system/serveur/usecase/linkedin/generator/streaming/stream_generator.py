@@ -1,11 +1,13 @@
 from usecase.linkedin.chrome.run.run_chrome import run_chrome
 from usecase.linkedin.query.tables.prospection_settings.update.update_has_run_today_true import update_has_run_today_true
 from usecase.linkedin.query.tables.prospection_settings.update.update_is_active_false import update_is_active_false
+from usecase.linkedin.query.tables.prospection_settings.update.update_is_active_true import update_is_active_true
 
 
 def stream_generator(body, user_data):
     try:
         print(f"🚀 Lancement Chrome pour {body.intitule}")
+        update_is_active_true(user_data)
         for step in run_chrome(
             job_title=body.intitule,
             details=body.details,
