@@ -17,6 +17,7 @@ def write_and_send_message(driver, btn_element):
         print("✅ Message envoyé")
 
         ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+        time.sleep(random.uniform(3, 9))
 
         print("✅ Message envoyé et fenêtre fermée")
     except Exception as e:
