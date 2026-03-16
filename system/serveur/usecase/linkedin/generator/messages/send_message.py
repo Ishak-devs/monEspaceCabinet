@@ -30,7 +30,7 @@ def send_message(
     yield f"Start envoi de messages pour {job_title}..."
 
     message = None
-    urls, db_profiles_map = find_profiles_links(driver, user_data, )
+    urls, db_profiles_map = find_profiles_links(driver, user_data)
 
     for u, url in enumerate(urls, start=1):
         try:
@@ -109,7 +109,10 @@ def send_message(
                 time.sleep(random.uniform(6, 9))
                 yield "Traitement des profils impossibles"
 
-            click_on_message(driver)
+            try:
+                click_on_message(driver)
+            except Exception as e:
+                print(f"{e}")
 
             try:
                 get_text_box = get_textbox(driver)

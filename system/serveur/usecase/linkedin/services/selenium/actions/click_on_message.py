@@ -1,11 +1,14 @@
 from datetime import time
 from random import random
+
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 from selenium.webdriver.support.wait import WebDriverWait
 
 
 def click_on_message(driver):
+    button = None
     try:
         print("[DEBUG] Recherche du bouton 'Message' sur le profil...")
         yield "🔍 Recherche du bouton de message..."
