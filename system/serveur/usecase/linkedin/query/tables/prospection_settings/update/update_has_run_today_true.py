@@ -9,5 +9,5 @@ def update_has_run_today_true():
     if last_job.data:
         new_hour = generate_next_hour()
         return (supabase_client().table("prospection_settings").update({"has_run_today": True, "is_active": False,
-                                                                        "hour_start": new_hour})
+                                                                        "hour_start": new_hour.isoformat()})
                 .eq("id", last_job.data[0]["id"]).execute())
