@@ -13,6 +13,7 @@ def find_profiles_links(driver, user_data):
     contacted_urls = get_url_contactees(user_data)
 
     try:
+        driver.get("https://www.linkedin.com/mynetwork/invite-connect/connections/")
         time.sleep(random.uniform(5, 7))
         links = driver.find_elements(By.CSS_SELECTOR, "a[href*='/in/']")
         time.sleep(2)
@@ -25,7 +26,7 @@ def find_profiles_links(driver, user_data):
             print(f"[DEBUG] In contacted_urls: {url in contacted_urls}")
             if url not in urls and url in db_profiles_map and url not in contacted_urls:
                 print(f"[DEBUG] Adding URL to process: {url}")
-            urls.append(url)
+                urls.append(url)
 
         if len(urls) == 0:
             print("Aucun profil trouvé")

@@ -95,11 +95,11 @@ def send_message(
                 time.sleep(4)
 
                 instruction = check_mode_and_get_instruction(origin_mode,     driver,
-    job_title,
-    details,
-    telephone,
-    full_name,
-    candidatrecherche)
+                            job_title,
+                            details,
+                            telephone,
+                            full_name,
+                            candidatrecherche)
                 message = call_groq(instruction)
 
                 time.sleep(random.uniform(6, 8))
