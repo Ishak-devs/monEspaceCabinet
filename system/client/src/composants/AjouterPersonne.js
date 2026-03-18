@@ -6,6 +6,7 @@ const AjouterPersonne = () => {
   const [password, setPassword] = useState("");
   const [nom, setNom] = useState("");
   const [role, setRole] = useState("Member");
+  const [messagesuccess, setMessagesuccess] = useState("")
 
 const handleAdd = async (e) => {
     e.preventDefault();
@@ -17,10 +18,11 @@ const handleAdd = async (e) => {
         body: JSON.stringify({ email, password, nom, role, admin_id: user.id }),
 
       });
-
+if (res.ok) setMessagesuccess("Collaborateur invité avec succès !");
     } catch (error) {
       console.error(error);
     }
+
   };
 
   return (
@@ -59,6 +61,10 @@ const handleAdd = async (e) => {
       <button className="bg-blue-600 text-white px-4 py-2 rounded text-xs">
         Ajouter
       </button>
+
+<p className="text-green-600">{messagesuccess}</p>
+
+
     </form>
   );
 }
