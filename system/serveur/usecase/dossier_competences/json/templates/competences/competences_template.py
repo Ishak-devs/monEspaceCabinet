@@ -1,4 +1,4 @@
 def competences_template():
     return {
-        "Compétences_en_phrase_précise": [],
+        "15_Phrases_Percutantes_Compétences": [],
     }
