@@ -1,20 +1,23 @@
 import { useState } from "react";
+import { supabase } from "../supabaseClient";
 
 const AjouterPersonne = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nom, setNom] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState("Member");
 
 const handleAdd = async (e) => {
     e.preventDefault();
     try {
+    const { data: { user } } = await supabase.auth.getUser();
       const res = await fetch(`http://localhost:8001/endpoint/add_collaborator`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, nom, role }),
+        body: JSON.stringify({ email, password, nom, role, admin_id: user.id }),
+
       });
-      if (res.ok) alert("Collaborateur ajouté !");
+
     } catch (error) {
       console.error(error);
     }
