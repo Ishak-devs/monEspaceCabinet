@@ -19,6 +19,7 @@ app.include_router(router_listes)
 app.include_router(router_start_chrome)
 app.include_router(router_start_generate_dossier)
 app.include_router(router_start_auto)
+app.include_router(router_add_collaborator)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
