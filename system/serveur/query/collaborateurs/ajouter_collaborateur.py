@@ -16,6 +16,8 @@ def query_ajouter_collaborateur(body):
             supabase_client().table("profiles").insert({
                 "id": auth_res.user.id,
                 "email": body.email,
+                "full_name": body.nom,
+                "role": body.role,
                 # "cabinet_id": body.cabinet_id
             }).execute()
     except Exception as e:
