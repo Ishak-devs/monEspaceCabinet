@@ -9,13 +9,13 @@ from usecase.dossier_competences.services.library.python_docx.build_dossier.body
 
 def build_section_secteurs_activites(doc, data):
 
-    secteurs = data.get('Secteurs_Activités') or []
+    secteurs = data.get('Secteurs_Activités_Entreprises_Travaillés') or []
     if not secteurs:
         return
 
     header_section(doc, "SECTEURS ACTIVITES")
 
-    for secteur in data.get('Secteurs_Activités', []):
+    for secteur in data.get('Secteurs_Activités_Entreprises_Travaillés', []):
         p_item = doc.add_paragraph(secteur, style='List Bullet')
         p_item.paragraph_format.keep_with_next = True
         p_item.paragraph_format.space_after = Pt(2)

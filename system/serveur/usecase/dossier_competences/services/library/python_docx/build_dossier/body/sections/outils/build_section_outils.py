@@ -21,11 +21,16 @@ def build_section_outils(doc, data):
             if titre and logiciels_outils:
                 p = doc.add_paragraph()
 
-                run_t = p.add_run(f"{titre.upper()} : ")
+                run_t = p.add_run(f"{titre.upper()}")
                 run_t.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
                 run_t.bold = True
                 run_t.underline = True
 
-                p.add_run(", ".join(logiciels_outils))
+                run_sep = p.add_run(" : ")
+                run_sep.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
+                run_sep.bold = True
+
+                run_l = p.add_run(", ".join(logiciels_outils))
+                run_l.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
 
                 p.paragraph_format.space_after = Pt(4)
