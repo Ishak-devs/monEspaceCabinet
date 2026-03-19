@@ -14,7 +14,6 @@ def render_document(data):
 
     logo_path = get_logo()
     doc = Document()
-    doc.sections[0].left_margin = Cm(2)
 
     add_marge(doc)
 

@@ -5,7 +5,7 @@ def display_mission(doc, exp):
     p_mission = doc.add_paragraph()
 
     run_t = p_mission.add_run("Mission")
-    run_t.font.size = Pt(10)
+    run_t.font.size = Pt(11)
     run_t.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
     run_t.bold = True
     run_t.underline = True

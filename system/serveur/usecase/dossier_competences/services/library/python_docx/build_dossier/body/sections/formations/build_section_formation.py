@@ -1,7 +1,7 @@
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls
-from docx.shared import RGBColor, Cm
+from docx.shared import RGBColor, Cm, Pt
 
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.header_section.header_section import \
     header_section
@@ -20,16 +20,16 @@ def build_section_formation(doc, data):
 
     header_section(doc, "FORMATIONS/DIPLOMES")
 
-
     for diplome in data.get('Diplômes_Et_Formations_Antéchronologiques', []):
-        p = doc.add_paragraph()
+        p = doc.add_paragraph(diplome.get('Diplôme', ''), style='List Bullet')
+        p.paragraph_format.space_after = Pt(2)
 
-        tab_xml = parse_xml(f'<w:tabs {nsdecls("w")}><w:tab w:val="right" w:pos="10249"/></w:tabs>')
+        tab_xml = parse_xml(f'<w:tabs {nsdecls("w")}><w:tab w:val="right" w:pos="9639"/></w:tabs>')
         p._element.get_or_add_pPr().append(tab_xml)
 
-        run_dip = p.add_run(diplome.get('Diplôme', ''))
-        run_dip.bold = True
-        run_dip.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
+        for run in p.runs:
+            run.bold = True
+            run.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
 
         p.add_run('\t')
 

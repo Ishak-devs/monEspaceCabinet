@@ -21,7 +21,7 @@ def build_section_experiences(doc, data):
     for exp in data.get('Expériences_Professionnelles_Antéchronologiques', []):
         p = doc.add_paragraph()
 
-        tab_xml = parse_xml(f'<w:tabs {nsdecls("w")}><w:tab w:val="center" w:pos="5125"/><w:tab w:val="right" w:pos="10249"/></w:tabs>')
+        tab_xml = parse_xml(f'<w:tabs {nsdecls("w")}><w:tab w:val="center" w:pos="5125"/><w:tab w:val="right" w:pos="9639"/></w:tabs>')
         p._element.get_or_add_pPr().append(tab_xml)
 
         border_xml = parse_xml(f'<w:pBdr {nsdecls("w")}><w:bottom w:val="single" w:sz="6" w:color="002060"/></w:pBdr>')
