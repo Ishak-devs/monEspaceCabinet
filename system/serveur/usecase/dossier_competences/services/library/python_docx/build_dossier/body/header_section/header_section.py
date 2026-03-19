@@ -18,7 +18,7 @@ def header_section(doc, texte):
         '<a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">'
         '<wps:wsp>'
         '<wps:spPr>'
-        '<a:xfrm><a:off x="0" y="0"/><a:ext cx="5670000" cy="400000"/></a:xfrm>'
+        '<a:xfrm><a:off x="0" y="0"/><a:ext cx="6494400" cy="309600"/></a:xfrm>'
         '<a:prstGeom prst="roundRect">'
         '<a:avLst><a:gd name="adj" fmla="val 20000"/></a:avLst>'
         '</a:prstGeom>'
