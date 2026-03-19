@@ -22,8 +22,10 @@ def build_section_experiences(doc, data):
 
     header_section(doc, "EXPERIENCES PROFESSIONNELLES")
 
+
     for exp in data.get('Expériences_Professionnelles_Antéchronologiques', []):
         table = doc.add_table(rows=1, cols=3)
+
         table.style = None
         table.columns[0].width = Cm(7.11)
         table.columns[1].width = Cm(3.39)

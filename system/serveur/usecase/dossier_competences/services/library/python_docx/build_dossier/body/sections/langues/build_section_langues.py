@@ -16,6 +16,7 @@ def build_section_langues(doc, data):
 
     for langue in data.get('Langues', []):
         p = doc.add_paragraph(style='List Bullet')
+
         run_l = p.add_run(f"{langue.get('Langue')} : ")
         run_l.bold = True
         run_l.font.color.rgb = RGBColor(00, 20, 60)

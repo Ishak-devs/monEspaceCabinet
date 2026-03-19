@@ -7,9 +7,10 @@ from usecase.dossier_competences.services.library.python_docx.build_dossier.head
 def header_doc(doc, data, logo_path):
     table = doc.sections[0].header.add_table(rows=1, cols=2, width=Cm(17))
     table.style = None
+    doc.sections[0].left_margin = Cm(2)
 
-    table.columns[0].width = Cm(3)
-    table.columns[1].width = Cm(14)
+    table.columns[0].width = Cm(7)
+    table.columns[1].width = Cm(10)
 
     cells = table.rows[0].cells
 

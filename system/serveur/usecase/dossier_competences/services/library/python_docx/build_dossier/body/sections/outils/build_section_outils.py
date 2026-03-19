@@ -21,6 +21,7 @@ def build_section_outils(doc, data):
             if titre and logiciels_outils:
                 p = doc.add_paragraph()
 
+
                 run_t = p.add_run(f"{titre.upper()}")
                 run_t.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
                 run_t.bold = True
