@@ -12,7 +12,7 @@ def header_section(doc, texte):
         'xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">'
         '<w:drawing>'
         '<wp:inline>'
-        '<wp:extent cx="5670000" cy="400000"/>'
+        '<wp:extent cx="6494400" cy="309600"/>'
         '<wp:docPr id="1" name="header"/>'
         '<a:graphic>'
         '<a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">'
