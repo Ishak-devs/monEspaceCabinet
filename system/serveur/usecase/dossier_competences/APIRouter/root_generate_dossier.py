@@ -10,7 +10,12 @@ async def root_generate_dossier(cv: UploadFile = File(...)):
     file_stream = await read_save_doc(await cv.read(), cv.filename)
 
     return StreamingResponse(
-        file_stream,
-        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.documents",
-        headers={"Content-Disposition": f"attachment; filename=dossier_{cv.filename}.docx"}
-    )
+    file_stream,
+    media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    headers={
+        "Content-Disposition": f"attachment; filename=dossier_{cv.filename}.docx",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+    }
+)
