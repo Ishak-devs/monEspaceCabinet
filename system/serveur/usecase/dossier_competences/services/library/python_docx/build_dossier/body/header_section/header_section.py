@@ -53,4 +53,4 @@ def header_section(doc, texte):
         '</w:drawing>'
         '</w:r>'
     )
-    p._element.append(parse_xml(drawing_xml))
+    p.add_run()._element.append(parse_xml(drawing_xml))
