@@ -2,7 +2,11 @@ from docx.oxml.ns import qn
 from docx.oxml import parse_xml
 from docx.shared import Cm
 
+_header_counter = 0
+
 def header_section(doc, texte):
+    global _header_counter
+    _header_counter += 1
     p = doc.add_paragraph()
     p.clear()
     drawing_xml = (
@@ -14,7 +18,7 @@ def header_section(doc, texte):
         '<wp:inline>'
         '<wp:extent cx="6120000" cy="309600"/>'
         '<wp:effectExtent l="0" t="0" r="0" b="0"/>'
-        '<wp:docPr id="1" name="header"/>'
+        f'<wp:docPr id="{_header_counter}" name="header_{_header_counter}"/>'
         '<wp:cNvGraphicFramePr/>'
         '<a:graphic>'
         '<a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">'
