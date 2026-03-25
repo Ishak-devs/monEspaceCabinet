@@ -23,6 +23,7 @@ def header_section(doc, texte):
         '<a:graphic>'
         '<a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape">'
         '<wps:wsp>'
+        '<wps:cNvSpPr><a:spLocks noChangeArrowheads="1"/></wps:cNvSpPr>'
         '<wps:spPr>'
         '<a:xfrm><a:off x="0" y="0"/><a:ext cx="6120000" cy="309600"/></a:xfrm>'
         '<a:prstGeom prst="roundRect">'
