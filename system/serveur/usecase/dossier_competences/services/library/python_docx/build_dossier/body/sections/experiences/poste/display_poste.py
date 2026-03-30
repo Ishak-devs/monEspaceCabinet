@@ -13,4 +13,3 @@ def display_poste(doc, exp):
 
     p_poste.paragraph_format.space_before = Pt(10)
     p_poste.paragraph_format.space_after = Pt(10)
-
