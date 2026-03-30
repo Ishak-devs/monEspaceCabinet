@@ -95,5 +95,7 @@ typing_extensions
 urllib3
 uvicorn
 websocket-client
+pydantic==2.11.5
+pydantic_core==2.33.2
 websockets
 wsproto
