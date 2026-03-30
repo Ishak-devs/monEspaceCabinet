@@ -8,12 +8,12 @@ from usecase.dossier_competences.services.library.python_docx.build_dossier.body
 
 
 def build_section_outils(doc, data):
-    outils_data = data.get('Logiciels_Et_Outils', [])
+    outils_data = data.get('Logiciels_Et_Outils_Sans_Indiquer_Le_Niveau', [])
     if outils_data and outils_data[0].get('Liste_Logiciels') and len(outils_data[0]['Liste_Logiciels']) > 0:
 
         header_section(doc, "LOGICIELS ET OUTILS")
 
-        for categorie in data.get('Logiciels_Et_Outils', []):
+        for categorie in data.get('Logiciels_Et_Outils_Sans_Indiquer_Le_Niveau', []):
             print(categorie)
             titre = categorie.get('Catégorie', '')
             logiciels_outils = list(dict.fromkeys(categorie.get('Liste_Logiciels', [])))
