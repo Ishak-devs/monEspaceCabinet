@@ -10,7 +10,6 @@ def display_environnement_entreprise(doc, exp):
     run_t.font.size = Pt(11)
     run_t.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
     run_t.bold = True
-    run_t.underline = True
 
     run_sep = p_mission.add_run(" : ")
     run_sep.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
