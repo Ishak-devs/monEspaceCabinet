@@ -20,6 +20,7 @@ def build_section_outils(doc, data):
 
             if titre and logiciels_outils:
                 p = doc.add_paragraph()
+                p.paragraph_format.keep_together = True
 
 
                 run_t = p.add_run(f"{titre.upper()}")

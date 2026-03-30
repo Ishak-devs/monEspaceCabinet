@@ -22,7 +22,8 @@ def build_section_formation(doc, data):
 
     for diplome in data.get('Diplômes_Et_Formations_Antéchronologiques', []):
         p = doc.add_paragraph(diplome.get('Diplôme', ''), style='List Bullet')
-        p.paragraph_format.space_after = Pt(2)
+        p.paragraph_format.keep_together = True
+        p.paragraph_format.space_after = Pt(3.5)
 
         tab_xml = parse_xml(f'<w:tabs {nsdecls("w")}><w:tab w:val="right" w:pos="9639"/></w:tabs>')
         p._element.get_or_add_pPr().append(tab_xml)
@@ -37,10 +38,16 @@ def build_section_formation(doc, data):
         run_date.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
 
         if diplome.get('École'):
-            p_info = doc.add_paragraph()
-            p_info.paragraph_format.left_indent = Cm(1.25)
-            texte = diplome.get('École')
+
+            p_ecole = doc.add_paragraph()
+            p_ecole.paragraph_format.left_indent = Cm(1.25)
+            p_ecole.paragraph_format.space_after = Pt(0.5)
+            p_ecole.paragraph_format.keep_with_next = True
+            run_ecole = p_ecole.add_run(diplome.get('École'))
+            run_ecole.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
+
             if diplome.get('Lieu'):
-                texte += f" - {diplome.get('Lieu')}"
-            run_info = p_info.add_run(texte)
-            run_info.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
+                p_lieu = doc.add_paragraph()
+                p_lieu.paragraph_format.left_indent = Cm(1.25)
+                run_lieu = p_lieu.add_run(diplome.get('Lieu'))
+                run_lieu.font.color.rgb = RGBColor(0x00, 0x20, 0x60)

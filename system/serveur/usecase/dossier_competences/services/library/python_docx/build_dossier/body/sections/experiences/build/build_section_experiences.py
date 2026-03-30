@@ -5,6 +5,8 @@ from docx.shared import RGBColor, Cm
 
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.header_section.header_section import \
     header_section
+from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.display_environnement_entreprise import \
+    display_environnement_entreprise
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.logiciels_outils.display_logiciels_outils import \
     display_logiciels_outils
 from usecase.dossier_competences.services.library.python_docx.build_dossier.body.sections.experiences.poste.display_poste import \
@@ -20,6 +22,8 @@ def build_section_experiences(doc, data):
 
     for exp in data.get('Expériences_Professionnelles_Antéchronologiques', []):
         p = doc.add_paragraph()
+        p.paragraph_format.keep_together = True
+        p.paragraph_format.keep_with_next = True
 
         tab_xml = parse_xml(f'<w:tabs {nsdecls("w")}><w:tab w:val="center" w:pos="5125"/><w:tab w:val="right" w:pos="9639"/></w:tabs>')
         p._element.get_or_add_pPr().append(tab_xml)
@@ -44,6 +48,9 @@ def build_section_experiences(doc, data):
 
         if exp.get("Poste_Occupé"):
             display_poste(doc, exp)
+
+        if exp.get('Secteur_activité_entreprise'):
+            display_environnement_entreprise(doc, exp)
 
         if exp.get('Résumé_mission'):
             display_mission(doc, exp)

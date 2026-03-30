@@ -9,6 +9,8 @@ def header_section(doc, texte):
     _header_counter += 1
     p = doc.add_paragraph()
     p.clear()
+    p.paragraph_format.keep_with_next = True
+
     drawing_xml = (
         '<w:r xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
         'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" '

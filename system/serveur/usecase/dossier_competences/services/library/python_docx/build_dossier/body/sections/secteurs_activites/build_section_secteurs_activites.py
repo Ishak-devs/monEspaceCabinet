@@ -17,6 +17,7 @@ def build_section_secteurs_activites(doc, data):
 
     for secteur in data.get('Secteurs_Activités_Entreprises_Travaillés', []):
         p_item = doc.add_paragraph(secteur, style='List Bullet')
+        p_item.paragraph_format.keep_together = True
 
         p_item.paragraph_format.space_after = Pt(2)
         p_item.paragraph_format.left_indent = Pt(20)
