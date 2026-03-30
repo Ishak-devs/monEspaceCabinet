@@ -1,4 +1,4 @@
 def competences_template():
     return {
-        "15_Compétences_Percutantes_Sous_Forme_De_Phrase_Sans_commencer_Par_Le_Mot_Compétence_Ou_Eperience": [],
+        "15_Phrases_Percutantes_Savoir_Faire_Candidat_commencant_par_un_verbe_a_infinitif": [],
     }
