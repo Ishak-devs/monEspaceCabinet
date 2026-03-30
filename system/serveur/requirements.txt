@@ -52,8 +52,6 @@ pillow
 postgrest
 propcache
 pycparser
-pydantic
-pydantic_core
 Pygments
 pyiceberg
 PyJWT
