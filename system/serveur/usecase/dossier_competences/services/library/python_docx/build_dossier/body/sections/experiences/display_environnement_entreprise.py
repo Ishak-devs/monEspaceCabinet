@@ -15,7 +15,7 @@ def display_environnement_entreprise(doc, exp):
     run_sep.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
     run_sep.bold = True
 
-    run_desc = p_mission.add_run(str(exp.get('Secteur_activité_entreprise', '')))
+    run_desc = p_mission.add_run(str(exp.get('Phrase_Courte_Expliquant_Les_Secteurs_Activité_Entreprise', '')))
     run_desc.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
 
     p_mission.paragraph_format.space_before = Pt(10)
