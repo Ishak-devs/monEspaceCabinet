@@ -14,5 +14,3 @@ def config_ia():
         ("nousresearch/hermes-4-405b", experiences_template()),
     ]
     return config
-
-

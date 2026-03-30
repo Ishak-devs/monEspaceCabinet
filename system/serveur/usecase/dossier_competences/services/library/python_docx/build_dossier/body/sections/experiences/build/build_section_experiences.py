@@ -16,7 +16,7 @@ from usecase.dossier_competences.services.library.python_docx.build_dossier.body
     display_tasks
 
 
-def build_section_experiences(doc, data):
+async def build_section_experiences(doc, data):
 
     header_section(doc, "EXPERIENCES PROFESSIONNELLES")
 
@@ -49,8 +49,8 @@ def build_section_experiences(doc, data):
         if exp.get("Poste_Occupé"):
             display_poste(doc, exp)
 
-        if exp.get('Phrase_Courte_Détaillé_Expliquant_Les_Secteurs_Activité_Entreprise'):
-            display_environnement_entreprise(doc, exp)
+        # if exp.get('Phrase_Courte_Expliquant_Les_Secteurs_Activité_Entreprise'):
+        await display_environnement_entreprise(doc, exp)
 
         if exp.get('Résumé_mission'):
             display_mission(doc, exp)
