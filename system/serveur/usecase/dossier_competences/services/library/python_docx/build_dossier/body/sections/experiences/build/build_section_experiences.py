@@ -50,7 +50,7 @@ async def build_section_experiences(doc, data):
             display_poste(doc, exp)
 
         # if exp.get('Phrase_Courte_Expliquant_Les_Secteurs_Activité_Entreprise'):
-        await display_environnement_entreprise(doc, exp)
+        # await display_environnement_entreprise(doc, exp)
 
         if exp.get('Résumé_mission'):
             display_mission(doc, exp)
