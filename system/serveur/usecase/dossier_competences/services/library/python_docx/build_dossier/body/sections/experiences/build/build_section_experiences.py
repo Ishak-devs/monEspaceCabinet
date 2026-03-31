@@ -58,5 +58,5 @@ async def build_section_experiences(doc, data):
         if exp.get('Liste_Tâches'):
             display_tasks(doc, exp)
 
-        if exp.get("Logiciels_et_outils_utilisés"):
+        if exp.get("Logiciels_et_outils_utilisés_Sans_Indiquer_Le_Niveau"):
             display_logiciels_outils(doc, exp)

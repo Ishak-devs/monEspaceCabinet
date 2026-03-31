@@ -16,7 +16,9 @@ async def faire_recherche_openrouter(nom_entreprise):
                 "role": "user",
                 "content": (
                     f"Recherche le secteur d'activité de l'entreprise '{nom_entreprise}'. "
-                    f"Réponds UNIQUEMENT en JSON valide, sans texte autour, sans balises markdown, dans ce format exact : "
+                    f"Réponds UNIQUEMENT en JSON valide, sans texte autour, sans balises markdown, sans aucune autre"
+                    f" informations"
+                    f" dans ce format exact : "
                     f'{{"Secteur_entreprise": "valeur en une phrase courte"}}'
                 )
             }]
