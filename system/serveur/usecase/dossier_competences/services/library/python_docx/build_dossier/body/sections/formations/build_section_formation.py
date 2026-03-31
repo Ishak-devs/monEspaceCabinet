@@ -24,7 +24,6 @@ def build_section_formation(doc, data):
         p = doc.add_paragraph(diplome.get('Diplôme', ''), style='List Bullet')
         p.paragraph_format.keep_together = True
         p.paragraph_format.keep_with_next = True
-        p.paragraph_format.space_after = Pt(3.5)
 
         tab_xml = parse_xml(f'<w:tabs {nsdecls("w")}><w:tab w:val="right" w:pos="9639"/></w:tabs>')
         p._element.get_or_add_pPr().append(tab_xml)
@@ -50,5 +49,6 @@ def build_section_formation(doc, data):
             if diplome.get('Lieu'):
                 p_lieu = doc.add_paragraph()
                 p_lieu.paragraph_format.left_indent = Cm(1.25)
+                p_lieu.paragraph_format.space_after = Pt(3)
                 run_lieu = p_lieu.add_run(diplome.get('Lieu'))
                 run_lieu.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
