@@ -23,6 +23,7 @@ def build_section_formation(doc, data):
     for diplome in data.get('Diplômes_Et_Formations_Antéchronologiques', []):
         p = doc.add_paragraph(diplome.get('Diplôme', ''), style='List Bullet')
         p.paragraph_format.left_indent = Cm(0.75)
+        p.paragraph_format.space_after = Pt(0)
         p.paragraph_format.keep_together = True
         p.paragraph_format.keep_with_next = True
 
