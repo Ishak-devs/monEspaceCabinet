@@ -40,15 +40,12 @@ def build_section_formation(doc, data):
         if diplome.get('École'):
 
             p_ecole = doc.add_paragraph()
-            p_ecole.paragraph_format.left_indent = Cm(1.25)
-            p_ecole.paragraph_format.space_after = Pt(0.5)
             p_ecole.paragraph_format.keep_with_next = True
             run_ecole = p_ecole.add_run(diplome.get('École'))
             run_ecole.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
 
             if diplome.get('Lieu'):
                 p_lieu = doc.add_paragraph()
-                p_lieu.paragraph_format.left_indent = Cm(1.25)
-                p_lieu.paragraph_format.space_after = Pt(3)
+                p_lieu.paragraph_format.space_after = Pt(3.5)
                 run_lieu = p_lieu.add_run(diplome.get('Lieu'))
                 run_lieu.font.color.rgb = RGBColor(0x00, 0x20, 0x60)

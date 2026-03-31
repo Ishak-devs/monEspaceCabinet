@@ -6,6 +6,8 @@ POLICE = "Calibri (corps)"
 
 def cellule_gauche(table, exp):
     cell_gauche = table.cell(0, 0)
+    cell_gauche.width = Cm(5)
+
     p_gauche = cell_gauche.paragraphs[0]
     p_gauche.paragraph_format.space_after = Pt(0)
     p_gauche.alignement = WD_ALIGN_PARAGRAPH.LEFT
