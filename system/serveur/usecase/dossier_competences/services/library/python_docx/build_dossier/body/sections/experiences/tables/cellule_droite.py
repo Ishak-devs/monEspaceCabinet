@@ -4,13 +4,13 @@ from docx.shared import RGBColor, Pt, Cm
 POLICE = "Calibri (corps)"
 
 def cellule_droite(table, exp):
+    cell_droite = table.cell(0, 2)
+    p_milieu = cell_droite.paragraphs[0]
+    p_milieu.paragraph_format.space_after = Pt(0)
 
-    cell_droite = table.cell(0, 1)
-    p = cell_droite.paragraphs[0]
-    p.paragraph_format.space_after = Pt(0)
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    duree = exp.get('Durée_Mission_Ou_En_Cours', '')
-    run_duree = p.add_run(f"({duree})")
-    run_duree.font.name = POLICE
-    run_duree.font.size = Pt(11)
-    run_duree.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
+    p_milieu.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    run3 = p_milieu.add_run(exp.get('Dates_Période', ''))
+
+    run3.font.name = POLICE
+    run3.font.size = Pt(11)
+    run3.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
