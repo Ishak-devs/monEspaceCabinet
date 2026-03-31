@@ -3,7 +3,7 @@ import traceback
 from usecase.dossier_competences.IA.analyse.analyse_data import analyse_data
 from usecase.dossier_competences.services.documents.render.render_document import render_document
 
-def generate_dossier(
+async def generate_dossier(
     selected_file: str,
 ) -> dict:
 
@@ -15,7 +15,7 @@ def generate_dossier(
         data = all_data
 
         # RENDER
-        file_stream = render_document(data)
+        file_stream = await render_document(data)
 
         return {
             "success": True,

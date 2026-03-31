@@ -10,7 +10,7 @@ from cloud.S3.get_logo import get_logo
 from usecase.dossier_competences.services.library.python_docx.build_dossier.marge.add_marge import add_marge
 
 
-def render_document(data):
+async def render_document(data):
 
     logo_path = get_logo()
     doc = Document()
@@ -18,7 +18,7 @@ def render_document(data):
     add_marge(doc)
 
     header_doc(doc, data, logo_path)
-    body_doc(doc, data)
+    await body_doc(doc, data)
     footer_doc(doc, data)
 
     file_stream = io.BytesIO()

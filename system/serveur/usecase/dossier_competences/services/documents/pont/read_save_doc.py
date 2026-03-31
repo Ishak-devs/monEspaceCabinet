@@ -9,7 +9,7 @@ async def read_save_doc(cv_content: bytes, filename: str):
     with open(temp_path, "wb") as f:
         f.write(cv_content)
 
-    result = generate_dossier(str(temp_path))
+    result = await generate_dossier(str(temp_path))
 
     if temp_path.exists():
         os.remove(temp_path)
