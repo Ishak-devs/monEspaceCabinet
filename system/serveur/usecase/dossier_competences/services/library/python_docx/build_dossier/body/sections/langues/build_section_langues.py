@@ -40,9 +40,7 @@ def build_section_langues(doc, data):
         p = doc.add_paragraph(style='List Bullet')
         p.paragraph_format.keep_together = True
 
-        p.paragraph_format.left_indent = Cm(1.5)
-        p.paragraph_format.first_line_indent = Cm(-0.5)
-        p.paragraph_format.tab_stops.add_tab_stop(Cm(7.5))
+        p.paragraph_format.tab_stops.add_tab_stop(Cm(4))
 
         run_l = p.add_run(langue.get('Langue'))
         run_l.bold = True
