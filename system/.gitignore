@@ -12,6 +12,7 @@ dist/
 .idea/
 # Env
 .env
+
 .env.local
 .env.*.local
 system/.env
