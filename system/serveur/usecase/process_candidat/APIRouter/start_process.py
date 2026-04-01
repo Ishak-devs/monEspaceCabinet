@@ -11,9 +11,10 @@ router_start_process = APIRouter()
 async def root_start_process(data: UserMailSchema):
     try:
 
-        prompt = prompt_mail(data.nom, data.notes_mail)
-        ai_response = call_openrouter(prompt, "meta-llama/llama-3.1-70b-instruct", json_mode=True)
+        prompt = prompt_mail(data.nom, data.notes_mail, data.remuneration, data.poste, data.prochaine_etape, data.lieu, data.doc)
+        ai_response = call_openrouter(prompt, "google/gemini-2.5-flash", json_mode=True)
         await send_mail(data, ai_response)
+        print(ai_response)
 
         return {"status": "success", "ai_msg": ai_response}
 

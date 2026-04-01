@@ -13,8 +13,10 @@ async def send_mail(data: UserMailSchema, ai_response: str):
 
     try:
         try:
-            res = json.loads(ai_response)
-            email_text = res.get("email", res).get("body", ai_response)
+            clean_json = ai_response.strip().replace("```json", "").replace("```", "")
+            res = json.loads(clean_json)
+
+            email_text = res.get("email_prêt_à_être_envoyé") or ai_response
         except:
             email_text = ai_response
 
