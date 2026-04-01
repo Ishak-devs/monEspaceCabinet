@@ -16,7 +16,7 @@ async def send_mail(data: UserMailSchema, ai_response: str):
 
         params = {
             "from": "onboarding@resend.dev",
-            "to": "kouicicontact@yahoo.com",
+            "to": data.email,
             "subject": extract_subject(ai_response),
             "html_response" : body.replace("\n", "<br>")
         }
