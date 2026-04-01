@@ -1,22 +1,7 @@
-def prompt_mail(nom, notes_mail):
-    return f"""Rédige un email professionnel pour {nom}.
+def prompt_mail(nom, notes):
 
-CONTEXTE : Cabinet de conseil, email suite à un processus de recrutement.
-
-Les notes ci-dessous sont des points à intégrer naturellement dans l'email, pas le sujet unique :
-Notes : {notes_mail}
-
-Voici le format exact à respecter :
-
-Objet : Suivi de votre candidature
-
-Bonjour {nom},
-
-Nous espérons que vous allez bien. Suite à nos échanges, nous revenons vers vous concernant votre candidature.
-
-Pourriez-vous nous transmettre votre pièce d'identité dans les meilleurs délais afin de finaliser votre dossier ?
-
-Nous restons disponibles pour toute question.
-
-Cordialement,
-L'équipe de recrutement"""
+    return f"""En tant qu'expert pour un cabinet de conseil, je dois transmettre un email à mon candidat pour l'informer
+    de la suite du process, ecris un mail PRET à etre envoyé attention il sera tranmis immédiatement il ne faut pas
+    que tu insére des éléments à modifier, donc pas de crochet ni rien de similaire. Répond en texte clair sans json,
+      prends en compte les instructions suivant pour rédiger l'email : {notes} nom du candidat : {nom}.
+"""

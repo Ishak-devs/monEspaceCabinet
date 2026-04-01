@@ -1,5 +1,5 @@
 import os
-
+import json
 import resend
 from fastapi import HTTPException
 
@@ -17,8 +17,8 @@ async def send_mail(data: UserMailSchema, ai_response: str):
         params = {
             "from": "onboarding@resend.dev",
             "to": data.email,
-            "subject": extract_subject(ai_response),
-            "html_response" : body.replace("\n", "<br>")
+            "subject": extract_subjectf(ai_response),
+            "html" : body.replace("\n", "<br>")
         }
         resend.Emails.send(params)
         return {"status": "success"}
