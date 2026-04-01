@@ -18,19 +18,14 @@ def build_section_outils(doc, data):
             titre = categorie.get('Catégorie', '')
             logiciels_outils = list(dict.fromkeys(categorie.get('Liste_Logiciels', [])))
 
-            if titre and logiciels_outils:
-                p = doc.add_paragraph()
+           if titre and logiciels_outils:
+                p = doc.add_paragraph(style='List Bullet')
                 p.paragraph_format.keep_together = True
 
-
-                run_t = p.add_run(f"{titre.upper()}")
+                run_t = p.add_run(f"{titre.upper()} : ")
                 run_t.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
                 run_t.bold = True
                 run_t.underline = True
-
-                run_sep = p.add_run(" : ")
-                run_sep.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
-                run_sep.bold = True
 
                 run_l = p.add_run(", ".join(logiciels_outils))
                 run_l.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
