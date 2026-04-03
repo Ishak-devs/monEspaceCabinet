@@ -56,3 +56,5 @@ def build_section_formation(doc, data):
                 p_lieu.paragraph_format.space_after = Pt(3.5)
                 run_lieu = p_lieu.add_run(diplome.get('Lieu'))
                 run_lieu.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
+            else:
+                p_ecole.paragraph_format.space_after = Pt(3.5)
