@@ -14,7 +14,7 @@ def display_mission(doc, exp):
     run_sep.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
     run_sep.bold = True
 
-    run_desc = p_mission.add_run(str(exp.get('Résumé_mission', '')))
+    run_desc = p_mission.add_run(str(exp.get('Résumé_mission_En_Phrase_Nominal', '')))
     run_desc.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
 
     p_mission.paragraph_format.space_before = Pt(10)
