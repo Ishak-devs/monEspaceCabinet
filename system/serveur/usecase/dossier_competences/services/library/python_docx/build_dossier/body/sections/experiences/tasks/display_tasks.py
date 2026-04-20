@@ -2,7 +2,7 @@ from docx.shared import Cm, RGBColor
 
 #
 # def display_tasks(doc, exp):
-#     for tache in exp.get('Liste_Tâches', []):
+#     for tache in exp.get('Liste_Tâches_En_Phrase_Nominal', []):
 #         p_tache = doc.add_paragraph(tache, style='List Bullet')
 #         p_tache.paragraph_format.keep_together = True
 #         p_tache.paragraph_format.keep_with_next = True
@@ -12,7 +12,7 @@ from docx.shared import Cm, RGBColor
 #             run.font.color.rgb = RGBColor(0x00, 0x20, 0x60)
 
 def display_tasks(doc, exp):
-        tasks = exp.get('Liste_Tâches', [])
+        tasks = exp.get('Liste_Tâches_En_Phrase_Nominal', [])
         has_next_section = bool(exp.get("Logiciels_et_outils_utilisés_Sans_Indiquer_Le_Niveau"))
 
         for i, tache in enumerate(tasks):
